@@ -1,0 +1,81 @@
+import { useState, useEffect } from "react";
+
+const apiKey = "0b4c1848f729594e1ebc42d7493cc838"; // Replace with your actual TMDB API key
+
+const initialMovies = [
+  { id: 1, title: "One Of Them Days", year: 2025, poster: "" },
+  { id: 2, title: "Inside Out 2", year: 2024, poster: "" },
+  { id: 3, title: "Deadpool & Wolverine", year: 2024, poster: "" },
+  { id: 4, title: "Wicked", year: 2024, poster: "" },
+  { id: 5, title: "Moana 2", year: 2024, poster: "" },
+  { id: 6, title: "Despicable Me 4", year: 2024, poster: "" },
+  { id: 7, title: "Beetlejuice Beetlejuice", year: 2024, poster: "" },
+  { id: 8, title: "The Gorge", year: 2025, poster: "" }
+];
+
+export default function MovieList() {
+  const [movies, setMovies] = useState(initialMovies);
+
+  // Function to fetch poster URLs
+  useEffect(() => {
+    const fetchPosters = async () => {
+      const updatedMovies = await Promise.all(
+        movies.map(async (movie) => {
+          try {
+            const response = await fetch(
+              `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(movie.title)}`
+            );
+            const data = await response.json();
+
+            if (data.results && data.results.length > 0) {
+              return {
+                ...movie,
+                poster: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.results[0].poster_path}`,
+              };
+            }
+          } catch (error) {
+            console.error(`Error fetching poster for ${movie.title}:`, error);
+          }
+          return movie; // Return original if no poster found
+        })
+      );
+
+      setMovies(updatedMovies);
+    };
+
+    fetchPosters();
+  }, []); // Runs only on mount
+
+  // Formats movie title for Levidia search
+  const formatTitleForLevidia = (title) => {
+    return title.split(" ").join("-"); // Convert spaces to dashes
+  };
+
+  return (
+    <div className="movie-list">
+      <h2>Popular Movies</h2>
+      <ul>
+        {movies.map((movie) => (
+          <div key={movie.id} className="movie">
+            <a
+              href={`https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(movie.title)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={movie.poster || "https://via.placeholder.com/250x300"} // Fallback poster
+                height="300"
+                width="250"
+                alt={movie.title}
+              />
+              <div>
+                <h3>{movie.title}</h3>
+                <p>({movie.year})</p>
+              </div>
+            </a>
+          </div>
+        ))}
+      </ul>
+    </div>
+  );
+}

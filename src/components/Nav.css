@@ -1,0 +1,36 @@
+/* Keeps the Nav Bar fixed at the top */
+.Nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    z-index: 1000;
+  }
+  
+  .Nav a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .Nav a:hover {
+    color: #f4a261;
+  }
+  
+  /* MovieLinks Title */
+  .title {
+    margin-top: 60px; /* Pushes title below navbar */
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+  }
+  
