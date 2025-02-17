@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 
 const initialMovies = [
-  { id: 1, title: "One Of Them Days", year: 2025, poster: "" },
-  { id: 2, title: "Inside Out 2", year: 2024, poster: "" },
-  { id: 3, title: "Deadpool & Wolverine", year: 2024, poster: "" },
-  { id: 4, title: "Wicked", year: 2024, poster: "" },
-  { id: 5, title: "Moana 2", year: 2024, poster: "" },
-  { id: 6, title: "Despicable Me 4", year: 2024, poster: "" },
-  { id: 7, title: "Beetlejuice Beetlejuice", year: 2024, poster: "" },
-  { id: 8, title: "The Gorge", year: 2025, poster: "" }
+  { id: 1, title: "SNL50: The Homecoming Concert", year: 2025, poster: "" },  
+  { id: 2, title: "One Of Them Days", year: 2025, poster: "" },
+  { id: 3, title: "Inside Out 2", year: 2024, poster: "" },
+  { id: 4, title: "Deadpool & Wolverine", year: 2024, poster: "" },
+  { id: 5, title: "Wicked", year: 2024, poster: "" },
+  { id: 6, title: "Moana 2", year: 2024, poster: "" },
+  { id: 7, title: "Despicable Me 4", year: 2024, poster: "" },
+  { id: 8, title: "Beetlejuice Beetlejuice", year: 2024, poster: "" },
+  { id: 9, title: "The Gorge", year: 2025, poster: "" }
 ];
 
 export default function MovieList() {
@@ -48,7 +49,7 @@ export default function MovieList() {
     }
   }, [movies]); // ✅ Include `movies` in the dependency array
 
-  const formatTitleForLevidia = (title) => title.replace(/\s+/g, "-");
+  const formatTitleForLevidia = (title) => title.replace(/:/g, "").replace(/\s+/g, "-");
 
   return (
     <div className="movie-list">
