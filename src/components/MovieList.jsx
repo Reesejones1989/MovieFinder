@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-
 const initialMovies = [
   { id: 1, title: "One Of Them Days", year: 2025, poster: "" },
   { id: 2, title: "Inside Out 2", year: 2024, poster: "" },
@@ -14,21 +13,21 @@ const initialMovies = [
 
 export default function MovieList() {
   const [movies, setMovies] = useState(initialMovies);
-  const apiKey = import.meta.env.VITE_TMDB_API_KEY  
+  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
-
-  // Function to fetch poster URLs
   useEffect(() => {
     const fetchPosters = async () => {
       const updatedMovies = await Promise.all(
         movies.map(async (movie) => {
+          if (movie.poster) return movie; // Skip if poster already exists
+
           try {
             const response = await fetch(
               `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(movie.title)}`
             );
             const data = await response.json();
 
-            if (data.results && data.results.length > 0) {
+            if (data.results && data.results.length > 0 && data.results[0].poster_path) {
               return {
                 ...movie,
                 poster: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.results[0].poster_path}`,
@@ -37,20 +36,19 @@ export default function MovieList() {
           } catch (error) {
             console.error(`Error fetching poster for ${movie.title}:`, error);
           }
-          return movie; // Return original if no poster found
+          return movie;
         })
       );
 
       setMovies(updatedMovies);
     };
 
-    fetchPosters();
-  }, []); // Runs only on mount
+    if (movies.some(movie => !movie.poster)) {
+      fetchPosters();
+    }
+  }, [movies]); // ✅ Include `movies` in the dependency array
 
-  // Formats movie title for Levidia search
-  const formatTitleForLevidia = (title) => {
-    return title.split(" ").join("-"); // Convert spaces to dashes
-  };
+  const formatTitleForLevidia = (title) => title.replace(/\s+/g, "-");
 
   return (
     <div className="movie-list">
@@ -64,7 +62,7 @@ export default function MovieList() {
               rel="noopener noreferrer"
             >
               <img
-                src={movie.poster || "https://via.placeholder.com/250x300"} // Fallback poster
+                src={movie.poster || "https://via.placeholder.com/250x300"} 
                 height="300"
                 width="250"
                 alt={movie.title}

@@ -12,19 +12,21 @@ const initialTvShows = [
 
 export default function TvShowList() {
   const [tvShows, setTvShows] = useState(initialTvShows);
-  const apiKey = import.meta.env.VITE_TMDB_API_KEY; 
+  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
   useEffect(() => {
     const fetchPosters = async () => {
       const updatedTvShows = await Promise.all(
         tvShows.map(async (show) => {
+          if (show.poster) return show; // ✅ Skip if poster already exists
+
           try {
             const response = await fetch(
               `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${encodeURIComponent(show.title)}`
             );
             const data = await response.json();
 
-            if (data.results && data.results.length > 0) {
+            if (data.results && data.results.length > 0 && data.results[0].poster_path) {
               return {
                 ...show,
                 poster: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.results[0].poster_path}`,
@@ -40,10 +42,12 @@ export default function TvShowList() {
       setTvShows(updatedTvShows);
     };
 
-    fetchPosters();
-  }, []); // Runs only on mount
+    if (tvShows.some(show => !show.poster)) {
+      fetchPosters();
+    }
+  }, [tvShows]); // ✅ Include `tvShows` in the dependency array
 
-  const formatTitleForLevidia = (title) => title.split(" ").join("-"); // Convert spaces to dashes
+  const formatTitleForLevidia = (title) => title.replace(/\s+/g, "-");
 
   return (
     <div className="tv-show-list">
