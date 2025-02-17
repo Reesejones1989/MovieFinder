@@ -1,36 +1,38 @@
-/* Keeps the Nav Bar fixed at the top */
 .Nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #356e41;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 0;
-    z-index: 1000;
-  }
-  
-  .Nav a {
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 10px 20px;
-    transition: color 0.3s ease-in-out;
-  }
-  
-  .Nav a:hover {
-    color: #f4a261;
-  }
-  
-  /* MovieLinks Title */
-  .title {
-    margin-top: 60px; /* Pushes title below navbar */
-    text-align: center;
-    font-size: 36px;
-    font-weight: bold;
-    color: #333;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #356e41;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  z-index: 1000;
+}
+
+/* Pushes everything else to the right of the image */
+.Nav img {
+  margin-right: auto; /* Moves everything else to the right */
+}
+
+/* Centers the navigation links */
+.Nav .nav-links {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1; /* Takes up remaining space, centering the links */
+  margin-left: -200px; /* Adjust this value as needed to move left */
+
+}
+
+.Nav a {
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 20px 20px;
+  transition: color 0.3s ease-in-out;
+}
+
+.Nav a:hover {
+  color: #f4a261;
+}
