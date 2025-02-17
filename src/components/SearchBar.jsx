@@ -44,7 +44,10 @@ export default function SearchBar() {
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
   
-    let formattedSearch = searchTerm.trim().replace(/\s+/g, "-"); // Replace spaces with dashes globally
+    let formattedSearch = searchTerm
+    .trim()
+    .replace(/\s+/g, "-") // Replace spaces with dashes globally
+    .replace(/:/g, ""); //removes colons
   
     if (formattedSearch.includes("Spider-Man")) {
       formattedSearch = formattedSearch.replace("Spider-Man", "Spiderman");
@@ -57,7 +60,7 @@ export default function SearchBar() {
       ? "https://www.levidia.ch/tv-show.php?watch="
       : "https://www.levidia.ch/movie.php?watch=";
   
-    window.location.href = baseUrl + formattedSearch; 
+    window.open(baseUrl + formattedSearch, "_blank");
   };
 
 
