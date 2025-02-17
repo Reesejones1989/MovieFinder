@@ -20,8 +20,6 @@ export default function Nav() {
     </Link>
     
 
-      {/* MovieLinks Title */}
-      <h1 className="title">MovieLinks</h1>
       
     </div>
   )

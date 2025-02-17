@@ -1,68 +1,75 @@
-const tvShows = [
-    {
-      id: 1,
-      title: "Breaking Bad",
-      year: 2008,
-      poster: "https://image.tmdb.org/t/p/w200/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
-    },
-    {
-      id: 2,
-      title: "Game of Thrones",
-      year: 2011,
-      poster: "https://image.tmdb.org/t/p/w200/u3bZgnGQ9T01sWNhyveQz0wH0Hl.jpg",
-    },
-    {
-      id: 3,
-      title: "Stranger Things",
-      year: 2016,
-      poster: "https://image.tmdb.org/t/p/w200/49WJfeN0moxb9IPfGn8AIqMGskD.jpg",
-    },
-    {
-      id: 4,
-      title: "The Office",
-      year: 2005,
-      poster: "https://image.tmdb.org/t/p/w200/qWnJzyZhyy74gjpSjIXWmuk0ifX.jpg",
-    },
-    {
-      id: 5,
-      title: "Friends",
-      year: 1994,
-      poster: "https://image.tmdb.org/t/p/w200/f496cm9enuEsZkSPzCwnTESEK5s.jpg",
-    },
-    {
-      id: 6,
-      title: "The Mandalorian",
-      year: 2019,
-      poster: "https://image.tmdb.org/t/p/w200/sWgBv7LV2PRoQgkxwlibdGXKz1S.jpg",
-    },
-  ];
-  
-  export default function TvShowList() {
-    const formatTitleForLevidia = (title) => {
-      return title.split(" ").join("-"); // Convert spaces to dashes for URL format
+import { useState, useEffect } from "react";
+
+const initialTvShows = [
+  { id: 1, title: "Breaking Bad", year: 2008, poster: "" },
+  { id: 2, title: "Game of Thrones", year: 2011, poster: "" },
+  { id: 3, title: "Stranger Things", year: 2016, poster: "" },
+  { id: 4, title: "The Office", year: 2005, poster: "" },
+  { id: 5, title: "Friends", year: 1994, poster: "" },
+  { id: 6, title: "The Mandalorian", year: 2019, poster: "" },
+  { id: 7, title: "The White Lotus", year: 2021, poster: "" },
+];
+
+export default function TvShowList() {
+  const [tvShows, setTvShows] = useState(initialTvShows);
+  const apiKey = import.meta.env.VITE_TMDB_API_KEY; 
+
+  useEffect(() => {
+    const fetchPosters = async () => {
+      const updatedTvShows = await Promise.all(
+        tvShows.map(async (show) => {
+          try {
+            const response = await fetch(
+              `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${encodeURIComponent(show.title)}`
+            );
+            const data = await response.json();
+
+            if (data.results && data.results.length > 0) {
+              return {
+                ...show,
+                poster: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.results[0].poster_path}`,
+              };
+            }
+          } catch (error) {
+            console.error(`Error fetching poster for ${show.title}:`, error);
+          }
+          return show; // Return original if no poster found
+        })
+      );
+
+      setTvShows(updatedTvShows);
     };
-  
-    return (
-      <div className="tv-show-list">
-        <h2>Popular TV Shows</h2>
-        <ul>
-          {tvShows.map((show) => (
-            <div key={show.id} className="tv-show">
-              <a
-                href={`https://www.levidia.ch/tv-show.php?watch=${formatTitleForLevidia(show.title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img src={show.poster} height="300" width="250" alt={show.title} />
-                <div>
-                  <h3>{show.title}</h3>
-                  <p>({show.year})</p>
-                </div>
-              </a>
-            </div>
-          ))}
-        </ul>
-      </div>
-    );
-  }
-  
+
+    fetchPosters();
+  }, []); // Runs only on mount
+
+  const formatTitleForLevidia = (title) => title.split(" ").join("-"); // Convert spaces to dashes
+
+  return (
+    <div className="tv-show-list">
+      <h2>Popular TV Shows</h2>
+      <ul>
+        {tvShows.map((show) => (
+          <div key={show.id} className="tv-show">
+            <a
+              href={`https://www.levidia.ch/tv-show.php?watch=${formatTitleForLevidia(show.title)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={show.poster || "https://via.placeholder.com/250x300"}
+                height="300"
+                width="250"
+                alt={show.title}
+              />
+              <div>
+                <h3>{show.title}</h3>
+                <p>({show.year})</p>
+              </div>
+            </a>
+          </div>
+        ))}
+      </ul>
+    </div>
+  );
+}

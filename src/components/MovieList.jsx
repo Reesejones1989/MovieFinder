@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-const apiKey = "0b4c1848f729594e1ebc42d7493cc838"; // Replace with your actual TMDB API key
 
 const initialMovies = [
   { id: 1, title: "One Of Them Days", year: 2025, poster: "" },
@@ -15,6 +14,8 @@ const initialMovies = [
 
 export default function MovieList() {
   const [movies, setMovies] = useState(initialMovies);
+  const apiKey = import.meta.env.VITE_TMDB_API_KEY  
+
 
   // Function to fetch poster URLs
   useEffect(() => {

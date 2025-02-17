@@ -5,8 +5,11 @@ export default function About(){
                 This app is to bring a place to search for tv show and movie links without the potential ads all over the place
             </p>
 
+            <h3>Features to come soon: Anime and Adding to Favorites</h3>
+
+
             <h7>Maurice Jones 2025
-            https://reesejones1989.github.io/Portfolio/
+            <a> https://reesejones1989.github.io/Portfolio/</a>
             </h7>
             
              </div> 

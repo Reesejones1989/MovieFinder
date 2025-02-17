@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import './SearchBar.css'
 
 
+
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isTVShow, setIsTVShow] = useState(true);
@@ -14,8 +15,7 @@ export default function SearchBar() {
     }
 
     const fetchSuggestions = async () => {
-      const apiKey = "0b4c1848f729594e1ebc42d7493cc838"; 
-      
+      const apiKey = import.meta.env.VITE_TMDB_API_KEY;   
       const type = isTVShow ? "tv" : "movie";
       const url = `https://api.themoviedb.org/3/search/${type}?query=${searchTerm}&api_key=${apiKey}`;
       try {
@@ -31,34 +31,36 @@ export default function SearchBar() {
         console.error("Error fetching data:", error);
       }
     };
-
-    fetchSuggestions();
+    const delayDebounceFn = setTimeout(() => {
+      fetchSuggestions();
+    }, 500); // Delay API call by 500ms to reduce spam
+  
+    return () => clearTimeout(delayDebounceFn); // Cleanup function to avoid multiple calls
   }, [searchTerm, isTVShow]);
 
+
+
+  
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
-
-    let formattedSearch = searchTerm.trim();
-
+  
+    let formattedSearch = searchTerm.trim().replace(/\s+/g, "-"); // Replace spaces with dashes globally
+  
     if (formattedSearch.includes("Spider-Man")) {
-      formattedSearch = formattedSearch.split(" ").join("-").replace("Spider-Man", "Spiderman");
+      formattedSearch = formattedSearch.replace("Spider-Man", "Spiderman");
     }
-
-    if (!isTVShow) {
-      formattedSearch = formattedSearch.split(" ").join("-"); // Convert spaces to dashes for movies
-    }
-
-    // Replace spaces with dashes for movie or TV show search
-    //formattedSearch = formattedSearch.split(" ").join("-");
-    const apiKey = "0b4c1848f729594e1ebc42d7493cc838"; 
+    const apiKey = import.meta.env.VITE_TMDB_API_KEY; 
     const poster_url = `http://api.themoviedb.org/3/search/movie?${apiKey}&query=${formattedSearch}`
-console.log(poster_url)
+    console.log(poster_url)
+
     const baseUrl = isTVShow
       ? "https://www.levidia.ch/tv-show.php?watch="
       : "https://www.levidia.ch/movie.php?watch=";
-
-    window.location.href = baseUrl + formattedSearch; // No need for encodeURIComponent since we already replaced spaces
+  
+    window.location.href = baseUrl + formattedSearch; 
   };
+
+
 
   const handleSuggestionClick = (suggestion) => {
     setSearchTerm(suggestion.title || suggestion.name); // Use title for movies, name for TV shows
