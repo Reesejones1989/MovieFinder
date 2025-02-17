@@ -1,4 +1,17 @@
 export default function About() {
+   /* function sendToMyEmail(event) {
+        event.preventDefault(); // Prevent form from refreshing
+    
+        const suggestion = document.getElementById("Suggestions").value;
+        const email = "your_email@example.com"; // Replace with your actual email
+        const subject = "New Suggestion for MovieFinder";
+        const body = `Suggestion: ${encodeURIComponent(suggestion)}`;
+    
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+    }
+    */
+
+
     return (
         <div className="about-container">
             <p>
@@ -6,6 +19,16 @@ export default function About() {
             </p>
 
             <h3>Features to come soon: Anime and Adding to Favorites</h3>
+
+            {/*<form>
+                <label>Suggestions: </label> <input id="Suggestions"></input>
+                <button type="submit" onClick={sendToMyEmail}>Submit</button>
+            </form>
+                */}
+
+
+
+
 
             {/* Footer */}
             <footer className="about-footer">

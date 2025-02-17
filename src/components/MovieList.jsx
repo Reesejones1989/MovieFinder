@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const initialMovies = [
-  { id: 1, title: "SNL50: The Homecoming Concert", year: 2025, poster: "" },  
+  { id: 1, title: "Flight Risk", year: 2025, poster: "" },  
   { id: 2, title: "One Of Them Days", year: 2025, poster: "" },
   { id: 3, title: "Inside Out 2", year: 2024, poster: "" },
   { id: 4, title: "Deadpool & Wolverine", year: 2024, poster: "" },

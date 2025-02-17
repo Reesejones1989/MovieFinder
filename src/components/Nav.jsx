@@ -17,6 +17,9 @@ export default function Nav() {
         <Link id='TvShows' to="/TV-Shows">
           <div>Tv Shows</div>
         </Link>
+        <Link id='Anime' to="/Anime">
+          <div>Anime</div>
+        </Link>
         <Link id='About' to="/About">
           <div>About</div>
         </Link>
