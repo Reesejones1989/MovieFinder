@@ -34,5 +34,6 @@
 }
 
 .Nav a:hover {
-  color: #f4a261;
+  color: #de600b;
+  text-underline-position: below;
 }

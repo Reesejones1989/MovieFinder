@@ -1,10 +1,16 @@
-/* Make sure the root container is responsive */
+/* Ensure the root container is responsive */
 #root {
   max-width: 100%;
   margin: 0 auto;
   padding: 1rem;
   text-align: center;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
+.nav-links {
+  font-size: 100px;
+  }
+
+
 
 /* Ensure the app container scales well */
 .app-container {
@@ -12,6 +18,7 @@
   margin: 0 auto;
   padding: 1rem;
   text-align: center;
+  margin-top: 60px; /* Prevent overlap with fixed navbar */
 }
 
 /* Responsive Logo */
@@ -23,11 +30,11 @@
 }
 
 .movie-logo {
-  max-width: 80%; /* Ensures it resizes on smaller screens */
+  max-width: 80%;
   height: auto;
 }
 
-/* Nav Bar - Responsive */
+/* Navigation Bar - Responsive */
 .Nav {
   position: fixed;
   top: 0;
@@ -35,25 +42,28 @@
   width: 100%;
   background-color: #356e41;
   display: flex;
-  justify-content: space-between; /* Aligns logo left, menu right */
+  justify-content: center; /* Center the links properly */
   align-items: center;
   padding: 10px;
   z-index: 1000;
   flex-wrap: wrap;
+  font-size: 50px;
 }
 
-/* Ensure nav items wrap correctly */
+/* Ensure nav items wrap correctly and are visible */
 .Nav a {
   text-decoration: none;
   color: white;
-  font-size: 16px;
+  font-size: 30px;
   font-weight: bold;
   padding: 10px;
   transition: color 0.3s ease-in-out;
   white-space: nowrap;
+  display: block; /* Ensures links don’t get cut off */
+  text-align: center;
 }
 
-/* Reduce padding for small screens */
+/* Responsive Design Adjustments */
 @media screen and (max-width: 768px) {
   .Nav {
     flex-direction: column;
@@ -64,6 +74,7 @@
   .Nav a {
     font-size: 14px;
     padding: 8px;
+    width: 100%; /* Ensure full width for better visibility */
   }
 
   .movie-logo {
@@ -77,6 +88,7 @@
 
   .app-container {
     padding: 1rem;
+    margin-top: 80px; /* Adjusted for fixed navbar */
   }
 }
 
@@ -89,11 +101,19 @@
   }
 
   .Nav a {
-    font-size: 14px;
+    font-size: 12px; /* Slightly smaller font for space */
     padding: 6px;
+    width: 100%; /* Ensures buttons are visible */
   }
 
   .movie-logo {
     max-width: 100%;
   }
+
+  .app-container {
+    margin-top: 100px; /* More space for mobile nav */
+  }
+  .nav-links {
+    padding-left: 120px;
+    font-size: 1.2rem  }
 }
