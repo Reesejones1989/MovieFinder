@@ -6,6 +6,7 @@ import About from './pages/About.jsx';
 import TvShows from './pages/TvShows.jsx';
 import Movies from './pages/Movies.jsx';
 import Anime from './pages/Anime.jsx'
+import Sports from './pages/Sports.jsx'
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/Movies" element={<Movies />} />
           <Route path="/TV-Shows" element={<TvShows />} />
           <Route path="/Anime" element={<Anime />} />
+          <Route path="/Sports" element={<Sports />} />
           <Route path="/About" element={<About />} />
         </Routes>
       </div>

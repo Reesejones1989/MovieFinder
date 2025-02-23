@@ -20,6 +20,9 @@ export default function Nav() {
         <Link id='Anime' to="/Anime">
           <div>Anime </div>
         </Link>
+        <Link id='Sports' to="/Sports">
+          <div>Sports </div>
+        </Link>
         <Link id='About' to="/About">
           <div>About</div>
         </Link>
