@@ -1,16 +1,31 @@
-export default function About() {
-   /* function sendToMyEmail(event) {
-        event.preventDefault(); // Prevent form from refreshing
-    
-        const suggestion = document.getElementById("Suggestions").value;
-        const email = "your_email@example.com"; // Replace with your actual email
-        const subject = "New Suggestion for MovieFinder";
-        const body = `Suggestion: ${encodeURIComponent(suggestion)}`;
-    
-        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`;
-    }
-    */
+import React, { useState } from "react";
+import emailjs from "emailjs-com";
 
+export default function About() {
+    const [suggestion, setSuggestion] = useState("");
+
+    const sendEmail = (event) => {
+        event.preventDefault();
+
+        emailjs.send(
+            "service_5gnvwxa",  // Replace with your EmailJS service ID
+            "template_7ml4g2b", // Replace with your EmailJS template ID
+            {
+                suggestion: suggestion,
+                to_email: "mauricejonesjr@gmail.com"
+            },
+            "wBSHIUZfiN3buc8T6" // Replace with your EmailJS user ID (public key)
+        ).then(
+            (response) => {
+                alert("Suggestion sent successfully!");
+                setSuggestion(""); // Clear input
+            },
+            (error) => {
+                console.log("Failed to send suggestion", error);
+                alert("Failed to send suggestion.");
+            }
+        );
+    };
 
     return (
         <div className="about-container">
@@ -18,17 +33,20 @@ export default function About() {
                 This app is to bring a place to search for TV show and movie links without the potential ads all over the place.
             </p>
 
-            <h3>Features to come soon: Anime and Adding to Favorites</h3>
+            <h3>Features to come soon: Favorites </h3>
 
-            {/*<form>
-                <label>Suggestions: </label> <input id="Suggestions"></input>
-                <button type="submit" onClick={sendToMyEmail}>Submit</button>
+            {/* Suggestion Box Form */}
+            <form onSubmit={sendEmail}>
+                <label>Suggestions: </label>
+                <input
+                    id="Suggestions"
+                    type="text"
+                    value={suggestion}
+                    onChange={(e) => setSuggestion(e.target.value)}
+                    required
+                />
+                <button type="submit">Submit</button>
             </form>
-                */}
-
-
-
-
 
             {/* Footer */}
             <footer className="about-footer">
