@@ -6,11 +6,10 @@
   text-align: center;
   overflow-x: hidden; /* Prevent horizontal scrolling */
 }
+
 .nav-links {
   font-size: 100px;
-  }
-
-
+}
 
 /* Ensure the app container scales well */
 .app-container {
@@ -32,6 +31,12 @@
 .movie-logo {
   max-width: 80%;
   height: auto;
+  opacity: 0.7; /* 70% opacity for a translucent effect */
+  transition: opacity 0.3s ease-in-out;
+}
+
+.movie-logo:hover {
+  opacity: 1;
 }
 
 /* Navigation Bar - Responsive */
@@ -42,7 +47,7 @@
   width: 100%;
   background-color: #356e41;
   display: flex;
-  justify-content: center; /* Center the links properly */
+  justify-content: center;
   align-items: center;
   padding: 10px;
   z-index: 1000;
@@ -59,11 +64,53 @@
   padding: 10px;
   transition: color 0.3s ease-in-out;
   white-space: nowrap;
-  display: block; /* Ensures links don’t get cut off */
+  display: block;
   text-align: center;
 }
 
-/* Responsive Design Adjustments */
+/* Movie & TV Show Grid Container */
+.movie-container, .tvshow-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Default: 4 per row */
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Movie & TV Show Items */
+.movie, .tvshow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 220px;
+  height: 350px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Movie & TV Show Images */
+.movie img, .tvshow img {
+  width: 200px;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.movie:hover, .tvshow:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive: 2 per row on tablets & mobile */
 @media screen and (max-width: 768px) {
   .Nav {
     flex-direction: column;
@@ -74,7 +121,7 @@
   .Nav a {
     font-size: 14px;
     padding: 8px;
-    width: 100%; /* Ensure full width for better visibility */
+    width: 100%;
   }
 
   .movie-logo {
@@ -88,7 +135,21 @@
 
   .app-container {
     padding: 1rem;
-    margin-top: 80px; /* Adjusted for fixed navbar */
+    margin-top: 80px;
+  }
+
+  .movie-container, .tvshow-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 per row */
+  }
+
+  .movie, .tvshow {
+    width: 180px;
+    height: 300px;
+  }
+
+  .movie img, .tvshow img {
+    width: 160px;
+    height: 240px;
   }
 }
 
@@ -101,9 +162,9 @@
   }
 
   .Nav a {
-    font-size: 12px; /* Slightly smaller font for space */
+    font-size: 12px;
     padding: 6px;
-    width: 100%; /* Ensures buttons are visible */
+    width: 100%;
   }
 
   .movie-logo {
@@ -111,9 +172,26 @@
   }
 
   .app-container {
-    margin-top: 100px; /* More space for mobile nav */
+    margin-top: 100px;
   }
+
   .nav-links {
     padding-left: 120px;
-    font-size: 1.2rem  }
+    font-size: 1.2rem;
+  }
+
+  .movie-container, .tvshow-container {
+    grid-template-columns: repeat(2, 1fr); /* Still 2 per row */
+    gap: 10px;
+  }
+
+  .movie, .tvshow {
+    width: 160px;
+    height: 280px;
+  }
+
+  .movie img, .tvshow img {
+    width: 140px;
+    height: 220px;
+  }
 }

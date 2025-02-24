@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Nav from './components/Nav.jsx';
 import './App.css';
 import Home from './pages/Home.jsx';
@@ -32,6 +32,16 @@ function App() {
           <Route path="/Anime" element={<Anime />} />
           <Route path="/Sports" element={<Sports />} />
           <Route path="/About" element={<About />} />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="Sport" element={<Navigate to="/Sports" replace />} />
+          <Route path="TvShow" element={<Navigate to="/TV-Shows" replace />} />
+          <Route path="TvShows" element={<Navigate to="/TV-Shows" replace />} />
+          <Route path="Movie" element={<Navigate to="/Movies" replace />} />
+
+
+
+
         </Routes>
       </div>
     </Router>

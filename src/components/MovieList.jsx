@@ -13,8 +13,12 @@ const initialMovies = [
   { id: 8, title: "Beetlejuice Beetlejuice", year: 2024, poster: "" },
   { id: 9, title: "The Gorge", year: 2025, poster: "" },
   { id: 10, title: "Companion", year: 2025, poster: "" },
-  { id: 11, title: "Jade", year: 2024, poster: "" },
-  { id: 12, title: "It's What's Inside", year: 2024, poster: "" }
+  { id: 11, title: "The Substance", year: 2024, poster: "" },
+  { id: 12, title: "It's What's Inside", year: 2024, poster: "" },
+  { id: 13, title: "Wolf Man", year: 2024, poster: "" },
+  { id: 14, title: "You're Cordially Invited", year: 2024, poster: "" },
+  { id: 15, title: "Valiant One", year: 2024, poster: "" },
+  
 ];
 
 export default function MovieList() {
@@ -54,7 +58,7 @@ export default function MovieList() {
     }
   }, [movies]); // ✅ Include `movies` in the dependency array
 
-  const formatTitleForLevidia = (title) => title.replace(/:/g, "").replace(/\s+/g, "-").replace(/&/g,"");
+  const formatTitleForLevidia = (title) => title.replace(/:/g, "").replace(/\s+/g, "-").replace(/&/g,"").replace(/'/g,"");
 
   return (
     <div className="movie-list">

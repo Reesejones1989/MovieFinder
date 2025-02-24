@@ -5,6 +5,7 @@ export default function Nav() {
   return (
     <div className='Nav'>
       <img src='https://r2.erweima.ai/i/JlHYKridTXa_U4NgCQ63Ww.png' height="100" width="100" />
+      
 
       {/* Wrap the nav links in a div */}
       <div className="nav-links">
