@@ -1,0 +1,92 @@
+/* Styles for MovieList */
+.movie-list {
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .movie-list h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  /* Grid container for movies */
+  .movie-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 movies per row */
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  /* Uniform movie button */
+  .movie {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 220px; /* Fixed width */
+    height: 350px; /* Fixed height */
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  /* Hover effect for movie buttons */
+  .movie:hover {
+    transform: scale(1.05); /* Pops out slightly */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Movie poster styling */
+  .movie img {
+    width: 200px; /* Ensures posters are uniform */
+    height: 280px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  /* Movie title and year */
+  .movie h3 {
+    font-size: 16px;
+    margin-top: 10px;
+    color: #222;
+  }
+  
+  .movie p {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* Responsive: 2 movies per row on mobile */
+  @media screen and (max-width: 768px) {
+    .movie-container {
+      grid-template-columns: repeat(2, 1fr); /* 2 movies per row */
+    }
+  
+    .movie {
+      width: 180px;
+      height: 300px;
+    }
+  
+    .movie img {
+      width: 160px;
+      height: 240px;
+    }
+  
+    .movie h3 {
+      font-size: 14px;
+    }
+  
+    .movie p {
+      font-size: 12px;
+    }
+  }
+  

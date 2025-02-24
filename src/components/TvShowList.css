@@ -1,0 +1,73 @@
+/* TV Show List Container */
+.tv-show-list {
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* TV Show Grid */
+  .tv-show-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* TV Show Item */
+  .tv-show {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .tv-show:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* TV Show Image */
+  .tv-show img {
+    width: 100%;
+    max-width: 220px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  /* TV Show Title */
+  .tv-show h3 {
+    font-size: 16px;
+    margin-top: 10px;
+    color: #222;
+  }
+  
+  .tv-show p {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* Responsive Grid */
+  @media screen and (min-width: 1024px) {
+    .tv-show-container {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  @media screen and (max-width: 1023px) {
+    .tv-show-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    .tv-show-container {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+  

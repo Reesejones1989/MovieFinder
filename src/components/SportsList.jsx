@@ -1,5 +1,6 @@
 import "./SportsList.css"; // Import the CSS file
 
+
 export default function SportsList() {
   return (
     <div className="sports-list">

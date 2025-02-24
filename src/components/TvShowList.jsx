@@ -1,3 +1,4 @@
+import "./TvShowList.css"
 import { useState, useEffect } from "react";
 
 const initialTvShows = [
@@ -5,9 +6,16 @@ const initialTvShows = [
   { id: 2, title: "Game of Thrones", year: 2011, poster: "" },
   { id: 3, title: "Stranger Things", year: 2016, poster: "" },
   { id: 4, title: "The Office", year: 2005, poster: "" },
-  { id: 5, title: "Friends", year: 1994, poster: "" },
+  { id: 5, title: "Martin", year: 1992, poster: "" },
   { id: 6, title: "The Mandalorian", year: 2019, poster: "" },
   { id: 7, title: "The White Lotus", year: 2021, poster: "" },
+  { id: 8, title: "Fresh Prince of Bel Air", year: 1992, poster: "" },
+  { id: 9, title: "BelAir", year: 2022, poster: "" },
+  { id: 10, title: "YellowJackets", year: 2022, poster: "" },
+  { id: 11, title: "Severance", year: 2022, poster: "" },
+  { id: 12, title: "Paradise", year: 2025, poster: "" },
+
+
 ];
 
 export default function TvShowList() {
@@ -18,7 +26,7 @@ export default function TvShowList() {
     const fetchPosters = async () => {
       const updatedTvShows = await Promise.all(
         tvShows.map(async (show) => {
-          if (show.poster) return show; // ✅ Skip if poster already exists
+          if (show.poster) return show;
 
           try {
             const response = await fetch(
@@ -35,7 +43,7 @@ export default function TvShowList() {
           } catch (error) {
             console.error(`Error fetching poster for ${show.title}:`, error);
           }
-          return show; // Return original if no poster found
+          return show;
         })
       );
 
@@ -45,27 +53,17 @@ export default function TvShowList() {
     if (tvShows.some(show => !show.poster)) {
       fetchPosters();
     }
-  }, [tvShows]); // ✅ Include `tvShows` in the dependency array
-
-  const formatTitleForLevidia = (title) => title.replace(/\s+/g, "-");
+  }, [tvShows]);
 
   return (
     <div className="tv-show-list">
       <h2>Popular TV Shows</h2>
-      <ul>
+      {/* ✅ Add this wrapper */}
+      <div className="tv-show-container">
         {tvShows.map((show) => (
           <div key={show.id} className="tv-show">
-            <a
-              href={`https://www.levidia.ch/tv-show.php?watch=${formatTitleForLevidia(show.title)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src={show.poster || "https://via.placeholder.com/250x300"}
-                height="300"
-                width="250"
-                alt={show.title}
-              />
+            <a href={`https://www.levidia.ch/tv-show.php?watch=${show.title.replace(/\s+/g, "-")}`} target="_blank" rel="noopener noreferrer">
+              <img src={show.poster || "https://via.placeholder.com/250x300"} height="300" width="250" alt={show.title} />
               <div>
                 <h3>{show.title}</h3>
                 <p>({show.year})</p>
@@ -73,7 +71,7 @@ export default function TvShowList() {
             </a>
           </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

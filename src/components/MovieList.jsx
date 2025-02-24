@@ -1,3 +1,5 @@
+import "./MovieList.css";
+//import "./MediaList.css"
 import { useState, useEffect } from "react";
 
 const initialMovies = [
@@ -9,7 +11,10 @@ const initialMovies = [
   { id: 6, title: "Moana 2", year: 2024, poster: "" },
   { id: 7, title: "Despicable Me 4", year: 2024, poster: "" },
   { id: 8, title: "Beetlejuice Beetlejuice", year: 2024, poster: "" },
-  { id: 9, title: "The Gorge", year: 2025, poster: "" }
+  { id: 9, title: "The Gorge", year: 2025, poster: "" },
+  { id: 10, title: "Companion", year: 2025, poster: "" },
+  { id: 11, title: "Jade", year: 2024, poster: "" },
+  { id: 12, title: "It's What's Inside", year: 2024, poster: "" }
 ];
 
 export default function MovieList() {
@@ -49,33 +54,31 @@ export default function MovieList() {
     }
   }, [movies]); // ✅ Include `movies` in the dependency array
 
-  const formatTitleForLevidia = (title) => title.replace(/:/g, "").replace(/\s+/g, "-");
+  const formatTitleForLevidia = (title) => title.replace(/:/g, "").replace(/\s+/g, "-").replace(/&/g,"");
 
   return (
     <div className="movie-list">
-      <h2>Popular Movies</h2>
-      <ul>
-        {movies.map((movie) => (
-          <div key={movie.id} className="movie">
-            <a
-              href={`https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(movie.title)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src={movie.poster || "https://via.placeholder.com/250x300"} 
-                height="300"
-                width="250"
-                alt={movie.title}
-              />
-              <div>
-                <h3>{movie.title}</h3>
-                <p>({movie.year})</p>
-              </div>
-            </a>
+  <h2>Popular Movies</h2>
+  <div className="movie-container"> {/* Updated class here */}
+    {movies.map((movie) => (
+      <div key={movie.id} className="movie">
+        <a
+          href={`https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(movie.title)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src={movie.poster || "https://via.placeholder.com/250x300"} 
+            alt={movie.title}
+          />
+          <div>
+            <h3>{movie.title}</h3>
+            <p>({movie.year})</p>
           </div>
-        ))}
-      </ul>
-    </div>
+        </a>
+      </div>
+    ))}
+  </div>
+</div>
   );
 }
