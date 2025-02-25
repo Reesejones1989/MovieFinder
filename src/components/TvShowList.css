@@ -24,11 +24,15 @@
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     padding: 10px;
     text-align: center;
+    border: 2px solid transparent; /* Set transparent border to prevent layout shift */
+
   }
   
   .tv-show:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    border-color: green; /* Change border color on hover without affecting layout */
+
   }
   
   /* TV Show Image */

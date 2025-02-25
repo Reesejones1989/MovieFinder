@@ -14,7 +14,7 @@
 /* Grid container for movies */
 .movie-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjusted min size for better fit */
+    grid-template-columns: repeat(5, 1fr); /* Always 5 movies per row */
     gap: 15px;
     justify-content: center;
     align-items: center;
@@ -31,25 +31,27 @@
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
     padding: 10px;
     text-align: center;
-    overflow: hidden; /* Prevent content from overflowing */
+    overflow: hidden;
     max-width: 100%;
+    border: 2px solid transparent; /* Set transparent border to prevent layout shift */
 }
 
 .movie:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    border-color: gold; /* Change border color on hover without affecting layout */
 }
 
 /* Movie poster styling */
 .movie img {
     width: 100%;
-    max-width: 180px; /* Adjusted for a better fit */
-    height: 270px; /* Fixed height to maintain consistency */
+    max-width: 180px;
+    height: 270px;
     border-radius: 8px;
-    object-fit: cover; /* Ensures the poster doesn't stretch */
+    object-fit: cover;
 }
 
 /* Movie title and year */
@@ -67,41 +69,36 @@
 /* Responsive Layout Adjustments */
 @media screen and (max-width: 1024px) {
     .movie-container {
-        grid-template-columns: repeat(3, 1fr); /* 3 per row for tablets */
+        grid-template-columns: repeat(4, 1fr); /* 4 per row for tablets */
     }
 }
 
 @media screen and (max-width: 768px) {
     .movie-container {
-        grid-template-columns: repeat(2, 1fr); /* 2 per row for mobile */
+        grid-template-columns: repeat(3, 1fr); /* 3 per row for smaller screens */
     }
-    
+
     .movie img {
-        max-width: 160px; /* Slightly smaller posters */
+        max-width: 160px;
         height: 240px;
     }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 600px) {
     .movie-container {
-        grid-template-columns: repeat(2, 1fr); /* Keep 2 per row for better layout */
+        grid-template-columns: repeat(2, 1fr); /* 2 per row for mobile */
         gap: 10px;
     }
 
-    .movie {
-        padding: 8px;
-    }
-
     .movie img {
-        max-width: 140px; /* Smaller posters for small screens */
+        max-width: 140px;
         height: 210px;
     }
+}
 
-    .movie h3 {
-        font-size: 12px;
-    }
-
-    .movie p {
-        font-size: 10px;
+@media screen and (max-width: 400px) {
+    .movie-container {
+        grid-template-columns: repeat(1, 1fr); /* 1 per row for very small screens */
     }
 }
+

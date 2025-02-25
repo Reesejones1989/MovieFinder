@@ -33,6 +33,11 @@ export default function SportsList() {
         <a href="https://the.streameast.app/mmastreams10" target="_blank" rel="noopener noreferrer">
           <img src="https://1000logos.net/wp-content/uploads/2017/06/Logo-UFC.png" alt="UFC Logo" />
         </a>
+
+        <a href="https://the.streameast.app/ppv" target="_blank" rel="noopener noreferrer">
+          <img src="https://www.ppvliveevents.com/static/sitefiles/images/logo.png" alt="UFC Logo" />
+        </a>
+
       </div>
     </div>
   );
