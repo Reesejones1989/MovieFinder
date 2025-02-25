@@ -14,11 +14,11 @@
 /* Grid container for movies */
 .movie-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Auto adjust columns */
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjusted min size for better fit */
+    gap: 15px;
     justify-content: center;
     align-items: center;
-    max-width: 1200px; /* Wider layout for larger screens */
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -34,6 +34,8 @@
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     padding: 10px;
     text-align: center;
+    overflow: hidden; /* Prevent content from overflowing */
+    max-width: 100%;
 }
 
 .movie:hover {
@@ -44,21 +46,21 @@
 /* Movie poster styling */
 .movie img {
     width: 100%;
-    max-width: 220px;
-    height: auto;
+    max-width: 180px; /* Adjusted for a better fit */
+    height: 270px; /* Fixed height to maintain consistency */
     border-radius: 8px;
-    object-fit: cover;
+    object-fit: cover; /* Ensures the poster doesn't stretch */
 }
 
 /* Movie title and year */
 .movie h3 {
-    font-size: 16px;
-    margin-top: 10px;
+    font-size: 14px;
+    margin-top: 8px;
     color: #222;
 }
 
 .movie p {
-    font-size: 14px;
+    font-size: 12px;
     color: #666;
 }
 
@@ -71,12 +73,35 @@
 
 @media screen and (max-width: 768px) {
     .movie-container {
-        grid-template-columns: repeat(2, 1fr); /* 2 per row for smaller tablets */
+        grid-template-columns: repeat(2, 1fr); /* 2 per row for mobile */
+    }
+    
+    .movie img {
+        max-width: 160px; /* Slightly smaller posters */
+        height: 240px;
     }
 }
 
 @media screen and (max-width: 480px) {
     .movie-container {
-        grid-template-columns: repeat(1, 1fr); /* 1 per row for mobile */
+        grid-template-columns: repeat(2, 1fr); /* Keep 2 per row for better layout */
+        gap: 10px;
+    }
+
+    .movie {
+        padding: 8px;
+    }
+
+    .movie img {
+        max-width: 140px; /* Smaller posters for small screens */
+        height: 210px;
+    }
+
+    .movie h3 {
+        font-size: 12px;
+    }
+
+    .movie p {
+        font-size: 10px;
     }
 }
