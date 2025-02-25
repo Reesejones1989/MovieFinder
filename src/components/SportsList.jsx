@@ -35,7 +35,7 @@ export default function SportsList() {
         </a>
 
         <a href="https://the.streameast.app/ppv" target="_blank" rel="noopener noreferrer">
-          <img src="https://www.ppvliveevents.com/static/sitefiles/images/logo.png" alt="UFC Logo" />
+          <img src="https://www.ppvliveevents.com/static/sitefiles/images/logo.png" alt="PPV Logo" />
         </a>
 
       </div>
