@@ -33,6 +33,13 @@ function App() {
           <Route path="/Sports" element={<Sports />} />
           <Route path="/About" element={<About />} />
           
+          <Route path="Sports" element={<Navigate to="/Sports" replace />} />
+          <Route path="Anime" element={<Navigate to="/Anime" replace />} />
+          <Route path="Movies" element={<Navigate to="/Movies" replace />} />
+          <Route path="Tv-Shows" element={<Navigate to="/TV-Shows" replace />} />
+
+
+
           <Route path="Sport" element={<Navigate to="/Sports" replace />} />
           <Route path="TvShow" element={<Navigate to="/TV-Shows" replace />} />
           <Route path="TvShows" element={<Navigate to="/TV-Shows" replace />} />
