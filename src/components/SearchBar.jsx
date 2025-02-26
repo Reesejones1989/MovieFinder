@@ -9,13 +9,24 @@ export default function SearchBar() {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
+    // Visitor count logic (runs only once)
+    let visitCount = localStorage.getItem("visitCount");
+    if (!visitCount) {
+      localStorage.setItem("visitCount", 1);
+    } else {
+      localStorage.setItem("visitCount", Number(visitCount) + 1);
+    }
+    console.log("Visitor count:", localStorage.getItem("visitCount"));
+  }, []); // <-- This should NOT be inside another useEffect
+  
+  useEffect(() => {
     if (!searchTerm.trim()) {
       setSuggestions([]);
       return;
     }
-
+  
     const fetchSuggestions = async () => {
-      const apiKey = import.meta.env.VITE_TMDB_API_KEY;   
+      const apiKey = import.meta.env.VITE_TMDB_API_KEY;
       const type = isTVShow ? "tv" : "movie";
       const url = `https://api.themoviedb.org/3/search/${type}?query=${searchTerm}&api_key=${apiKey}`;
       try {
@@ -23,21 +34,19 @@ export default function SearchBar() {
         const data = await response.json();
         if (data.results) {
           setSuggestions(data.results.slice(0, 5)); // Show top 5 suggestions
-          console.log("We're Here")
         }
       } catch (error) {
-        console.log(poster_url.poster_path)
-
         console.error("Error fetching data:", error);
       }
     };
+  
     const delayDebounceFn = setTimeout(() => {
       fetchSuggestions();
-    }, 500); // Delay API call by 500ms to reduce spam
+    }, 500);
   
-    return () => clearTimeout(delayDebounceFn); // Cleanup function to avoid multiple calls
-  }, [searchTerm, isTVShow]);
-
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, isTVShow]); // This effect tracks search input changes
+  
 
 
   
