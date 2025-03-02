@@ -3,13 +3,13 @@ import "./MovieList.css";
 import { useState, useEffect } from "react";
 
 const initialMovies = [
-  { id: 1, title: "A Complete Unknown", year: 2024, poster: "" },  
-  { id: 2, title: "One Of Them Days", year: 2025, poster: "" },
-  { id: 3, title: "Inside Out 2", year: 2024, poster: "" },
+  { id: 1, title: "Love Hurts", year: "2025", poster: "" },  
+  { id: 2, title: "One Of Them Days", year: "2025", poster: "" },
+  { id: 3, title: "A Complete Unknown", year: 2024, poster: "" },
   { id: 4, title: "Deadpool & Wolverine", year: 2024, poster: "" },
   { id: 5, title: "Wicked", year: 2024, poster: "" },
-  { id: 6, title: "Moana 2", year: 2024, poster: "" },
-  { id: 7, title: "Despicable Me 4", year: 2024, poster: "" },
+  { id: 6, title: "Inside Out 2", year: 2024, poster: "" },
+  { id: 7, title: "Moana 2", year: 2024, poster: "" },
   { id: 8, title: "Flight Risk", year: 2025, poster: "" },
   { id: 9, title: "The Gorge", year: 2025, poster: "" },
   { id: 10, title: "Companion", year: 2025, poster: "" },
