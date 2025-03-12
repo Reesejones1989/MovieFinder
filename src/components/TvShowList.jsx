@@ -1,4 +1,4 @@
-import "./TvShowList.css"
+import "./TvShowList.css";
 import { useState, useEffect } from "react";
 
 const initialTvShows = [
@@ -14,12 +14,12 @@ const initialTvShows = [
   { id: 10, title: "YellowJackets", year: 2022, poster: "" },
   { id: 11, title: "Severance", year: 2022, poster: "" },
   { id: 12, title: "Paradise", year: 2025, poster: "" },
-
-
 ];
 
 export default function TvShowList() {
   const [tvShows, setTvShows] = useState(initialTvShows);
+  const [flipped, setFlipped] = useState({});
+
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
   useEffect(() => {
@@ -55,20 +55,48 @@ export default function TvShowList() {
     }
   }, [tvShows]);
 
+  const handleFlip = (id) => {
+    setFlipped((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+
   return (
     <div className="tv-show-list">
       <h2>Popular TV Shows</h2>
-      {/* ✅ Add this wrapper */}
       <div className="tv-show-container">
         {tvShows.map((show) => (
-          <div key={show.id} className="tv-show">
-            <a href={`https://www.levidia.ch/tv-show.php?watch=${show.title.replace(/\s+/g, "-")}`} target="_blank" rel="noopener noreferrer">
-              <img src={show.poster || "https://via.placeholder.com/250x300"} height="300" width="250" alt={show.title} />
-              <div>
+          <div
+            key={show.id}
+            className={`tv-show-card ${flipped[show.id] ? "flipped" : ""}`}
+            onClick={() => handleFlip(show.id)}
+          >
+            <div className="tv-show-card-inner">
+              {/* Front Side */}
+              <div className="tv-show-card-front">
+                <img src={show.poster || "https://via.placeholder.com/250x300"} alt={show.title} />
                 <h3>{show.title}</h3>
-                <p>({show.year})</p>
+                <h5>({show.year})</h5>
               </div>
-            </a>
+
+              {/* Back Side */}
+              <div className="tv-show-card-back">
+              <img
+                  src={show.poster || "https://via.placeholder.com/250x300"}
+                  alt={show.title}
+                />
+                <button className="favorite-btn">⭐ Add to Favorites</button>
+                <a
+                  href={`https://www.levidia.ch/tv-show.php?watch=${show.title.replace(/\s+/g, "-")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="levidia-link"
+                >
+                  Link to TvShow
+                </a>
+              </div>
+            </div>
           </div>
         ))}
       </div>
