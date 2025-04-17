@@ -19,6 +19,7 @@ const initialTvShows = [
 export default function TvShowList() {
   const [tvShows, setTvShows] = useState(initialTvShows);
   const [flipped, setFlipped] = useState({});
+  const [iframeSrc, setIframeSrc] = useState("");
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -50,16 +51,24 @@ export default function TvShowList() {
       setTvShows(updatedTvShows);
     };
 
-    if (tvShows.some(show => !show.poster)) {
+    if (tvShows.some((show) => !show.poster)) {
       fetchPosters();
     }
-  }, [tvShows]);
+  }, [tvShows, apiKey]);
 
   const handleFlip = (id) => {
     setFlipped((prevState) => ({
       ...prevState,
       [id]: !prevState[id],
     }));
+  };
+
+  const formatTitleForLevidia = (title) =>
+    title.replace(/:/g, "").replace(/\s+/g, "-").replace(/&/g, "").replace(/'/g, "");
+
+  const openInIframe = (title) => {
+    const url = `https://www.levidia.ch/tv-show.php?watch=${formatTitleForLevidia(title)}`;
+    setIframeSrc(url);
   };
 
   return (
@@ -82,24 +91,39 @@ export default function TvShowList() {
 
               {/* Back Side */}
               <div className="tv-show-card-back">
-              <img
+                <img
                   src={show.poster || "https://via.placeholder.com/250x300"}
                   alt={show.title}
                 />
                 <button className="favorite-btn">⭐ Add to Favorites</button>
-                <a
-                  href={`https://www.levidia.ch/tv-show.php?watch=${show.title.replace(/\s+/g, "-")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openInIframe(show.title);
+                  }}
                   className="levidia-link"
                 >
-                  Link to TvShow
-                </a>
+                  ▶️ Watch in Page
+                </button>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {iframeSrc && (
+        <div className="iframe-wrapper" style={{ marginTop: "30px" }}>
+          <h3>Now Playing:</h3>
+          <iframe
+            title="TV Show Stream"
+            src={iframeSrc}
+            width="100%"
+            height="800px"
+            style={{ border: "2px solid #ccc", borderRadius: "12px" }}
+            allowFullScreen
+          ></iframe>
+        </div>
+      )}
     </div>
   );
 }

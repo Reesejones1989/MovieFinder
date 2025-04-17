@@ -1,11 +1,11 @@
 import "./MovieList.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const initialMovies = [
   { id: 1, title: "The Monkey", year: "2025", poster: "" },
   { id: 2, title: "Opus", year: "2025", poster: "" },
   { id: 3, title: "One Of Them Days", year: "2025", poster: "" },
-  { id: 4, title: "The Dead Thing", year: "2025", poster: "" },
+  { id: 4, title: "Novocaine", year: "2025", poster: "" },
   { id: 5, title: "Black Bag", year: "2025", poster: "" },
   { id: 6, title: "Both Eyes Open", year: "2025", poster: "" },
   { id: 7, title: "Cleaner", year: "2024", poster: "" },
@@ -23,6 +23,8 @@ export default function MovieList() {
   const [movies, setMovies] = useState(initialMovies);
   const [flipped, setFlipped] = useState({});
   const [postersFetched, setPostersFetched] = useState(false);
+  const [iframeSrc, setIframeSrc] = useState("");
+  const iframeRef = useRef(null);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -31,7 +33,7 @@ export default function MovieList() {
       const fetchPosters = async () => {
         const updatedMovies = await Promise.all(
           movies.map(async (movie) => {
-            if (movie.poster) return movie; // Skip if poster already exists
+            if (movie.poster) return movie;
 
             try {
               const response = await fetch(
@@ -53,18 +55,36 @@ export default function MovieList() {
         );
 
         setMovies(updatedMovies);
-        setPostersFetched(true); // Prevent re-fetching
+        setPostersFetched(true);
       };
 
       fetchPosters();
     }
-  }, [postersFetched, apiKey]); // ✅ Prevent infinite loop
+  }, [postersFetched, apiKey]);
 
   const formatTitleForLevidia = (title) =>
     title.replace(/:/g, "").replace(/\s+/g, "-").replace(/&/g, "").replace(/'/g, "");
 
   const toggleFlip = (id) => {
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const openInIframe = (title) => {
+    const url = `https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(title)}`;
+    setIframeSrc(url);
+  };
+
+  const handleFullscreen = () => {
+    const iframeEl = iframeRef.current;
+    if (iframeEl) {
+      if (iframeEl.requestFullscreen) {
+        iframeEl.requestFullscreen();
+      } else if (iframeEl.webkitRequestFullscreen) {
+        iframeEl.webkitRequestFullscreen();
+      } else if (iframeEl.msRequestFullscreen) {
+        iframeEl.msRequestFullscreen();
+      }
+    }
   };
 
   return (
@@ -78,7 +98,6 @@ export default function MovieList() {
             onClick={() => toggleFlip(movie.id)}
           >
             <div className="movie-card-inner">
-              {/* Front Side */}
               <div className="movie-card-front">
                 <img
                   src={movie.poster || "https://via.placeholder.com/250x300"}
@@ -88,27 +107,46 @@ export default function MovieList() {
                 <p>({movie.year})</p>
               </div>
 
-              {/* Back Side */}
               <div className="movie-card-back">
                 <img
                   src={movie.poster || "https://via.placeholder.com/250x300"}
                   alt={movie.title}
                 />
                 <button className="favorite-btn">⭐ Add to Favorites</button>
-                <a
-                  href={`https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(movie.title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openInIframe(movie.title);
+                  }}
                   className="levidia-link"
                 >
-                  Link to Movie
-                  
-                </a>
+                  ▶️ Watch in Page
+                </button>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {iframeSrc && (
+        <div className="iframe-wrapper" style={{ marginTop: "30px" }}>
+          <h3>Now Playing:</h3>
+          <iframe
+            ref={iframeRef}
+            title="Movie Stream"
+            src={iframeSrc}
+            width="100%"
+            height="800px"
+            style={{ border: "2px solid #ccc", borderRadius: "12px" }}
+            allowFullScreen
+          ></iframe>
+          <div style={{ marginTop: "10px" }}>
+            <button onClick={handleFullscreen} className="fullscreen-btn">
+              ⛶ Fullscreen
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
