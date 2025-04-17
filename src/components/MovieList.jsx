@@ -1,5 +1,5 @@
 import "./MovieList.css";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 const initialMovies = [
   { id: 1, title: "The Monkey", year: "2025", poster: "" },
@@ -23,8 +23,6 @@ export default function MovieList() {
   const [movies, setMovies] = useState(initialMovies);
   const [flipped, setFlipped] = useState({});
   const [postersFetched, setPostersFetched] = useState(false);
-  const [iframeSrc, setIframeSrc] = useState("");
-  const iframeRef = useRef(null);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -69,24 +67,6 @@ export default function MovieList() {
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const openInIframe = (title) => {
-    const url = `https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(title)}`;
-    setIframeSrc(url);
-  };
-
-  const handleFullscreen = () => {
-    const iframeEl = iframeRef.current;
-    if (iframeEl) {
-      if (iframeEl.requestFullscreen) {
-        iframeEl.requestFullscreen();
-      } else if (iframeEl.webkitRequestFullscreen) {
-        iframeEl.webkitRequestFullscreen();
-      } else if (iframeEl.msRequestFullscreen) {
-        iframeEl.msRequestFullscreen();
-      }
-    }
-  };
-
   return (
     <div className="movie-list">
       <h2>Popular Movies</h2>
@@ -98,6 +78,7 @@ export default function MovieList() {
             onClick={() => toggleFlip(movie.id)}
           >
             <div className="movie-card-inner">
+              {/* Front Side */}
               <div className="movie-card-front">
                 <img
                   src={movie.poster || "https://via.placeholder.com/250x300"}
@@ -107,46 +88,26 @@ export default function MovieList() {
                 <p>({movie.year})</p>
               </div>
 
+              {/* Back Side */}
               <div className="movie-card-back">
                 <img
                   src={movie.poster || "https://via.placeholder.com/250x300"}
                   alt={movie.title}
                 />
                 <button className="favorite-btn">⭐ Add to Favorites</button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openInIframe(movie.title);
-                  }}
+                <a
+                  href={`https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(movie.title)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="levidia-link"
                 >
-                  ▶️ Watch in Page
-                </button>
+                  ▶️ Watch on Levidia
+                </a>
               </div>
             </div>
           </div>
         ))}
       </div>
-
-      {iframeSrc && (
-        <div className="iframe-wrapper" style={{ marginTop: "30px" }}>
-          <h3>Now Playing:</h3>
-          <iframe
-            ref={iframeRef}
-            title="Movie Stream"
-            src={iframeSrc}
-            width="100%"
-            height="800px"
-            style={{ border: "2px solid #ccc", borderRadius: "12px" }}
-            allowFullScreen
-          ></iframe>
-          <div style={{ marginTop: "10px" }}>
-            <button onClick={handleFullscreen} className="fullscreen-btn">
-              ⛶ Fullscreen
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
