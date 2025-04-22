@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 const initialMovies = [
   { id: 1, title: "A Minecraft Movie", year: "2025", poster: "" },
   { id: 2, title: "Opus", year: "2025", poster: "" },
-  { id: 3, title: "One Of Them Days", year: "2025", poster: "" },
+  { id: 3, title: "In the Lost Lands", year: "2025", poster: "" },
   { id: 4, title: "Novocaine", year: "2025", poster: "" },
   { id: 5, title: "Black Bag", year: "2025", poster: "" },
   { id: 6, title: "Both Eyes Open", year: "2025", poster: "" },
