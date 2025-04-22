@@ -2,7 +2,7 @@ import "./MovieList.css";
 import { useState, useEffect } from "react";
 
 const initialMovies = [
-  { id: 1, title: "The Monkey", year: "2025", poster: "" },
+  { id: 1, title: "A Minecraft Movie", year: "2025", poster: "" },
   { id: 2, title: "Opus", year: "2025", poster: "" },
   { id: 3, title: "One Of Them Days", year: "2025", poster: "" },
   { id: 4, title: "Novocaine", year: "2025", poster: "" },
@@ -15,7 +15,7 @@ const initialMovies = [
   { id: 11, title: "Companion", year: "2025", poster: "" },
   { id: 12, title: "The Substance", year: "2024", poster: "" },
   { id: 13, title: "It's What's Inside", year: "2024", poster: "" },
-  { id: 14, title: "Blink Twice", year: "2024", poster: "" },
+  { id: 14, title: "The Monkey", year: "2024", poster: "" },
   { id: 15, title: "You're Cordially Invited", year: "2024", poster: "" },
 ];
 
