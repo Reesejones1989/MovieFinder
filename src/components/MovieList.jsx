@@ -7,7 +7,7 @@ const initialMovies = [
   { id: 3, title: "In the Lost Lands", year: "2025", poster: "" },
   { id: 4, title: "Novocaine", year: "2025", poster: "" },
   { id: 5, title: "Black Bag", year: "2025", poster: "" },
-  { id: 6, title: "Both Eyes Open", year: "2025", poster: "" },
+  { id: 6, title: "Drop", year: "2025", poster: "" },
   { id: 7, title: "Cleaner", year: "2024", poster: "" },
   { id: 8, title: "Captain America: Brave New World", year: "2024", poster: "" },
   { id: 9, title: "Sacramento", year: "2025", poster: "" },
