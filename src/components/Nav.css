@@ -51,3 +51,57 @@ body {
 .Nav #login-signup {
   margin-left: 16px;
 }
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+/* Hamburger styles */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.hamburger .bar {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+/* Hide nav-links by default on small screens */
+@media (max-width: 768px) {
+  .nav-links {
+    position: absolute;
+    top: 72px;
+    left: 0;
+    width: 100%;
+    background-color: #356e41;
+    flex-direction: column;
+    align-items: center;
+    display: none;
+    padding: 10px 0;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 12px 0;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .Nav {
+    flex-wrap: wrap;
+  }
+}

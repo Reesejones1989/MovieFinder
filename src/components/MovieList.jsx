@@ -22,10 +22,47 @@ const initialMovies = [
 
 export default function MovieList() {
   const [movies, setMovies] = useState(initialMovies);
+  const [trendingMovies, setTrendingMovies] = useState([]);
   const [flipped, setFlipped] = useState({});
   const [postersFetched, setPostersFetched] = useState(false);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+
+  useEffect(() => {
+    const fetchTrendingMovies = async () => {
+      try {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}`
+        );
+        const data = await res.json();
+
+        const enrichedMovies = await Promise.all(
+          data.results.map(async (movie) => {
+            const detailRes = await fetch(
+              `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`
+            );
+            const detailData = await detailRes.json();
+
+            return {
+              id: movie.id,
+              title: movie.title,
+              year: movie.release_date ? parseInt(movie.release_date.split("-")[0]) : "N/A",
+              poster: movie.poster_path
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`
+                : "",
+              imdb_id: detailData.imdb_id || null,
+            };
+          })
+        );
+
+        setTrendingMovies(enrichedMovies);
+      } catch (err) {
+        console.error("Failed to fetch trending movies:", err);
+      }
+    };
+
+    fetchTrendingMovies();
+  }, [apiKey]);
 
   useEffect(() => {
     if (!postersFetched) {
@@ -70,7 +107,7 @@ export default function MovieList() {
 
       fetchPosters();
     }
-  }, [postersFetched, apiKey]);
+  }, [postersFetched, apiKey, movies]);
 
   const formatTitleForLevidia = (title) =>
     title.replace(/:/g, "").replace(/\s+/g, "-").replace(/&/g, "").replace(/'/g, "");
@@ -82,7 +119,6 @@ export default function MovieList() {
   const getWatchLinks = (movie) => {
     const links = [];
 
-    // Special case for Thunderbolts*
     if (movie.title === "Thunderbolts*") {
       links.push({
         url: "https://mcloud.vvid30c.site/watch/?v41#V21XWnRxbStia0MySnlRNlBVMzVYTHNEQ2JwN0FsWlRHaTBXeUtQUm5icjl1cG92a01xMWl0eGkzY2UwMmdGejE2dkFvb1N0Vmw4PQ",
@@ -90,70 +126,73 @@ export default function MovieList() {
       });
     }
 
-    // Vidsrc link
     if (movie.imdb_id) {
       links.push({
         url: `https://vidsrc.xyz/embed/movie/${movie.imdb_id}`,
-        label: `▶️ Watch on Vidsrc`,
+        label: "▶️ Watch on Vidsrc",
       });
     }
 
-    // Levidia fallback
     links.push({
       url: `https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(movie.title)}`,
-      label: `▶️ Watch on Levidia`,
+      label: "▶️ Watch on Levidia",
     });
 
     return links;
   };
 
-  return (
-    <div className="movie-list">
-      <h2>Popular Movies</h2>
-      <div className="movie-container">
-        {movies.map((movie) => {
-          const watchLinks = getWatchLinks(movie);
-          return (
-            <div
-              key={movie.id}
-              className={`movie-card ${flipped[movie.id] ? "flipped" : ""}`}
-              onClick={() => toggleFlip(movie.id)}
-            >
-              <div className="movie-card-inner">
-                {/* Front Side */}
-                <div className="movie-card-front">
-                  <img
-                    src={movie.poster || "https://via.placeholder.com/250x300"}
-                    alt={movie.title}
-                  />
-                  <h3>{movie.title}</h3>
-                  <p>({movie.year})</p>
-                </div>
+  const renderMovieCards = (movieArray) => (
+    <div className="movie-container">
+      {movieArray.map((movie) => {
+        const watchLinks = getWatchLinks(movie);
+        return (
+          <div
+            key={movie.id}
+            className={`movie-card ${flipped[movie.id] ? "flipped" : ""}`}
+            onClick={() => toggleFlip(movie.id)}
+          >
+            <div className="movie-card-inner">
+              <div className="movie-card-front">
+                <img
+                  src={movie.poster || "https://via.placeholder.com/250x300"}
+                  alt={movie.title}
+                />
+                <h3>{movie.title}</h3>
+                <p>({movie.year})</p>
+              </div>
 
-                {/* Back Side */}
-                <div className="movie-card-back">
-                  <img
-                    src={movie.poster || "https://via.placeholder.com/250x300"}
-                    alt={movie.title}
-                  />
-                  <button className="favorite-btn">⭐ Add to Favorites</button>
-                  {watchLinks.map((link, index) => (
-                    <a
-                      key={index}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="levidia-link"
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                </div>
+              <div className="movie-card-back">
+                <img
+                  src={movie.poster || "https://via.placeholder.com/250x300"}
+                  alt={movie.title}
+                />
+                <button className="favorite-btn">⭐ Add to Favorites</button>
+                {watchLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="levidia-link"
+                  >
+                    {link.label}
+                  </a>
+                ))}
               </div>
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  return (
+    <div className="movie-list">
+      <h2>🔥 Trending Movies</h2>
+      {renderMovieCards(trendingMovies)}
+
+      <h2>🎬 Popular Movies</h2>
+      {renderMovieCards(movies)}
     </div>
   );
 }

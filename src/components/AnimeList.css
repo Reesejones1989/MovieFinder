@@ -7,13 +7,21 @@
   margin: 0 auto;
 }
 
+.anime-list h2 {
+  margin: 40px 0 20px;
+  font-size: 28px;
+  color: #333;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
 /* Anime Grid */
 .anime-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
 }
 
 /* Anime Item */
@@ -24,14 +32,16 @@
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   padding: 10px;
   text-align: center;
-  border: 2px solid transparent; 
-
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .anime:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-  border-color: purple; /* Change border color on hover without affecting layout */
+  border-color: purple;
 }
 
 /* Anime Image */
@@ -43,7 +53,7 @@
   border-radius: 8px;
 }
 
-/* Anime Title */
+/* Anime Title and Year */
 .anime h3 {
   font-size: 16px;
   margin-top: 10px;
@@ -53,6 +63,22 @@
 .anime p {
   font-size: 14px;
   color: #666;
+  margin-bottom: 8px;
+}
+
+/* Watch Links */
+.watch-link {
+  display: block;
+  margin: 4px 0;
+  color: #00afff;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.watch-link:hover {
+  text-decoration: underline;
+  color: #007acc;
 }
 
 /* Responsive Grid */

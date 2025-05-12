@@ -64,21 +64,39 @@ export default function SearchBar() {
 
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
-
+  
     let formattedSearch = searchTerm
       .trim()
       .replace(/\s+/g, "-")
       .replace(/:/g, "");
-
+  
     if (formattedSearch.includes("Spider-Man")) {
       formattedSearch = formattedSearch.replace("Spider-Man", "Spiderman");
     }
-
-    const baseUrl = isTVShow
-      ? "https://www.levidia.ch/tv-show.php?watch="
-      : "https://www.levidia.ch/movie.php?watch=";
-
-    window.open(baseUrl + formattedSearch, "_blank");
+  
+    const matchedSuggestion = suggestions.find(s =>
+      (s.title || s.name)
+        .toLowerCase()
+        .includes(searchTerm.trim().toLowerCase())
+    );
+  
+    const imdbId = matchedSuggestion?.imdb_id;
+    console.log(imdbId);
+  
+    if (imdbId) {
+      const vidsrcUrl = `https://vidsrc.xyz/embed/${isTVShow ? "tv" : "movie"}/${imdbId}`;
+      window.open(vidsrcUrl, "_blank");
+    } else {
+      alert("No match with IMDb ID found. Try selecting a suggestion.");
+    }
+  
+    /*
+    // Old Levidia search fallback (kept in case needed again)
+    const levidiaUrl = isTVShow
+      ? `https://www.levidia.ch/tv-show.php?watch=${formattedSearch}`
+      : `https://www.levidia.ch/movie.php?watch=${formattedSearch}`;
+    window.open(levidiaUrl, "_blank");
+    */
   };
 
   const handleAddToFavorites = async (item) => {

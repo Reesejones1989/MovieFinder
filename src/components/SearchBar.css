@@ -1,64 +1,75 @@
+.search-bar-container {
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #f9f9f9; /* Light background for contrast */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
 .search-bar {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 15px;
-  margin-top: 20px;
-  padding: 10px; /* Add padding for spacing around the search bar */
-  border: 1px solid #ddd; /* Light border around the whole search bar */
-  border-radius: 10px; /* Rounded corners for the container */
-  background-color: #f9f9f9; /* Light background color */
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .search-bar input {
-  padding: 12px 20px;
+  flex: 1;
+  min-width: 150px;
+  padding: 10px;
   border: 1px solid #ccc;
-  width: 250px; /* Increased width for a larger search bar */
   border-radius: 5px;
-  font-size: 16px; /* Larger font size for better readability */
+  font-size: 16px;
 }
 
-.search-bar .toggle-btn,
-.search-bar .search-btn {
-  padding: 12px 18px;
-  font-size: 16px; /* Make button text larger */
+.toggle-btn,
+.search-btn {
+  padding: 10px 15px;
+  border: none;
+  font-weight: bold;
   border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.search-bar .toggle-btn {
+.toggle-btn {
   background-color: #333;
   color: white;
-  border: none;
 }
 
-.search-bar .toggle-btn:hover {
+.toggle-btn:hover {
   background-color: #555;
 }
 
-.search-bar .search-btn {
-  background-color: #f4a261; /* Orange */
+.search-btn {
+  background-color: #f4a261;
   color: white;
-  border: none;
 }
 
-.search-bar .search-btn:hover {
-  background-color: #e76f51; /* Darker orange */
+.search-btn:hover {
+  background-color: #e76f51;
 }
 
-.suggestion-item {
-  margin: 10px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-}
+/* Responsive adjustments for mobile */
+@media (max-width: 600px) {
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-.suggestion-links a {
-  display: inline-block;
-  margin: 5px 10px 5px 0;
-  color: #1e90ff;
-  text-decoration: underline;
-}
+  .toggle-btn,
+  .search-btn {
+    width: 100%;
+  }
 
+  .search-bar input {
+    width: 100%;
+  }
+
+  .search-bar-container {
+    padding: 15px;
+  }
+}

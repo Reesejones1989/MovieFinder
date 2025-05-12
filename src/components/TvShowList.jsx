@@ -1,6 +1,7 @@
 import "./TvShowList.css";
 import { useState, useEffect } from "react";
 
+// ⬇️ Add your manual TV shows here
 const initialTvShows = [
   { id: 1, title: "Severance", year: 2008, poster: "" },
   { id: 2, title: "The Righteous Gemstones", year: 2011, poster: "" },
@@ -18,88 +19,174 @@ const initialTvShows = [
 
 export default function TvShowList() {
   const [tvShows, setTvShows] = useState(initialTvShows);
+  const [trendingShows, setTrendingShows] = useState([]);
   const [flipped, setFlipped] = useState({});
+  const [postersFetched, setPostersFetched] = useState(false);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
   useEffect(() => {
-    const fetchPosters = async () => {
-      const updatedTvShows = await Promise.all(
-        tvShows.map(async (show) => {
-          if (show.poster) return show;
+    const fetchTrending = async () => {
+      try {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}`
+        );
+        const data = await res.json();
 
-          try {
-            const response = await fetch(
-              `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${encodeURIComponent(show.title)}`
+        const enrichedShows = await Promise.all(
+          data.results.map(async (show) => {
+            const detailRes = await fetch(
+              `https://api.themoviedb.org/3/tv/${show.id}?api_key=${apiKey}&append_to_response=external_ids`
             );
-            const data = await response.json();
+            const detailData = await detailRes.json();
 
-            if (data.results && data.results.length > 0 && data.results[0].poster_path) {
-              return {
-                ...show,
-                poster: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.results[0].poster_path}`,
-              };
-            }
-          } catch (error) {
-            console.error(`Error fetching poster for ${show.title}:`, error);
-          }
-          return show;
-        })
-      );
+            return {
+              id: show.id,
+              title: show.name,
+              year: show.first_air_date ? parseInt(show.first_air_date.split("-")[0]) : "N/A",
+              poster: show.poster_path
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${show.poster_path}`
+                : "",
+              imdb_id: detailData.external_ids?.imdb_id || null,
+            };
+          })
+        );
 
-      setTvShows(updatedTvShows);
+        setTrendingShows(enrichedShows);
+      } catch (err) {
+        console.error("Failed to fetch trending TV shows:", err);
+      }
     };
 
-    if (tvShows.some(show => !show.poster)) {
+    fetchTrending();
+  }, [apiKey]);
+
+  useEffect(() => {
+    if (!postersFetched) {
+      const fetchPosters = async () => {
+        const updatedShows = await Promise.all(
+          tvShows.map(async (show) => {
+            try {
+              const res = await fetch(
+                `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${encodeURIComponent(show.title)}`
+              );
+              const data = await res.json();
+
+              if (data.results && data.results.length > 0) {
+                const match = data.results[0];
+
+                const detailRes = await fetch(
+                  `https://api.themoviedb.org/3/tv/${match.id}?api_key=${apiKey}&append_to_response=external_ids`
+                );
+                const detailData = await detailRes.json();
+
+                return {
+                  ...show,
+                  poster: match.poster_path
+                    ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${match.poster_path}`
+                    : show.poster,
+                  imdb_id: detailData.external_ids?.imdb_id || null,
+                };
+              }
+            } catch (error) {
+              console.error(`Error fetching data for ${show.title}:`, error);
+            }
+            return show;
+          })
+        );
+
+        setTvShows(updatedShows);
+        setPostersFetched(true);
+      };
+
       fetchPosters();
     }
-  }, [tvShows]);
+  }, [postersFetched, apiKey, tvShows]);
 
-  const handleFlip = (id) => {
-    setFlipped((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
+  const formatTitleForLevidia = (title) =>
+    title
+      .replace(/:/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/&/g, "")
+      .replace(/'/g, "")
+      .toLowerCase();
+
+  const toggleFlip = (id) => {
+    setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  return (
-    <div className="tv-show-list">
-      <h2>Popular TV Shows</h2>
-      <div className="tv-show-container">
-        {tvShows.map((show) => (
+  const getWatchLinks = (show) => {
+    const links = [];
+
+    if (show.imdb_id) {
+      links.push({
+        url: `https://vidsrc.xyz/embed/tv/${show.imdb_id}`,
+        label: "▶️ Watch on Vidsrc",
+      });
+    }
+
+    links.push({
+      url: `https://www.levidia.ch/tv-show.php?watch=${formatTitleForLevidia(show.title)}`,
+      label: "▶️ Watch on Levidia",
+    });
+
+    return links;
+  };
+
+  const renderShowCards = (shows) => (
+    <div className="tv-show-container">
+      {shows.map((show) => {
+        const watchLinks = getWatchLinks(show);
+        return (
           <div
             key={show.id}
             className={`tv-show-card ${flipped[show.id] ? "flipped" : ""}`}
-            onClick={() => handleFlip(show.id)}
+            onClick={() => toggleFlip(show.id)}
           >
             <div className="tv-show-card-inner">
-              {/* Front Side */}
+              {/* Front */}
               <div className="tv-show-card-front">
-                <img src={show.poster || "https://via.placeholder.com/250x300"} alt={show.title} />
+                <img
+                  src={show.poster || "https://via.placeholder.com/250x300"}
+                  alt={show.title}
+                />
                 <h3>{show.title}</h3>
-                <h5>({show.year})</h5>
+                <p>({show.year})</p>
               </div>
 
-              {/* Back Side */}
+              {/* Back */}
               <div className="tv-show-card-back">
-              <img
+                <img
                   src={show.poster || "https://via.placeholder.com/250x300"}
                   alt={show.title}
                 />
                 <button className="favorite-btn">⭐ Add to Favorites</button>
-                <a
-                  href={`https://www.levidia.ch/tv-show.php?watch=${show.title.replace(/\s+/g, "-")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="levidia-link"
-                >
-                  Link to TvShow
-                </a>
+                {watchLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="levidia-link"
+                  >
+                    {link.label}
+                  </a>
+                ))}
               </div>
             </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
+    </div>
+  );
+
+  return (
+    <div className="tv-show-list">
+      <h2>🔥 Trending TV Shows</h2>
+      {renderShowCards(trendingShows)}
+
+      <h2>⭐ Popular TV Shows</h2>
+      {renderShowCards(tvShows)}
     </div>
   );
 }
