@@ -108,3 +108,27 @@
   width: 100%;
   max-width: 200px;
 }
+
+/* Default: auto-fit behavior with minmax(260px, 1fr) works well for desktops and tablets */
+
+/* For medium screens (e.g. small tablets or large phones), show 3 per row */
+@media screen and (max-width: 768px) {
+  .movie-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* For small screens (mobile), show 2 per row if space allows */
+@media screen and (max-width: 600px) {
+  .movie-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* For very small screens, fallback to 1 per row */
+@media screen and (max-width: 400px) {
+  .movie-container {
+    grid-template-columns: 1fr;
+  }
+}
+
