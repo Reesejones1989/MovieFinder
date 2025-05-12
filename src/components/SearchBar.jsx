@@ -7,6 +7,9 @@ export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isTVShow, setIsTVShow] = useState(true);
   const [suggestions, setSuggestions] = useState([]);
+  const [favorites, setFavorites] = useState(() => {
+    return JSON.parse(localStorage.getItem("favorites")) || [];
+  });
 
   useEffect(() => {
     // Visitor count logic (runs only once)
@@ -72,12 +75,43 @@ export default function SearchBar() {
     window.open(baseUrl + formattedSearch, "_blank");
   };
 
-
+  const handleAddToFavorites = async (movieId, title) => {
+    const token = localStorage.getItem("authToken");  // Retrieve token from localStorage
+    
+    if (!token) {
+      alert("You need to log in first!");
+      return; // Exit the function if no token is found
+    }
+  
+    try {
+      const response = await fetch("/favorites", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // Add the token to the Authorization header
+        },
+        body: JSON.stringify({ movieId, title }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to add favorite: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log("Favorite added successfully:", data);
+    } catch (error) {
+      console.error("Error adding favorite:", error);
+      alert(error.message);  // Display the error message to the user
+    }
+  };
+  
 
   const handleSuggestionClick = (suggestion) => {
     setSearchTerm(suggestion.title || suggestion.name); // Use title for movies, name for TV shows
     setSuggestions([]);
   };
+
+  console.log(favorites)
 
   return (
     <div className="search-bar">
@@ -105,6 +139,8 @@ export default function SearchBar() {
                   className="poster"
                 />
                 <span>{item.title || item.name}</span>
+                <button onClick={() => handleAddToFavorites(item)}>Add to Favorites</button>
+                
               </div>
             ))}
           </ul>

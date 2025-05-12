@@ -28,6 +28,15 @@ export default function Nav() {
           <div>About</div>
         </Link>
       </div>
+
+      <Link id='Favorites' to="/Favorites">
+        <div> Favorites</div>
+        </Link>
+        
+      <Link id='login-signup' to="/Login">
+        <div> Login/SignUp</div>
+        </Link>
+
     </div>
   );
 }

@@ -1,186 +1,146 @@
-/* Styles for MovieList */
 .movie-list {
     text-align: center;
-    padding: 30px; /* Increased padding */
+    padding: 30px;
     font-family: Arial, sans-serif;
-}
-
-.movie-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  }
+  
+  .movie-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 30px;
+  }
+  
+  .movie-card {
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
-    padding: 15px; /* Increased padding */
-    text-align: center;
-    overflow: hidden;
-    max-width: 100%;
-    border: 2px solid transparent;
-    width: 220px; /* Reduced width */
-    height: 320px; /* Reduced height */
+    border-radius: 12px;
     perspective: 1000px;
     cursor: pointer;
-}
-
-.movie-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-    border-color: gold;
-}
-
-.movie-card-inner {
+    height: 520px; /* Increased height */
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+  
+  .movie-card-inner {
+    position: relative;
     width: 100%;
     height: 100%;
     transition: transform 0.6s;
     transform-style: preserve-3d;
-}
-
-.movie-card.flipped .movie-card-inner {
+  }
+  
+  .movie-card.flipped .movie-card-inner {
     transform: rotateY(180deg);
-}
-
-.movie-card-front, .movie-card-back {
+  }
+  
+  .movie-card-front,
+  .movie-card-back {
+    position: absolute;
     width: 100%;
     height: 100%;
-    position: absolute;
     backface-visibility: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-}
-
-.movie-card-front img {
-    width: 100%;
-    max-width: 150px; /* Reduced size */
-    height: 200px; /* Reduced size */
-    border-radius: 8px;
-    object-fit: cover;
-}
-
-.movie-card-back {
-    transform: rotateY(180deg);
+    justify-content: flex-start;
+    padding: 16px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    overflow-y: auto; /* Add scroll if content grows */
+  }
+  
+  .movie-card-front {
+    background: white;
+    z-index: 2;
+  }
+  
+  .movie-card-back {
     background: #222;
     color: white;
-    padding: 0; /* Remove extra padding */
+    transform: rotateY(180deg);
+    z-index: 1;
+
+  }
+  
+  .movie-card-front img,
+  .movie-card-back img {
     width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px; /* Ensure it matches the card shape */
-}
-
-.movie-card-back img {
-    width: 90%; /* Reduce size */
-    max-width: 130px; /* Ensure it fits */
-    height: auto; /* Maintain aspect ratio */
-    max-height: 180px; /* Prevent overflow */
-    border-radius: 2px;
+    height: 320px;
     object-fit: cover;
-}
-
-.favorite-btn {
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .movie-card-front h3,
+  .movie-card-back h3 {
+    font-size: 18px;
+    margin: 6px 0;
+    text-align: center;
+  }
+  
+  .movie-card-front p,
+  .movie-card-back p {
+    font-size: 14px;
+    color: #aaa;
+  }
+  
+  .favorite-btn {
     background: lightyellow;
     border: none;
-    padding: 12px; /* Increased padding */
-    margin: 12px;
+    padding: 10px;
+    margin: 10px 0;
     cursor: pointer;
-}
-
-.levidia-link {
-    display: block;
+    width: 100%;
+    border-radius: 6px;
+    font-weight: bold;
+  }
+  
+  .levidia-link {
+    background: crimson;
     color: white;
     text-decoration: none;
-    background: red;
-    padding: 10px; /* Adjust padding */
-    margin-top: 8px; /* Reduce margin to move up */
-    border-radius: 5px;
-    align-self: center; /* Ensures it's centered in flex */
-}
-
-.movie-list h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-}
-
-/* Grid container for movies */
-.movie-container {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px; /* Increased gap */
-    justify-content: center;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 30px; /* Increased padding */
-}
-
-/* Movie poster styling */
-.movie img {
-    width: 100%;
-    max-width: 160px; /* Reduced size */
-    height: 240px; /* Reduced size */
-    border-radius: 8px;
-    object-fit: cover;
-}
-
-/* Movie title and year */
-.movie h3 {
-    font-size: 14px;
+    padding: 10px;
     margin-top: 8px;
-    color: #222;
-}
-
-.movie p {
-    font-size: 12px;
-    color: #666;
-}
-
-/* Responsive Layout Adjustments */
-@media screen and (max-width: 1024px) {
-    .movie-container {
-        grid-template-columns: repeat(4, 1fr);
-        padding: 0 25px; /* Adjusted padding */
+    border-radius: 6px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    transition: background 0.3s ease;
+  }
+  
+  .levidia-link:hover {
+    background: darkred;
+  }
+  
+  .movie-list h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Responsive Tweaks */
+  @media screen and (max-width: 768px) {
+    .movie-card {
+      height: 480px;
     }
-}
-
-@media screen and (max-width: 768px) {
-    .movie-container {
-        grid-template-columns: repeat(3, 1fr);
-        padding: 0 20px; /* Adjusted padding */
+  
+    .movie-card-front img,
+    .movie-card-back img {
+      height: 280px;
     }
-
-    .movie img {
-        max-width: 140px; /* Reduced size */
-        height: 210px; /* Reduced size */
+  }
+  
+  @media screen and (max-width: 480px) {
+    .movie-card {
+      height: 460px;
     }
-}
-
-@media screen and (max-width: 600px) {
-    .movie-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px; /* Increased gap */
-        padding: 0 15px; /* Adjusted padding */
+  
+    .movie-card-front img,
+    .movie-card-back img {
+      height: 260px;
     }
-
-    .movie img {
-        max-width: 120px; /* Reduced size */
-        height: 180px; /* Reduced size */
-    }
-}
-
-@media screen and (max-width: 400px) {
-    .movie-container {
-        grid-template-columns: repeat(1, 1fr);
-        padding: 0 10px; /* Adjusted padding */
-    }
-}
+  }
+  

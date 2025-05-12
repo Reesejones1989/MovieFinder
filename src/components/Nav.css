@@ -20,8 +20,7 @@
   display: flex;
   justify-content: center;
   flex-grow: 1; /* Takes up remaining space, centering the links */
-  margin-left: -200px; /* Adjust this value as needed to move left */
-
+  margin-left: -200px; /* Adjust this value as needed */
 }
 
 .Nav a {
@@ -36,4 +35,12 @@
 .Nav a:hover {
   color: #de600b;
   text-underline-position: below;
+}
+
+/* Moves Login/SignUp to the far right */
+.Nav .login-signup {
+  margin-left: auto; /* Pushes it to the right */
+  color: blue;
+  font-weight: bold;
+  padding: 10px 15px;
 }

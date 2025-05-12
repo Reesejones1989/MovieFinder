@@ -7,6 +7,8 @@ import TvShows from './pages/TvShows.jsx';
 import Movies from './pages/Movies.jsx';
 import Anime from './pages/Anime.jsx'
 import Sports from './pages/Sports.jsx'
+import Login from './pages/Login.jsx'
+import Favorites from './pages/Favorite.jsx'
 
 function App() {
   return (
@@ -32,11 +34,15 @@ function App() {
           <Route path="/Anime" element={<Anime />} />
           <Route path="/Sports" element={<Sports />} />
           <Route path="/About" element={<About />} />
-          
+          <Route path='/Login' element={<Login />} />
+          <Route path='/Favorites' element={<Favorites />} />
+
+
           <Route path="/Sports" element={<Navigate to="/Sports" replace />} />
           <Route path="/Anime" element={<Navigate to="/Anime" replace />} />
           <Route path="/Movies" element={<Navigate to="/Movies" replace />} />
           <Route path="/Tv-Shows" element={<Navigate to="/TV-Shows" replace />} />
+          
 
 
 
