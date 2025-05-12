@@ -1,3 +1,11 @@
+/* Use a clean, modern professional font */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  font-size: 16px; /* Standard professional base size */
+}
+
 .Nav {
   position: fixed;
   top: 0;
@@ -6,41 +14,40 @@
   background-color: #356e41;
   display: flex;
   align-items: center;
-  padding: 10px 20px;
+  justify-content: space-between;
+  padding: 12px 24px;
   z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Pushes everything else to the right of the image */
 .Nav img {
-  margin-right: auto; /* Moves everything else to the right */
+  height: 60px;
+  width: 60px;
+  object-fit: contain;
+  margin-right: 16px;
 }
 
-/* Centers the navigation links */
-.Nav .nav-links {
+.nav-links {
   display: flex;
+  gap: 32px;
   justify-content: center;
-  flex-grow: 1; /* Takes up remaining space, centering the links */
-  margin-left: -200px; /* Adjust this value as needed */
+  flex-grow: 1;
 }
 
 .Nav a {
   text-decoration: none;
   color: white;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 20px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 12px;
   transition: color 0.3s ease-in-out;
 }
 
 .Nav a:hover {
   color: #de600b;
-  text-underline-position: below;
 }
 
-/* Moves Login/SignUp to the far right */
-.Nav .login-signup {
-  margin-left: auto; /* Pushes it to the right */
-  color: blue;
-  font-weight: bold;
-  padding: 10px 15px;
+.Nav #Favorites,
+.Nav #login-signup {
+  margin-left: 16px;
 }

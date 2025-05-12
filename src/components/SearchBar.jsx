@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import './SearchBar.css'
-
-
+import './SearchBar.css';
 
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,106 +10,111 @@ export default function SearchBar() {
   });
 
   useEffect(() => {
-    // Visitor count logic (runs only once)
-    let visitCount = localStorage.getItem("visitCount");
+    const visitCount = localStorage.getItem("visitCount");
     if (!visitCount) {
       localStorage.setItem("visitCount", 1);
     } else {
       localStorage.setItem("visitCount", Number(visitCount) + 1);
     }
     console.log("Visitor count:", localStorage.getItem("visitCount"));
-  }, []); // <-- This should NOT be inside another useEffect
-  
+  }, []);
+
   useEffect(() => {
     if (!searchTerm.trim()) {
       setSuggestions([]);
       return;
     }
-  
+
     const fetchSuggestions = async () => {
       const apiKey = import.meta.env.VITE_TMDB_API_KEY;
       const type = isTVShow ? "tv" : "movie";
       const url = `https://api.themoviedb.org/3/search/${type}?query=${searchTerm}&api_key=${apiKey}`;
+
       try {
         const response = await fetch(url);
         const data = await response.json();
+
         if (data.results) {
-          setSuggestions(data.results.slice(0, 5)); // Show top 5 suggestions
+          const detailedResults = await Promise.all(
+            data.results.slice(0, 5).map(async (item) => {
+              const detailsUrl = `https://api.themoviedb.org/3/${type}/${item.id}?api_key=${apiKey}`;
+              const detailResp = await fetch(detailsUrl);
+              const detailData = await detailResp.json();
+
+              return {
+                ...item,
+                imdb_id: detailData.imdb_id || null,
+              };
+            })
+          );
+
+          setSuggestions(detailedResults);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     const delayDebounceFn = setTimeout(() => {
       fetchSuggestions();
     }, 500);
-  
+
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, isTVShow]); // This effect tracks search input changes
-  
+  }, [searchTerm, isTVShow]);
 
-
-  
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
-  
+
     let formattedSearch = searchTerm
-    .trim()
-    .replace(/\s+/g, "-") // Replace spaces with dashes globally
-    .replace(/:/g, ""); //removes colons
-  
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/:/g, "");
+
     if (formattedSearch.includes("Spider-Man")) {
       formattedSearch = formattedSearch.replace("Spider-Man", "Spiderman");
     }
-    const apiKey = import.meta.env.VITE_TMDB_API_KEY; 
-    const poster_url = `http://api.themoviedb.org/3/search/movie?${apiKey}&query=${formattedSearch}`
-    console.log(poster_url)
 
     const baseUrl = isTVShow
       ? "https://www.levidia.ch/tv-show.php?watch="
       : "https://www.levidia.ch/movie.php?watch=";
-  
+
     window.open(baseUrl + formattedSearch, "_blank");
   };
 
-  const handleAddToFavorites = async (movieId, title) => {
-    const token = localStorage.getItem("authToken");  // Retrieve token from localStorage
-    
+  const handleAddToFavorites = async (item) => {
+    const token = localStorage.getItem("authToken");
+
     if (!token) {
       alert("You need to log in first!");
-      return; // Exit the function if no token is found
+      return;
     }
-  
+
     try {
       const response = await fetch("/favorites", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Add the token to the Authorization header
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({ movieId, title }),
+        body: JSON.stringify({ movieId: item.id, title: item.title || item.name }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`Failed to add favorite: ${response.statusText}`);
       }
-  
+
       const data = await response.json();
       console.log("Favorite added successfully:", data);
     } catch (error) {
       console.error("Error adding favorite:", error);
-      alert(error.message);  // Display the error message to the user
+      alert(error.message);
     }
   };
-  
 
   const handleSuggestionClick = (suggestion) => {
-    setSearchTerm(suggestion.title || suggestion.name); // Use title for movies, name for TV shows
+    setSearchTerm(suggestion.title || suggestion.name);
     setSuggestions([]);
   };
-
-  console.log(favorites)
 
   return (
     <div className="search-bar">
@@ -128,21 +131,55 @@ export default function SearchBar() {
         />
         <button className="search-btn" onClick={handleSearch}>Search</button>
 
-        {/* Display search suggestions with posters */}
         {suggestions.length > 0 && (
           <ul className="suggestions">
-            {suggestions.map((item) => (
-              <div key={item.id} onClick={() => handleSuggestionClick(item)}>
-                <img 
-                  src={item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : "https://via.placeholder.com/50x75"} 
-                  height="200" width="150" alt={item.title || item.name}
-                  className="poster"
-                />
-                <span>{item.title || item.name}</span>
-                <button onClick={() => handleAddToFavorites(item)}>Add to Favorites</button>
-                
-              </div>
-            ))}
+            {suggestions.map((item) => {
+              const formattedTitle = (item.title || item.name)
+                .replace(/\s+/g, "-")
+                .replace(/:/g, "")
+                .replace("Spider-Man", "Spiderman");
+
+              const levidiaUrl = isTVShow
+                ? `https://www.levidia.ch/tv-show.php?watch=${formattedTitle}`
+                : `https://www.levidia.ch/movie.php?watch=${formattedTitle}`;
+
+              const vidsrcUrl = item.imdb_id
+                ? `https://vidsrc.xyz/embed/${isTVShow ? "tv" : "movie"}/${item.imdb_id}`
+                : null;
+
+              return (
+                <div key={item.id} className="suggestion-item">
+                  <img
+                    src={
+                      item.poster_path
+                        ? `https://image.tmdb.org/t/p/w92${item.poster_path}`
+                        : "https://via.placeholder.com/50x75"
+                    }
+                    height="200"
+                    width="150"
+                    alt={item.title || item.name}
+                    className="poster"
+                    onClick={() => handleSuggestionClick(item)}
+                  />
+                  <div className="suggestion-details">
+                    <span>{item.title || item.name}</span>
+                    <div className="link-buttons">
+                      <a href={levidiaUrl} target="_blank" rel="noopener noreferrer">
+                        <button>Levidia</button>
+                      </a>
+                      {vidsrcUrl && (
+                        <a href={vidsrcUrl} target="_blank" rel="noopener noreferrer">
+                          <button>VidSrc</button>
+                        </a>
+                      )}
+                    </div>
+                    <button onClick={() => handleAddToFavorites(item)}>
+                      Add to Favorites
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </ul>
         )}
       </div>

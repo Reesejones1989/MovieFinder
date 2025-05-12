@@ -33,7 +33,7 @@ export default function About() {
                 This app is to bring a place to search for TV show and movie links without the potential ads all over the place.
             </p>
 
-            <h3>Features to come soon: Favorites </h3>
+            <h3>Features to come soon: Favorites & Sign-up/LogIn Aren't functional just yet</h3>
 
             {/* Suggestion Box Form */}
             <form onSubmit={sendEmail}>
