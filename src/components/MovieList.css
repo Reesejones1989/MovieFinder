@@ -136,6 +136,7 @@
   @media screen and (max-width: 480px) {
     .movie-card {
       height: 460px;
+      width: 195px;
     }
   
     .movie-card-front img,
@@ -156,7 +157,9 @@
   /* For small screens (mobile), show 2 per row if space allows */
   @media screen and (max-width: 600px) {
     .movie-container {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      padding: 0 12px;
     }
   }
   
