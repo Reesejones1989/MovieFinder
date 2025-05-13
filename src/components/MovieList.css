@@ -137,6 +137,7 @@
     .movie-card {
       height: 460px;
       width: 195px;
+      font-size: 10px;
     }
   
     .movie-card-front img,
