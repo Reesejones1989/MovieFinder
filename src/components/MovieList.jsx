@@ -18,6 +18,10 @@ const initialMovies = [
   { id: 14, title: "The Monkey", year: "2024", poster: "" },
   { id: 15, title: "You're Cordially Invited", year: "2024", poster: "" },
   { id: 16, title: "Opus", year: "2025", poster: "" },
+  { id: 17, title: "The Accountant 2", year: "2025", poster: "" },
+  { id: 18, title: "California King", year: "2025", poster: "" },
+  { id: 19, title: "Freaky Tales", year: "2025", poster: "" },
+  { id: 20, title: "Magazine Dreams", year: "2025", poster: "" },
 ];
 
 export default function MovieList() {
@@ -25,8 +29,17 @@ export default function MovieList() {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [flipped, setFlipped] = useState({});
   const [postersFetched, setPostersFetched] = useState(false);
+  const [showDescriptions, setShowDescriptions] = useState({});
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+
+  const toggleFlip = (id) => {
+    setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleDescription = (id) => {
+    setShowDescriptions((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   useEffect(() => {
     const fetchTrendingMovies = async () => {
@@ -51,6 +64,7 @@ export default function MovieList() {
                 ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`
                 : "",
               imdb_id: detailData.imdb_id || null,
+              overview: detailData.overview || "",
             };
           })
         );
@@ -69,7 +83,7 @@ export default function MovieList() {
       const fetchPosters = async () => {
         const updatedMovies = await Promise.all(
           movies.map(async (movie) => {
-            if (movie.poster && movie.imdb_id) return movie;
+            if (movie.poster && movie.imdb_id && movie.overview) return movie;
 
             try {
               const searchRes = await fetch(
@@ -91,6 +105,7 @@ export default function MovieList() {
                     movie.poster ||
                     `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movieMatch.poster_path}`,
                   imdb_id: detailsData.imdb_id,
+                  overview: detailsData.overview,
                 };
               }
             } catch (error) {
@@ -111,10 +126,6 @@ export default function MovieList() {
 
   const formatTitleForLevidia = (title) =>
     title.replace(/:/g, "").replace(/\s+/g, "-").replace(/&/g, "").replace(/'/g, "");
-
-  const toggleFlip = (id) => {
-    setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   const getWatchLinks = (movie) => {
     const links = [];
@@ -159,6 +170,23 @@ export default function MovieList() {
                 />
                 <h3>{movie.title}</h3>
                 <p>({movie.year})</p>
+
+                {movie.overview && (
+                  <>
+                    <button
+                      className="read-desc-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDescription(movie.id);
+                      }}
+                    >
+                      {showDescriptions[movie.id] ? "Hide Description" : "Read Description"}
+                    </button>
+                    {showDescriptions[movie.id] && (
+                      <p className="movie-description">{movie.overview}</p>
+                    )}
+                  </>
+                )}
               </div>
 
               <div className="movie-card-back">

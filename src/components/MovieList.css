@@ -18,7 +18,7 @@
     border-radius: 12px;
     perspective: 1000px;
     cursor: pointer;
-    height: 520px; /* Increased height */
+    height: 520px;
     position: relative;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     overflow: hidden;
@@ -49,7 +49,7 @@
     padding: 16px;
     box-sizing: border-box;
     border-radius: 12px;
-    overflow-y: auto; /* Add scroll if content grows */
+    overflow-y: auto;
   }
   
   .movie-card-front {
@@ -62,13 +62,12 @@
     color: white;
     transform: rotateY(180deg);
     z-index: 1;
-
   }
   
   .movie-card-front img,
   .movie-card-back img {
     width: 100%;
-    height: 320px;
+    height: 300px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 12px;
@@ -79,6 +78,7 @@
     font-size: 18px;
     margin: 6px 0;
     text-align: center;
+    color: #222;
   }
   
   .movie-card-front p,
@@ -120,8 +120,30 @@
     color: #333;
     margin-bottom: 20px;
   }
+  .read-desc-btn {
+    background: green;
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    margin: 8px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.3s ease;
+  }
   
-  /* Responsive Tweaks */
+  .read-desc-btn:hover {
+    background: #0056b3;
+  }
+  
+  .movie-description {
+    color: #444;
+    font-size: 13px;
+    margin-top: 8px;
+    text-align: left;
+  }
+  
+  
   @media screen and (max-width: 768px) {
     .movie-card {
       height: 480px;
@@ -146,16 +168,12 @@
     }
   }
 
-  /* Default: auto-fit behavior with minmax(260px, 1fr) works well for desktops and tablets */
-
-/* For medium screens (e.g. small tablets or large phones), show 3 per row */
-@media screen and (max-width: 768px) {
+  @media screen and (max-width: 768px) {
     .movie-container {
       grid-template-columns: repeat(3, 1fr);
     }
   }
   
-  /* For small screens (mobile), show 2 per row if space allows */
   @media screen and (max-width: 600px) {
     .movie-container {
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -164,11 +182,8 @@
     }
   }
   
-  /* For very small screens, fallback to 1 per row */
   @media screen and (max-width: 400px) {
     .movie-container {
       grid-template-columns: 1fr;
     }
   }
-  
-  

@@ -50,6 +50,7 @@
   box-sizing: border-box;
   border-radius: 12px;
   overflow-y: auto;
+  overflow: hidden;
 }
 
 .tv-show-card-front {
@@ -58,77 +59,109 @@
 }
 
 .tv-show-card-back {
-  background: #1e1e1e;
+  background: #222;
   color: white;
   transform: rotateY(180deg);
+  z-index: 1;
 }
 
 .tv-show-card-front img,
 .tv-show-card-back img {
   width: 100%;
-  max-width: 180px;
-  height: 270px;
-  border-radius: 8px;
+  height: 320px;
   object-fit: cover;
+  border-radius: 8px;
   margin-bottom: 12px;
 }
 
 .tv-show-card-front h3,
 .tv-show-card-back h3 {
-  margin: 0;
-  font-size: 16px;
+  font-size: 14px;
+  margin: 6px 0;
+  text-align: center;
+  color: #222;
 }
 
-.tv-show-card-front p {
+.tv-show-card-front p,
+.tv-show-card-back p {
   font-size: 14px;
-  color: #555;
-  margin-top: 6px;
+  color: #aaa;
 }
 
 .favorite-btn {
-  margin-top: 8px;
-  padding: 8px 12px;
-  background: gold;
-  color: black;
+  background: lightyellow;
   border: none;
-  border-radius: 5px;
-  font-weight: bold;
+  padding: 10px;
+  margin: 10px 0;
   cursor: pointer;
+  width: 100%;
+  border-radius: 6px;
+  font-weight: bold;
 }
 
 .levidia-link {
-  display: block;
+  background: crimson;
   color: white;
   text-decoration: none;
-  background: crimson;
   padding: 10px;
   margin-top: 8px;
-  border-radius: 5px;
-  text-align: center;
+  border-radius: 6px;
   width: 100%;
-  max-width: 200px;
+  text-align: center;
+  font-size: 14px;
+  transition: background 0.3s ease;
 }
 
-/* Default: auto-fit behavior with minmax(260px, 1fr) works well for desktops and tablets */
+.levidia-link:hover {
+  background: darkred;
+}
 
-/* For medium screens (e.g. small tablets or large phones), show 3 per row */
+.tv-show-list h2 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Responsive Tweaks */
+
 @media screen and (max-width: 768px) {
-  .movie-container {
+  .tv-show-container {
     grid-template-columns: repeat(3, 1fr);
   }
-}
 
-/* For small screens (mobile), show 2 per row if space allows */
-@media screen and (max-width: 600px) {
-  .movie-container {
-    grid-template-columns: repeat(2, 1fr);
+  .tv-show-card {
+    height: 480px;
+  }
+
+  .tv-show-card-front img,
+  .tv-show-card-back img {
+    height: 280px;
   }
 }
 
-/* For very small screens, fallback to 1 per row */
+@media screen and (max-width: 600px) {
+  .tv-show-container {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    padding: 0 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .tv-show-card {
+    height: 460px;
+    width: 195px;
+    font-size: 10px;
+  }
+
+  .tv-show-card-front img,
+  .tv-show-card-back img {
+    height: 260px;
+  }
+}
+
 @media screen and (max-width: 400px) {
-  .movie-container {
+  .tv-show-container {
     grid-template-columns: 1fr;
   }
 }
-

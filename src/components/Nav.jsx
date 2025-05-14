@@ -12,11 +12,13 @@ export default function Nav() {
   return (
     <nav className="Nav">
       <div className="nav-left">
+      <Link to="/" onClick={() => setMenuOpen(false)}>
         <img
           src="https://r2.erweima.ai/i/JlHYKridTXa_U4NgCQ63Ww.png"
           alt="logo"
           className="nav-logo"
         />
+        </Link>
       </div>
 
       <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
@@ -30,10 +32,10 @@ export default function Nav() {
         <Link to="/Login" onClick={() => setMenuOpen(false)}>Login/SignUp</Link>
       </div>
 
-      <div className="hamburger" onClick={toggleMenu}>
-        <span className="bar"></span>
-        <span className="bar"></span>
-        <span className="bar"></span>
+      <div className={`hamburger ${menuOpen ? 'open' : ''}`} onClick={toggleMenu}>
+        <span className="bar bar1"></span>
+        <span className="bar bar2"></span>
+        <span className="bar bar3"></span>
       </div>
     </nav>
   );

@@ -13,7 +13,7 @@ const initialTvShows = [
   { id: 8, title: "Power Book III: Raising Kanan", year: 2025, poster: "" },
   { id: 9, title: "BelAir", year: 2022, poster: "" },
   { id: 10, title: "YellowJackets", year: 2022, poster: "" },
-  { id: 11, title: "Poppa's House", year: 2022, poster: "" },
+  { id: 11, title: "The Studio", year: 2025, poster: "" },
   { id: 12, title: "Paradise", year: 2025, poster: "" },
 ];
 
