@@ -41,10 +41,19 @@ export default function SearchBar() {
               const detailResp = await fetch(detailsUrl);
               const detailData = await detailResp.json();
 
-              return {
-                ...item,
-                imdb_id: detailData.imdb_id || null,
-              };
+          let imdb_id = detailData.imdb_id || null;
+
+        if (isTVShow) {
+        const externalIdsUrl = `https://api.themoviedb.org/3/tv/${item.id}/external_ids?api_key=${apiKey}`;
+      const externalIdsResp = await fetch(externalIdsUrl);
+      const externalIdsData = await externalIdsResp.json();
+      imdb_id = externalIdsData.imdb_id || imdb_id;
+}
+
+return {
+  ...item,
+  imdb_id,
+};
             })
           );
 
