@@ -41,19 +41,19 @@ export default function SearchBar() {
               const detailResp = await fetch(detailsUrl);
               const detailData = await detailResp.json();
 
-          let imdb_id = detailData.imdb_id || null;
+              let imdb_id = detailData.imdb_id || null;
 
-        if (isTVShow) {
-        const externalIdsUrl = `https://api.themoviedb.org/3/tv/${item.id}/external_ids?api_key=${apiKey}`;
-      const externalIdsResp = await fetch(externalIdsUrl);
-      const externalIdsData = await externalIdsResp.json();
-      imdb_id = externalIdsData.imdb_id || imdb_id;
-}
+              if (isTVShow) {
+                const externalIdsUrl = `https://api.themoviedb.org/3/tv/${item.id}/external_ids?api_key=${apiKey}`;
+                const externalIdsResp = await fetch(externalIdsUrl);
+                const externalIdsData = await externalIdsResp.json();
+                imdb_id = externalIdsData.imdb_id || imdb_id;
+              }
 
-return {
-  ...item,
-  imdb_id,
-};
+              return {
+                ...item,
+                imdb_id,
+              };
             })
           );
 
@@ -73,39 +73,31 @@ return {
 
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
-  
+
     let formattedSearch = searchTerm
       .trim()
       .replace(/\s+/g, "-")
       .replace(/:/g, "");
-  
+
     if (formattedSearch.includes("Spider-Man")) {
       formattedSearch = formattedSearch.replace("Spider-Man", "Spiderman");
     }
-  
+
     const matchedSuggestion = suggestions.find(s =>
       (s.title || s.name)
         .toLowerCase()
         .includes(searchTerm.trim().toLowerCase())
     );
-  
+
     const imdbId = matchedSuggestion?.imdb_id;
     console.log(imdbId);
-  
+
     if (imdbId) {
       const vidsrcUrl = `https://vidsrc.xyz/embed/${isTVShow ? "tv" : "movie"}/${imdbId}`;
       window.open(vidsrcUrl, "_blank");
     } else {
       alert("No match with IMDb ID found. Try selecting a suggestion.");
     }
-  
-    /*
-    // Old Levidia search fallback (kept in case needed again)
-    const levidiaUrl = isTVShow
-      ? `https://www.levidia.ch/tv-show.php?watch=${formattedSearch}`
-      : `https://www.levidia.ch/movie.php?watch=${formattedSearch}`;
-    window.open(levidiaUrl, "_blank");
-    */
   };
 
   const handleAddToFavorites = async (item) => {
@@ -144,12 +136,12 @@ return {
   };
 
   return (
-    <div className="search-bar">
-      <button className="toggle-btn" onClick={() => setIsTVShow(!isTVShow)}>
-        {isTVShow ? "Search Movies" : "Search TV Shows"}
-      </button>
+    <div className="search-wrapper">
+      <div className="search-bar">
+        <button className="toggle-btn" onClick={() => setIsTVShow(!isTVShow)}>
+          {isTVShow ? "Search Movies" : "Search TV Shows"}
+        </button>
 
-      <div className="search-container">
         <input
           type="text"
           placeholder={isTVShow ? "Search TV Shows..." : "Search Movies..."}
@@ -157,59 +149,59 @@ return {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button className="search-btn" onClick={handleSearch}>Search</button>
-
-        {suggestions.length > 0 && (
-          <ul className="suggestions">
-            {suggestions.map((item) => {
-              const formattedTitle = (item.title || item.name)
-                .replace(/\s+/g, "-")
-                .replace(/:/g, "")
-                .replace("Spider-Man", "Spiderman");
-
-              const levidiaUrl = isTVShow
-                ? `https://www.levidia.ch/tv-show.php?watch=${formattedTitle}`
-                : `https://www.levidia.ch/movie.php?watch=${formattedTitle}`;
-
-              const vidsrcUrl = item.imdb_id
-                ? `https://vidsrc.xyz/embed/${isTVShow ? "tv" : "movie"}/${item.imdb_id}`
-                : null;
-
-              return (
-                <div key={item.id} className="suggestion-item">
-                  <img
-                    src={
-                      item.poster_path
-                        ? `https://image.tmdb.org/t/p/w92${item.poster_path}`
-                        : "https://via.placeholder.com/50x75"
-                    }
-                    height="200"
-                    width="150"
-                    alt={item.title || item.name}
-                    className="poster"
-                    onClick={() => handleSuggestionClick(item)}
-                  />
-                  <div className="suggestion-details">
-                    <span>{item.title || item.name}</span>
-                    <div className="link-buttons">
-                      <a href={levidiaUrl} target="_blank" rel="noopener noreferrer">
-                        <button>Levidia</button>
-                      </a>
-                      {vidsrcUrl && (
-                        <a href={vidsrcUrl} target="_blank" rel="noopener noreferrer">
-                          <button>VidSrc</button>
-                        </a>
-                      )}
-                    </div>
-                    <button onClick={() => handleAddToFavorites(item)}>
-                      Add to Favorites
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </ul>
-        )}
       </div>
+
+      {suggestions.length > 0 && (
+        <ul className="suggestions">
+          {suggestions.map((item) => {
+            const formattedTitle = (item.title || item.name)
+              .replace(/\s+/g, "-")
+              .replace(/:/g, "")
+              .replace("Spider-Man", "Spiderman");
+
+            const levidiaUrl = isTVShow
+              ? `https://www.levidia.ch/tv-show.php?watch=${formattedTitle}`
+              : `https://www.levidia.ch/movie.php?watch=${formattedTitle}`;
+
+            const vidsrcUrl = item.imdb_id
+              ? `https://vidsrc.xyz/embed/${isTVShow ? "tv" : "movie"}/${item.imdb_id}`
+              : null;
+
+            return (
+              <div key={item.id} className="suggestion-item">
+                <img
+                  src={
+                    item.poster_path
+                      ? `https://image.tmdb.org/t/p/w92${item.poster_path}`
+                      : "https://via.placeholder.com/50x75"
+                  }
+                  height="200"
+                  width="150"
+                  alt={item.title || item.name}
+                  className="poster"
+                  onClick={() => handleSuggestionClick(item)}
+                />
+                <div className="suggestion-details">
+                  <span>{item.title || item.name}</span>
+                  <div className="link-buttons">
+                    <a href={levidiaUrl} target="_blank" rel="noopener noreferrer">
+                      <button>Levidia</button>
+                    </a>
+                    {vidsrcUrl && (
+                      <a href={vidsrcUrl} target="_blank" rel="noopener noreferrer">
+                        <button>VidSrc</button>
+                      </a>
+                    )}
+                  </div>
+                  <button onClick={() => handleAddToFavorites(item)}>
+                    Add to Favorites
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

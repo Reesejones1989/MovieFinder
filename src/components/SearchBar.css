@@ -1,27 +1,15 @@
-.search-bar-container {
-  max-width: 500px;
-  margin: 30px auto;
-  padding: 20px;
-  background-color: #f9f9f9; /* Light background for contrast */
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
 .search-bar {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  padding: 20px;
   flex-wrap: wrap;
-}
-
-.search-bar input {
-  flex: 1;
-  min-width: 150px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 40px auto 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .toggle-btn,
@@ -33,6 +21,7 @@
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
 
 .toggle-btn {
@@ -44,6 +33,15 @@
   background-color: #555;
 }
 
+.search-bar input {
+  flex: 1 1 300px;
+  min-width: 200px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 .search-btn {
   background-color: #f4a261;
   color: white;
@@ -53,11 +51,49 @@
   background-color: #e76f51;
 }
 
-/* Responsive adjustments for mobile */
+/* Suggestions */
+.suggestions {
+  margin-top: 20px;
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.suggestion-details {
+  flex-grow: 1;
+}
+
+.link-buttons button {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+.poster {
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+/* Responsive */
 @media (max-width: 600px) {
   .search-bar {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
+  }
+
+  .search-bar input {
+    width: 100%;
   }
 
   .toggle-btn,
@@ -65,11 +101,22 @@
     width: 100%;
   }
 
-  .search-bar input {
+  .suggestion-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .poster {
+    width: 100px;
+    height: auto;
+  }
+
+  .suggestion-details {
     width: 100%;
   }
 
-  .search-bar-container {
-    padding: 15px;
+  .link-buttons button {
+    margin-bottom: 8px;
   }
 }

@@ -27,6 +27,8 @@ export default function Nav() {
         <Link to="/TV-Shows" onClick={() => setMenuOpen(false)}>TV Shows</Link>
         <Link to="/Anime" onClick={() => setMenuOpen(false)}>Anime</Link>
         <Link to="/Sports" onClick={() => setMenuOpen(false)}>Sports</Link>
+        <Link to="/LiveTv" onClick={() => setMenuOpen(false)}>LiveTv</Link>
+
         <Link to="/About" onClick={() => setMenuOpen(false)}>About</Link>
         <Link to="/Favorites" onClick={() => setMenuOpen(false)}>Favorites</Link>
         <Link to="/Login" onClick={() => setMenuOpen(false)}>Login/SignUp</Link>

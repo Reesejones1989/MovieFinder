@@ -9,6 +9,8 @@ import Anime from './pages/Anime.jsx'
 import Sports from './pages/Sports.jsx'
 import Login from './pages/Login.jsx'
 import Favorites from './pages/Favorite.jsx'
+import LiveTv from './pages/LiveTv.jsx'
+import Footer from './components/Footer.jsx'
 
 function App() {
   return (
@@ -33,6 +35,7 @@ function App() {
           <Route path="/TV-Shows" element={<TvShows />} />
           <Route path="/Anime" element={<Anime />} />
           <Route path="/Sports" element={<Sports />} />
+          <Route path="/LiveTv" element={<LiveTv />} />
           <Route path="/About" element={<About />} />
           <Route path='/Login' element={<Login />} />
           <Route path='/Favorites' element={<Favorites />} />
@@ -42,6 +45,8 @@ function App() {
           <Route path="/Anime" element={<Navigate to="/Anime" replace />} />
           <Route path="/Movies" element={<Navigate to="/Movies" replace />} />
           <Route path="/Tv-Shows" element={<Navigate to="/TV-Shows" replace />} />
+          <Route path="/LiveTV" element={<Navigate to="/LiveTv" replace />}  />
+
           
 
 
@@ -56,8 +61,14 @@ function App() {
 
 
         </Routes>
+
+
+
+
+        
       </div>
     </Router>
+
   );
 }
 
