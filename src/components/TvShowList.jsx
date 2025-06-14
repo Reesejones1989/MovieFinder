@@ -1,7 +1,6 @@
 import "./TvShowList.css";
 import { useState, useEffect } from "react";
 
-// ⬇️ Add your manual TV shows here
 const initialTvShows = [
   { id: 1, title: "Severance", year: 2008, poster: "" },
   { id: 2, title: "The Righteous Gemstones", year: 2011, poster: "" },

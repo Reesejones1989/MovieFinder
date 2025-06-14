@@ -1,4 +1,9 @@
 /* LiveTvList.css */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
 
 .channels-list {
   padding: 2rem;
@@ -16,10 +21,11 @@
 
 .channels-container {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* fixed 5 columns per row */
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* responsive! */
   gap: 1.5rem;
   justify-items: center;
   align-items: center;
+  padding: 0 1rem;
 }
 
 .channels-container a {
@@ -40,4 +46,14 @@
   background-color: white;
   padding: 0.25rem;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+}
+@media (max-width: 600px) {
+  .channels-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .channels-container img {
+    max-width: 80px;
+    max-height: 50px;
+  }
 }
