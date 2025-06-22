@@ -11,7 +11,7 @@
   /* Background image of all major sports */
   background: 
     linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), /* dark overlay for contrast */
-    url('../public/Sport.png') no-repeat center center;
+    url('../Sport.png') no-repeat center center;
   background-size: cover;
   border-radius: 15px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
