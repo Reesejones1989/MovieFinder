@@ -19,46 +19,49 @@ const initialTvShows = [
 export default function TvShowList() {
   const [tvShows, setTvShows] = useState(initialTvShows);
   const [trendingShows, setTrendingShows] = useState([]);
+  const [netflixShows, setNetflixShows] = useState([]);
+  const [netflixOpen, setNetflixOpen] = useState(false);
   const [flipped, setFlipped] = useState({});
   const [postersFetched, setPostersFetched] = useState(false);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
   useEffect(() => {
-    const fetchTrending = async () => {
-      try {
-        const res = await fetch(
-          `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}`
-        );
-        const data = await res.json();
-
-        const enrichedShows = await Promise.all(
-          data.results.map(async (show) => {
-            const detailRes = await fetch(
-              `https://api.themoviedb.org/3/tv/${show.id}?api_key=${apiKey}&append_to_response=external_ids`
-            );
-            const detailData = await detailRes.json();
-
-            return {
-              id: show.id,
-              title: show.name,
-              year: show.first_air_date ? parseInt(show.first_air_date.split("-")[0]) : "N/A",
-              poster: show.poster_path
-                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${show.poster_path}`
-                : "",
-              imdb_id: detailData.external_ids?.imdb_id || null,
-            };
-          })
-        );
-
-        setTrendingShows(enrichedShows);
-      } catch (err) {
-        console.error("Failed to fetch trending TV shows:", err);
-      }
-    };
-
     fetchTrending();
-  }, [apiKey]);
+    fetchNetflixList();
+  }, []);
+
+  const fetchTrending = async () => {
+    try {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}`
+      );
+      const data = await res.json();
+
+      const enrichedShows = await Promise.all(
+        data.results.map(async (show) => {
+          const detailRes = await fetch(
+            `https://api.themoviedb.org/3/tv/${show.id}?api_key=${apiKey}&append_to_response=external_ids`
+          );
+          const detailData = await detailRes.json();
+
+          return {
+            id: show.id,
+            title: show.name,
+            year: show.first_air_date ? parseInt(show.first_air_date.split("-")[0]) : "N/A",
+            poster: show.poster_path
+              ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${show.poster_path}`
+              : "",
+            imdb_id: detailData.external_ids?.imdb_id || null,
+          };
+        })
+      );
+
+      setTrendingShows(enrichedShows);
+    } catch (err) {
+      console.error("Failed to fetch trending TV shows:", err);
+    }
+  };
 
   useEffect(() => {
     if (!postersFetched) {
@@ -101,6 +104,22 @@ export default function TvShowList() {
       fetchPosters();
     }
   }, [postersFetched, apiKey, tvShows]);
+
+  const fetchNetflixList = async () => {
+    try {
+      const res = await fetch("https://mdblist.com/lists/reesejones89/netflix-last-90-days-tvshows.json");
+      const data = await res.json();
+      const formatted = data.items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        year: item.year,
+        poster: item.poster || "",
+      }));
+      setNetflixShows(formatted);
+    } catch (err) {
+      console.error("Failed to fetch Netflix 90-day TV shows:", err);
+    }
+  };
 
   const formatTitleForLevidia = (title) =>
     title
@@ -186,6 +205,15 @@ export default function TvShowList() {
 
       <h2>⭐ Popular TV Shows</h2>
       {renderShowCards(tvShows)}
+
+      <h2
+        className="collapsible-header"
+        onClick={() => setNetflixOpen((open) => !open)}
+        style={{ cursor: "pointer", marginTop: "1rem" }}
+      >
+        {netflixOpen ? "⬇️" : "➡️"} Netflix — Last 90 Days
+      </h2>
+      {netflixOpen && renderShowCards(netflixShows)}
     </div>
   );
 }
