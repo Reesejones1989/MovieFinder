@@ -170,7 +170,6 @@ export default function AnimeList() {
 
   return (
     <div className="anime-list">
-      <h2>Anime</h2>
       <div className="anime-container">
         {animes.map(renderAnimeCard)}
       </div>

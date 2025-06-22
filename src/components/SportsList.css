@@ -1,74 +1,85 @@
 /* Styles for the SportsList */
 .sports-list {
-    text-align: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  color: white;
 
-  }
-  
-  .sports-list h1 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-  }
-  
-  /* Grid container for sports buttons */
+  /* Background image of all major sports */
+  background: 
+    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), /* dark overlay for contrast */
+    url('../public/Sport.png') no-repeat center center;
+  background-size: cover;
+  border-radius: 15px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+}
+
+.sports-list h1 {
+  margin-bottom: 30px;
+  font-size: 32px;
+  font-weight: 700;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+  color: #fff;
+}
+
+/* Grid container for sports buttons */
+.sports-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 per row */
+  gap: 25px;
+  justify-content: center;
+  align-items: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Uniform sports button */
+.sports-container a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px; /* Bigger buttons */
+  height: 150px;
+  background: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  padding: 15px;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+/* Button hover effect */
+.sports-container a:hover {
+  transform: scale(1.15);
+  box-shadow: 0 8px 20px rgba(255, 0, 0, 0.6);
+  border-color: red;
+}
+
+/* Logo image styling */
+.sports-container img {
+  width: 100px; /* Bigger logos */
+  height: 100px;
+  object-fit: contain;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Responsive: 2 per row on mobile */
+@media screen and (max-width: 768px) {
   .sports-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 per row */
-    gap: 15px;
-    justify-content: center;
-    align-items: center;
-    max-width: 900px;
-    margin: 0 auto;
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  /* Uniform sports button */
+
   .sports-container a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 120px; /* Fixed width */
-    height: 120px; /* Fixed height */
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    padding: 10px;
-    border: 2px solid transparent; 
-
+    width: 130px; /* Slightly smaller for mobile */
+    height: 130px;
   }
-  
-  /* Button hover effect */
-  .sports-container a:hover {
-    transform: scale(1.1); /* Pops out */
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-    border-color: red; /* Change border color on hover without affecting layout */
 
-  }
-  
-  /* Logo image styling */
   .sports-container img {
-    width: 80px; /* Ensures logos are uniform */
-    height: 80px;
-    object-fit: contain;
-    transition: transform 0.2s ease-in-out;
+    width: 85px;
+    height: 85px;
   }
-  
-  /* Responsive: 2 per row on mobile */
-  @media screen and (max-width: 768px) {
-    .sports-container {
-      grid-template-columns: repeat(2, 1fr); /* 2 per row */
-    }
-  
-    .sports-container a {
-      width: 100px; /* Slightly smaller for mobile */
-      height: 100px;
-    }
-  
-    .sports-container img {
-      width: 70px;
-      height: 70px;
-    }
-  }
-  
+}

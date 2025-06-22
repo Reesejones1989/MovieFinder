@@ -1,28 +1,7 @@
 import "./MovieList.css";
 import { useState, useEffect } from "react";
-
-const initialMovies = [
-  { id: 1, title: "Sinners", year: "2025", poster: "" },
-  { id: 2, title: "Thunderbolts*", year: "2025", poster: "" },
-  { id: 3, title: "A Minecraft Movie", year: "2025", poster: "" },
-  { id: 4, title: "Novocaine", year: "2025", poster: "" },
-  { id: 5, title: "Black Bag", year: "2025", poster: "" },
-  { id: 6, title: "Drop", year: "2025", poster: "" },
-  { id: 7, title: "Cleaner", year: "2024", poster: "" },
-  { id: 8, title: "Captain America: Brave New World", year: "2024", poster: "" },
-  { id: 9, title: "Sacramento", year: "2025", poster: "" },
-  { id: 10, title: "Mickey 17", year: "2025", poster: "" },
-  { id: 11, title: "Companion", year: "2025", poster: "" },
-  { id: 12, title: "The Substance", year: "2024", poster: "" },
-  { id: 13, title: "It's What's Inside", year: "2024", poster: "" },
-  { id: 14, title: "The Monkey", year: "2024", poster: "" },
-  { id: 15, title: "You're Cordially Invited", year: "2024", poster: "" },
-  { id: 16, title: "Opus", year: "2025", poster: "" },
-  { id: 17, title: "The Accountant 2", year: "2025", poster: "" },
-  { id: 18, title: "California King", year: "2025", poster: "" },
-  { id: 19, title: "Freaky Tales", year: "2025", poster: "" },
-  { id: 20, title: "Magazine Dreams", year: "2025", poster: "" },
-];
+import initialMovies from './InitialMovies';
+import NetflixMovies from './NetflixMovies';  // Import the NetflixMovies component
 
 export default function MovieList() {
   const [movies, setMovies] = useState(initialMovies);
@@ -30,6 +9,8 @@ export default function MovieList() {
   const [flipped, setFlipped] = useState({});
   const [postersFetched, setPostersFetched] = useState(false);
   const [showDescriptions, setShowDescriptions] = useState({});
+  const [showTrending, setShowTrending] = useState(true);
+  const [showPopular, setShowPopular] = useState(true);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -40,6 +21,9 @@ export default function MovieList() {
   const toggleDescription = (id) => {
     setShowDescriptions((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+
+  const toggleTrending = () => setShowTrending(prev => !prev);
+  const togglePopular = () => setShowPopular(prev => !prev);
 
   useEffect(() => {
     const fetchTrendingMovies = async () => {
@@ -216,11 +200,22 @@ export default function MovieList() {
 
   return (
     <div className="movie-list">
-      <h2>🔥 Trending Movies</h2>
-      {renderMovieCards(trendingMovies)}
+      <div className="collapsible-section">
+        <h2 onClick={toggleTrending} className="collapsible-header">
+          🔥 Trending Movies {showTrending ? "▲" : "▼"}
+        </h2>
+        {showTrending && renderMovieCards(trendingMovies)}
+      </div>
 
-      <h2>🎬 Popular Movies</h2>
-      {renderMovieCards(movies)}
+      <div className="collapsible-section">
+        <h2 onClick={togglePopular} className="collapsible-header">
+          🎬 Popular Movies {showPopular ? "▲" : "▼"}
+        </h2>
+        {showPopular && renderMovieCards(movies)}
+      </div>
+
+      {/* Insert NetflixMovies component here */}
+      <NetflixMovies />
     </div>
   );
 }

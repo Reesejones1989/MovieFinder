@@ -1,3 +1,4 @@
+import './LoginForm.css'
 import React, { useState, useEffect } from "react";
 
 export default function LoginForm() {
@@ -104,7 +105,7 @@ export default function LoginForm() {
   }, []);
 
   return (
-    <div>
+    <div className="login-page">
       {isAuthenticated ? (
         <div>
           <p>Welcome, {userNameLoggedIn}!</p>

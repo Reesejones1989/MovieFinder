@@ -139,7 +139,7 @@ export default function SearchBar() {
     <div className="search-wrapper">
       <div className="search-bar">
         <button className="toggle-btn" onClick={() => setIsTVShow(!isTVShow)}>
-          {isTVShow ? "Search Movies" : "Search TV Shows"}
+          {isTVShow ? "Switch to Search Movies" : "Switch to Search TV Shows"}
         </button>
 
         <input

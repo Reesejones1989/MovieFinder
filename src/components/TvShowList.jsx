@@ -1,3 +1,4 @@
+import NetflixShows from "./NetflixShows";
 import "./TvShowList.css";
 import { useState, useEffect } from "react";
 
@@ -19,10 +20,10 @@ const initialTvShows = [
 export default function TvShowList() {
   const [tvShows, setTvShows] = useState(initialTvShows);
   const [trendingShows, setTrendingShows] = useState([]);
-  const [netflixShows, setNetflixShows] = useState([]);
-  const [netflixOpen, setNetflixOpen] = useState(false);
   const [flipped, setFlipped] = useState({});
   const [postersFetched, setPostersFetched] = useState(false);
+  const [showTrendingTv, setShowTrending] = useState(true);
+  const [showPopularTv, setShowPopular] = useState(true);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -105,20 +106,12 @@ export default function TvShowList() {
     }
   }, [postersFetched, apiKey, tvShows]);
 
+  
+  const toggleTrendingTv = () => setShowTrending(prev => !prev);
+  const togglePopularTv = () => setShowPopular(prev => !prev);
+
+
   const fetchNetflixList = async () => {
-    try {
-      const res = await fetch("https://mdblist.com/lists/reesejones89/netflix-last-90-days-tvshows.json");
-      const data = await res.json();
-      const formatted = data.items.map((item) => ({
-        id: item.id,
-        title: item.title,
-        year: item.year,
-        poster: item.poster || "",
-      }));
-      setNetflixShows(formatted);
-    } catch (err) {
-      console.error("Failed to fetch Netflix 90-day TV shows:", err);
-    }
   };
 
   const formatTitleForLevidia = (title) =>
@@ -200,20 +193,22 @@ export default function TvShowList() {
 
   return (
     <div className="tv-show-list">
-      <h2>🔥 Trending TV Shows</h2>
-      {renderShowCards(trendingShows)}
-
-      <h2>⭐ Popular TV Shows</h2>
-      {renderShowCards(tvShows)}
-
-      <h2
-        className="collapsible-header"
-        onClick={() => setNetflixOpen((open) => !open)}
-        style={{ cursor: "pointer", marginTop: "1rem" }}
-      >
-        {netflixOpen ? "⬇️" : "➡️"} Netflix — Last 90 Days
-      </h2>
-      {netflixOpen && renderShowCards(netflixShows)}
+      <div className="collapsible-section">
+        <h2 onClick={toggleTrendingTv} className="collapsible-header">
+          🔥 Trending TV Shows {showTrendingTv ? "▲" : "▼"}
+        </h2>
+        {showTrendingTv && renderShowCards(trendingShows)}
+      </div>
+  
+      <div className="collapsible-section">
+        <h2 onClick={togglePopularTv} className="collapsible-header">
+          ⭐ Popular TV Shows {showPopularTv ? "▲" : "▼"}
+        </h2>
+        {showPopularTv && renderShowCards(tvShows)}
+      </div>
+  
+      <NetflixShows />
     </div>
   );
+  
 }
