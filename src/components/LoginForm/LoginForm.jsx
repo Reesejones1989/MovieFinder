@@ -27,7 +27,7 @@ export default function LoginForm() {
     }
 
     try {
-      const response = await fetch("/api/signup", {
+      const response = await fetch("https:localhost:5000/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export default function LoginForm() {
     }
 
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch("https:localhost:5000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

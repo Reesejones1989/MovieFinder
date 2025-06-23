@@ -1,7 +1,8 @@
 import "./MovieList.css";
+import React from 'react'
 import { useState, useEffect } from "react";
-import initialMovies from './InitialMovies';
-import NetflixMovies from './NetflixMovies';  // Import the NetflixMovies component
+import initialMovies from '../hardCodedLists/InitialMovies';
+import NetflixMovies from './NetflixMovies';
 
 export default function MovieList() {
   const [movies, setMovies] = useState(initialMovies);
@@ -13,6 +14,8 @@ export default function MovieList() {
   const [showPopular, setShowPopular] = useState(true);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+
+  const token = localStorage.getItem("token");
 
   const toggleFlip = (id) => {
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -136,6 +139,52 @@ export default function MovieList() {
     return links;
   };
 
+  const addToFavorites = async (movie) => {
+    try {
+      //const apiBase = import.meta.env.VITE_API_URL;
+      const response = await fetch(`http://localhost:5000/api/favorites`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          movieId: movie.id,
+          title: movie.title,
+        }),
+      });
+
+      const text = await response.text();
+
+      try {
+        const data = JSON.parse(text);
+        
+        if (response.ok) {
+          // Handle success with data
+          console.log("Success:", data);
+        } else {
+          // Handle error response with data.message or similar
+          alert(data.message || "Something went wrong");
+        }
+      
+      } catch (err) {
+        // Not JSON (likely HTML error page)
+        console.error("Failed to parse JSON, response was:", text);
+        alert("Unexpected server response, please try again later.");
+      }
+     
+
+      if (response.ok) {
+        alert(`${movie.title} added to favorites!`);
+      } else {
+        alert(data.message || "Failed to add favorite.");
+      }
+    } catch (error) {
+      console.error("Error adding favorite:", error);
+      alert("Server response was not valid JSON. See console.");
+    }
+  };
+
   const renderMovieCards = (movieArray) => (
     <div className="movie-container">
       {movieArray.map((movie) => {
@@ -178,7 +227,15 @@ export default function MovieList() {
                   src={movie.poster || "https://via.placeholder.com/250x300"}
                   alt={movie.title}
                 />
-                <button className="favorite-btn">⭐ Add to Favorites</button>
+                <button
+                  className="favorite-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToFavorites(movie);
+                  }}
+                >
+                  ⭐ Add to Favorites
+                </button>
                 {watchLinks.map((link, index) => (
                   <a
                     key={index}
@@ -214,7 +271,6 @@ export default function MovieList() {
         {showPopular && renderMovieCards(movies)}
       </div>
 
-      {/* Insert NetflixMovies component here */}
       <NetflixMovies />
     </div>
   );

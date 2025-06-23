@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Nav from './components/Nav.jsx';
+import Nav from './components/Nav&Footer/Nav.jsx';
 import './App.css';
 import Home from './pages/Home.jsx';
 import About from './pages/About.jsx';
@@ -10,7 +10,9 @@ import Sports from './pages/Sports.jsx'
 import Login from './pages/Login.jsx'
 import Favorites from './pages/Favorite.jsx'
 import LiveTv from './pages/LiveTv.jsx'
-import Footer from './components/Footer.jsx'
+import Test from './components/Test/Test.jsx';
+import Footer from './components/Nav&Footer/Footer.jsx'
+import React from 'react'
 
 function App() {
   return (
@@ -46,7 +48,7 @@ function App() {
           <Route path="/Movies" element={<Navigate to="/Movies" replace />} />
           <Route path="/Tv-Shows" element={<Navigate to="/TV-Shows" replace />} />
           <Route path="/LiveTV" element={<Navigate to="/LiveTv" replace />}  />
-
+          <Route path="/Test" element={<Test />} />
           
 
 

@@ -1,4 +1,5 @@
 import "./SportsList.css"; // Import the CSS file
+import React from 'react'
 
 
 export default function SportsList() {

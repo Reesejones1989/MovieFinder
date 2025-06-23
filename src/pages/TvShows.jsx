@@ -1,5 +1,7 @@
 import {Link } from "react-router-dom";
-import TvShowList from "../components/TvShowList";
+import React from 'react'
+
+import TvShowList from "../components/TvShows/TvShowList";
 
 export default function TvShows(){
     return(

@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import "./MovieList.css";
+import React from 'react'
 
-export default function NetflixMovies() {
-  const [movies, setMovies] = useState([]);
+import "./TvShowList.css";
+
+export default function NetflixShows() {
+  const [shows, setShows] = useState([]);
   const [flipped, setFlipped] = useState({});
   const [showDescriptions, setShowDescriptions] = useState({});
   const [error, setError] = useState(null);
-  const [showNetflix, setShowNetflix] = useState(true);
+  const [showNetflixShows, setShowNetflixShows] = useState(true);
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
   const toggleFlip = (id) => {
@@ -17,23 +19,23 @@ export default function NetflixMovies() {
     setShowDescriptions((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const toggleNetflix = () => setShowNetflix((prev) => !prev);
+  const toggleNetflixShows = () => setShowNetflixShows((prev) => !prev);
 
   const formatTitleForLevidia = (title) =>
     title.replace(/:/g, "").replace(/\s+/g, "-").replace(/&/g, "").replace(/'/g, "");
 
-  const getWatchLinks = (movie) => {
+  const getWatchLinks = (show) => {
     const links = [];
 
-    if (movie.imdb_id) {
+    if (show.imdb_id) {
       links.push({
-        url: `https://vidsrc.xyz/embed/movie/${movie.imdb_id}`,
+        url: `https://vidsrc.xyz/embed/tv/${show.imdb_id}`,
         label: "▶️ Watch on Vidsrc",
       });
     }
 
     links.push({
-      url: `https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(movie.title)}`,
+      url: `https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(show.name)}`,
       label: "▶️ Watch on Levidia",
     });
 
@@ -41,95 +43,95 @@ export default function NetflixMovies() {
   };
 
   useEffect(() => {
-    const fetchPopularNetflixMovies = async () => {
+    const fetchPopularNetflixShows = async () => {
       try {
         const today = new Date();
         const ninetyDaysAgo = new Date(today);
         ninetyDaysAgo.setDate(today.getDate() - 90);
         const gteDate = ninetyDaysAgo.toISOString().split("T")[0];
 
-        const url = `https://api.themoviedb.org/3/discover/movie?` +
+        const url = `https://api.themoviedb.org/3/discover/tv?` +
           `api_key=${apiKey}` +
-          `&watch_providers=8` +
+          `&with_watch_providers=8` +
           `&watch_region=US` +
           `&with_watch_monetization_types=flatrate` +
-          `&primary_release_date.gte=${gteDate}` +
+          `&first_air_date.gte=${gteDate}` +
           `&sort_by=popularity.desc` +
           `&page=1`;
 
         const res = await fetch(url);
-        if (!res.ok) throw new Error(`Failed to fetch Netflix movies: ${res.status}`);
+        if (!res.ok) throw new Error(`Failed to fetch Netflix shows: ${res.status}`);
 
         const data = await res.json();
 
-        const enrichedMovies = await Promise.all(
-          data.results.map(async (movie) => {
+        const enrichedShows = await Promise.all(
+          data.results.map(async (show) => {
             const detailRes = await fetch(
-              `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`
+              `https://api.themoviedb.org/3/tv/${show.id}?api_key=${apiKey}&append_to_response=external_ids`
             );
             const detailData = await detailRes.json();
 
             return {
-              id: movie.id,
-              title: movie.title,
-              year: movie.release_date ? parseInt(movie.release_date.split("-")[0]) : "N/A",
-              poster: movie.poster_path
-                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`
+              id: show.id,
+              name: show.name,
+              year: show.first_air_date ? parseInt(show.first_air_date.split("-")[0]) : "N/A",
+              poster: show.poster_path
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${show.poster_path}`
                 : "",
-              imdb_id: detailData.imdb_id || null,
+              imdb_id: detailData?.external_ids?.imdb_id || null,
               overview: detailData.overview || "",
             };
           })
         );
 
-        setMovies(enrichedMovies);
+        setShows(enrichedShows);
       } catch (err) {
-        console.error("Error fetching Netflix movies:", err);
-        setError("Could not load Netflix movies.");
+        console.error("Error fetching Netflix shows:", err);
+        setError("Could not load Netflix shows.");
       }
     };
 
-    fetchPopularNetflixMovies();
+    fetchPopularNetflixShows();
   }, [apiKey]);
 
   return (
     <div className="collapsible-section">
-      <h2 onClick={toggleNetflix} className="collapsible-header">
-        🎥 Popular Netflix Movies (Last 90 Days) {showNetflix ? "▲" : "▼"}
+      <h2 onClick={toggleNetflixShows} className="collapsible-header">
+        📺 Popular Netflix Shows (Last 90 Days) {showNetflixShows ? "▲" : "▼"}
       </h2>
       {error && <p>{error}</p>}
-      {showNetflix && (
+      {showNetflixShows && (
         <div className="movie-container">
-          {movies.map((movie) => {
-            const watchLinks = getWatchLinks(movie);
+          {shows.map((show) => {
+            const watchLinks = getWatchLinks(show);
             return (
               <div
-                key={movie.id}
-                className={`movie-card ${flipped[movie.id] ? "flipped" : ""}`}
-                onClick={() => toggleFlip(movie.id)}
+                key={show.id}
+                className={`movie-card ${flipped[show.id] ? "flipped" : ""}`}
+                onClick={() => toggleFlip(show.id)}
               >
                 <div className="movie-card-inner">
                   <div className="movie-card-front">
                     <img
-                      src={movie.poster || "https://via.placeholder.com/250x300"}
-                      alt={movie.title}
+                      src={show.poster || "https://via.placeholder.com/250x300"}
+                      alt={show.name}
                     />
-                    <h3>{movie.title}</h3>
-                    <p>({movie.year})</p>
+                    <h3>{show.name}</h3>
+                    <p>({show.year})</p>
 
-                    {movie.overview && (
+                    {show.overview && (
                       <>
                         <button
                           className="read-desc-btn"
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleDescription(movie.id);
+                            toggleDescription(show.id);
                           }}
                         >
-                          {showDescriptions[movie.id] ? "Hide Description" : "Read Description"}
+                          {showDescriptions[show.id] ? "Hide Description" : "Read Description"}
                         </button>
-                        {showDescriptions[movie.id] && (
-                          <p className="movie-description">{movie.overview}</p>
+                        {showDescriptions[show.id] && (
+                          <p className="movie-description">{show.overview}</p>
                         )}
                       </>
                     )}
@@ -137,8 +139,8 @@ export default function NetflixMovies() {
 
                   <div className="movie-card-back">
                     <img
-                      src={movie.poster || "https://via.placeholder.com/250x300"}
-                      alt={movie.title}
+                      src={show.poster || "https://via.placeholder.com/250x300"}
+                      alt={show.name}
                     />
                     <button className="favorite-btn">⭐ Add to Favorites</button>
                     {watchLinks.map((link, index) => (

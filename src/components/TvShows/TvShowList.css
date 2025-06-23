@@ -76,7 +76,7 @@
 
 .tv-show-card-front h3,
 .tv-show-card-back h3 {
-  font-size: 14px;
+  font-size: 18px;
   margin: 6px 0;
   text-align: center;
   color: #222;
@@ -85,7 +85,7 @@
 .tv-show-card-front p,
 .tv-show-card-back p {
   font-size: 14px;
-  color: #aaa;
+  color: black;
 }
 
 .favorite-btn {

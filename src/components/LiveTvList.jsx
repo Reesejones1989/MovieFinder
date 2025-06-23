@@ -1,4 +1,6 @@
 import './LiveTvList.css';
+import React from 'react'
+
 
 export default function LiveTvList() {
   return (
@@ -76,6 +78,39 @@ export default function LiveTvList() {
         <a href="https://tvpass.org/channel/cnn-us" target="_blank" rel="noopener noreferrer">
           <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/CNN.svg" alt="CNN Logo" />
         </a>
+
+        <a href="https://tvpass.org/channel/crime-investigation-network-usa-hd" target="_blank" rel="noopener noreferrer">
+          <img src="https://www.crimeandinvestigationnetwork.com/assets/images/crimeandinvestigation/generic-thumb.jpg" alt="Crime Network Logo" />
+        </a>
+        
+        <a href="https://tvpass.org/channel/comedy-central-us-eastern-feed" target="_blank" rel="noopener noreferrer">
+          <img src="https://standfirst-designweek-production.imgix.net/uploads/2019/01/11140801/CC_Refresh__Hero_Logo.jpg?fit=crop&crop=faces&q=80&auto=compress,format&w=364&h=404&dpr=2.625" alt="Comedy Central" />
+        </a>
+
+        <a href="https://tvpass.org/channel/fox-sports-1" target="_blank" rel="noopener noreferrer">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/2015_Fox_Sports_1_logo.svg/1200px-2015_Fox_Sports_1_logo.svg.png" alt="Fox Sports 1" />
+        </a>
+
+        <a href="https://tvpass.org/channel/hallmark-eastern-feed" target="_blank" rel="noopener noreferrer">
+          <img src="https://embroideres.com/files/8515/7105/3387/hallmark_logo_machine_embroidery_design.jpg" alt="HallMark" />
+        </a>
+
+        <a href="https://tvpass.org/channel/nfl-redzone" target="_blank" rel="noopener noreferrer">
+          <img src="https://i.pinimg.com/474x/60/3a/60/603a60cefd74ac618b480f8085425860.jpg" alt="NFL Redzone" />
+        </a>
+
+        <a href="https://tvpass.org/channel/nfl-network" target="_blank" rel="noopener noreferrer">
+          <img src="https://imengine.public.prod.cdr.navigacloud.com/?uuid=1053A078-4BE7-424E-B770-D2F2829F3A1A&function=cover&type=preview&source=false&width=1050&height=550" alt="NFL Redzone" />
+        </a>
+
+        <a href="https://tvpass.org/channel/tnt-eastern-feed" target="_blank" rel="noopener noreferrer">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoCm97ocaTMAqgHS_WCP1A0OvwF0RTJWoV1g&s" alt="TNT" />
+        </a>
+
+        <a href="https://tvpass.org/channel/tv-one" target="_blank" rel="noopener noreferrer">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e3/TV-One-logo-2016.png" alt="TV One" />
+        </a>
+
       </div>
     </div>
   );
