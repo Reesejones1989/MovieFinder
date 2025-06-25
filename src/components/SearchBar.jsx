@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import './SearchBar.css';
 
 export default function SearchBar() {
@@ -12,11 +11,7 @@ export default function SearchBar() {
 
   useEffect(() => {
     const visitCount = localStorage.getItem("visitCount");
-    if (!visitCount) {
-      localStorage.setItem("visitCount", 1);
-    } else {
-      localStorage.setItem("visitCount", Number(visitCount) + 1);
-    }
+    localStorage.setItem("visitCount", visitCount ? Number(visitCount) + 1 : 1);
     console.log("Visitor count:", localStorage.getItem("visitCount"));
   }, []);
 
@@ -65,34 +60,23 @@ export default function SearchBar() {
       }
     };
 
-    const delayDebounceFn = setTimeout(() => {
-      fetchSuggestions();
-    }, 500);
-
+    const delayDebounceFn = setTimeout(fetchSuggestions, 500);
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, isTVShow]);
 
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
 
-    let formattedSearch = searchTerm
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/:/g, "");
-
+    let formattedSearch = searchTerm.trim().replace(/\s+/g, "-").replace(/:/g, "");
     if (formattedSearch.includes("Spider-Man")) {
       formattedSearch = formattedSearch.replace("Spider-Man", "Spiderman");
     }
 
     const matchedSuggestion = suggestions.find(s =>
-      (s.title || s.name)
-        .toLowerCase()
-        .includes(searchTerm.trim().toLowerCase())
+      (s.title || s.name).toLowerCase().includes(searchTerm.trim().toLowerCase())
     );
 
     const imdbId = matchedSuggestion?.imdb_id;
-    console.log(imdbId);
-
     if (imdbId) {
       const vidsrcUrl = `https://vidsrc.xyz/embed/${isTVShow ? "tv" : "movie"}/${imdbId}`;
       window.open(vidsrcUrl, "_blank");
