@@ -1,10 +1,22 @@
 /* Ensure the root container is responsive */
 #root {
-  max-width: 100%;
+  padding: 2rem; /* Increased padding to prevent TV cutoff */
   margin: 0 auto;
-  padding: 1rem;
   text-align: center;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  /*background-color: #fdeecb; */ /* Match logo's yellow */
+
+}
+.app-container {
+  padding-bottom: 120px; /* Prevent content from being covered by footer */
 }
 
 .nav-links {
@@ -13,7 +25,6 @@
 
 /* Ensure the app container scales well */
 .app-container {
-  max-width: 100%;
   margin: 0 auto;
   padding: 1rem;
   text-align: center;
@@ -22,17 +33,20 @@
 
 /* Responsive Logo */
 .logo-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none; /* Prevent interaction */
+  opacity: 0.1; /* Lower opacity for background look */
 }
 
 .movie-logo {
-  max-width: 80%;
+  width: 600px;
   height: auto;
-  opacity: 0.7; /* 70% opacity for a translucent effect */
-  transition: opacity 0.3s ease-in-out;
+  opacity: 1; /* fully visible since container handles transparency */
+  filter: blur(0.5px); /* optional: add blur for a soft look */
 }
 
 .movie-logo:hover {
@@ -173,6 +187,8 @@
 
   .app-container {
     margin-top: 100px;
+    position: relative;
+    z-index: 1;
   }
 
   .nav-links {

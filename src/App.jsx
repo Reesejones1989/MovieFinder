@@ -13,6 +13,7 @@ import LiveTv from './pages/LiveTv.jsx'
 import Test from './components/Test/Test.jsx';
 import Footer from './components/Nav&Footer/Footer.jsx'
 import React from 'react'
+import NewMovieFinder from './assets/NewMovieFinder.jpg'
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
         {/* Movie Finder Logo */}
         <div className="logo-container">
           <img 
-            src="https://r2.erweima.ai/i/JlHYKridTXa_U4NgCQ63Ww.png" 
+            src={NewMovieFinder} 
             alt="Movie Links Movie Finder" height="300" width="300"
             className="movie-logo" 
           />

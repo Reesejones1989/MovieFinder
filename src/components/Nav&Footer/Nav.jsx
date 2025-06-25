@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import React from 'react'
 import { Link } from 'react-router-dom';
+import NewMovieFinder from '../../assets/NewMovieFinder.jpg';
 import './Nav.css';
 
 export default function Nav() {
@@ -13,7 +14,7 @@ export default function Nav() {
       <div className="nav-left">
         <Link to="/" onClick={() => setMenuOpen(false)}>
           <img
-            src="/MovieFinder.jpg"
+            src={NewMovieFinder}
             alt="Movie Finder Logo"
             className="nav-logo"
           />

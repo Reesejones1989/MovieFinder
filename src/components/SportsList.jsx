@@ -28,7 +28,7 @@ export default function SportsList() {
         </a>
 
         <a href="https://the.streameast.app/boxingstreams13" target="_blank" rel="noopener noreferrer">
-          <img src="https://logopond.com/logos/1f8a86c11b5c49c8bb90a218b4a2e3cb.png" alt="Boxing Logo" />
+          <img src="https://c8.alamy.com/comp/2K9YANB/mike-tyson-boxing-boxer-champion-vector-t-shirt-design-red-boxing-gloves-download-it-now-2K9YANB.jpg" alt="Boxing Logo" />
         </a>
 
         <a href="https://the.streameast.app/mmastreams10" target="_blank" rel="noopener noreferrer">

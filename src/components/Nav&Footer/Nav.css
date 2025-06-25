@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(90deg, #4CAF50, green); /* playful green-to-orange */
+  background: linear-gradient(90deg, lightgreen, green); /* playful green-to-orange */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -83,6 +83,10 @@
 
 .hamburger.open .bar3 {
   transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.search-wrapper {
+  margin-top: 100px; /* adjust based on your navbar height */
 }
 
 @media (max-width: 768px) {

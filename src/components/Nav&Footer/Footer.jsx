@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube, FaArrowUp } from 'react-icons/fa';
 import './Footer.css';
 
-export default function Footer() {
+export default function Footer({ suggestionsLength = 0 }) {
   const [showTopBtn, setShowTopBtn] = useState(false);
 
   useEffect(() => {
@@ -20,17 +20,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className="Footer">
+    <footer className={`Footer ${suggestionsLength > 0 ? "footer-minimized" : ""}`}>
       <div className="footer-content">
-        <div className="footer-section quick-links">
-          <h4>Quick Links</h4>
-          <Link to="/">Home</Link>
-          <Link to="/Movies">Movies</Link>
-          <Link to="/TV-Shows">TV Shows</Link>
-          <Link to="/Anime">Anime</Link>
-          <Link to="/Sports">Sports</Link>
-        </div>
-
         <div className="footer-section social">
           <h4>Follow Us</h4>
           <div className="social-icons">
@@ -40,6 +31,18 @@ export default function Footer() {
             <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"><FaYoutube /></a>
           </div>
         </div>
+
+        <div className="footer-section quick-links">
+      <h4>Quick Links</h4>
+      <div className="quick-links-columns">
+       <Link to="/">Home</Link>
+       <Link to="/Movies">Movies</Link>
+       <Link to="/TV-Shows">TV Shows</Link>
+       <Link to="/Anime">Anime</Link>
+       <Link to="/Sports">Sports</Link>
+       <Link to="/LiveTv">Live Tv</Link>
+      </div>
+      </div>
       </div>
 
       <div className="footer-bottom">
