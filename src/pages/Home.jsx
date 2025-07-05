@@ -8,7 +8,6 @@ export default function Home(){
             <SearchBar />
 
             <br/>
-            <Footer />
         </div> 
         
     )

@@ -84,10 +84,13 @@
   align-items: flex-start;
   gap: 16px;
   margin-bottom: 20px;
-  background-color: #fff;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  background-color: gray; /* black background */
+  color: #fff;            /* white text */
+
+
 }
 
 .suggestion-details {
