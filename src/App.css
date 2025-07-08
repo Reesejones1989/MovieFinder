@@ -1,6 +1,6 @@
 /* Ensure the root container is responsive */
 #root {
-  padding: 2rem; /* Increased padding to prevent TV cutoff */
+  padding: 1rem; /* Increased padding to prevent TV cutoff */
   margin: 0 auto;
   text-align: center;
   overflow-x: hidden;
@@ -26,6 +26,7 @@ html, body, #root {
 
 
 .app-container {
+  padding-top: 80px; /* Prevent content from being covered by footer */
   padding-bottom: 120px; /* Prevent content from being covered by footer */
     display: flex;
     flex-direction: column;
