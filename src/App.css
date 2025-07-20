@@ -154,6 +154,47 @@ html, body, #root {
 }
 
 /* Responsive: 2 per row on tablets & mobile */
+@media screen and (max-width: 1024px) {
+  .Nav {
+    flex-direction: column;
+    align-items: center;
+    padding: 5px 0;
+  }
+
+  .Nav a {
+    font-size: 14px;
+    padding: 8px;
+    width: 100%;
+  }
+
+  .movie-logo {
+    max-width: 90%;
+    height: auto;
+  }
+
+  .logo-container {
+    margin: 10px 0;
+  }
+
+  .app-container {
+    padding: 1rem;
+    margin-top: 80px;
+  }
+
+  .movie-container, .tvshow-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 per row */
+  }
+
+  .movie, .tvshow {
+    width: 180px;
+    height: 300px;
+  }
+
+  .movie img, .tvshow img {
+    width: 160px;
+    height: 240px;
+  }
+}
 @media screen and (max-width: 768px) {
   .Nav {
     flex-direction: column;

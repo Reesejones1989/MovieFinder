@@ -79,6 +79,7 @@ export default function LoginForm() {
         setUserNameLoggedIn(username);
         setIsAuthenticated(true); // Set user as authenticated
         alert("Logged in successfully!");
+        Navigate("/Home");
       } else {
         alert(data.error || "Failed to log in.");
       }

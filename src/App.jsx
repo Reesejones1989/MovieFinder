@@ -14,6 +14,7 @@ import LiveTv from './pages/LiveTv.jsx';
 import Test from './components/Test/Test.jsx';
 import React from 'react';
 import NewMovieFinder from './assets/NewMovieFinder.jpg';
+import PrivateRoute from './components/PrivateRoute.jsx';
 
 function App() {
   return (
@@ -44,7 +45,7 @@ function App() {
             <Route path="/LiveTv" element={<LiveTv />} />
             <Route path="/About" element={<About />} />
             <Route path="/Login" element={<Login />} />
-            <Route path="/Favorites" element={<Favorites />} />
+            <Route path="/Favorites" element={<PrivateRoute><Favorites /></PrivateRoute>} />
             <Route path="/Test" element={<Test />} />
 
             {/* Redirects & Aliases */}
