@@ -82,10 +82,18 @@
   color: #222;
 }
 
+.tv-show-card-back h3 {
+  color: white;
+}
+
 .tv-show-card-front p,
 .tv-show-card-back p {
   font-size: 14px;
   color: black;
+}
+
+.tv-show-card-back p {
+  color: white;
 }
 
 .favorite-btn {
@@ -124,11 +132,27 @@
 
 /* Responsive Tweaks */
 
-/* Unified Responsive Tweaks with MovieList */
+@media screen and (max-width: 1024px) {
+  .tv-show-container {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    padding: 0 20px;
+    gap: 20px;
+  }
+
+  .tv-show-card {
+    height: 500px;
+  }
+
+  .tv-show-card-front img,
+  .tv-show-card-back img {
+    height: 280px;
+  }
+}
 
 @media screen and (max-width: 768px) {
   .tv-show-container {
     grid-template-columns: repeat(3, 1fr);
+    padding: 0 16px;
   }
 
   .tv-show-card {
@@ -143,30 +167,41 @@
 
 @media screen and (max-width: 600px) {
   .tv-show-container {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
+    grid-template-columns: 1fr;
     padding: 0 12px;
   }
 
   .tv-show-card {
+    width: 95%;
     height: 460px;
+    margin: 0 auto;
   }
 
   .tv-show-card-front img,
   .tv-show-card-back img {
-    height: 260px;
+    height: 240px;
+  }
+
+  .tv-show-card-front h3,
+  .tv-show-card-back h3 {
+    font-size: 16px;
+  }
+
+  .tv-show-card-front p,
+  .tv-show-card-back p {
+    font-size: 13px;
   }
 }
 
 @media screen and (max-width: 400px) {
-  .tv-show-container {
-    grid-template-columns: 1fr;
+  .tv-show-card {
+    width: 90%;
+    font-size: 12px;
   }
 
-  .tv-show-card {
-    width: 195px;
-    margin: 0 auto;
-    font-size: 10px;
+  .favorite-btn,
+  .levidia-link {
+    font-size: 12px;
+    padding: 8px;
   }
 }
-
