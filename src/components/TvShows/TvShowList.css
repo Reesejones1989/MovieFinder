@@ -124,6 +124,8 @@
 
 /* Responsive Tweaks */
 
+/* Unified Responsive Tweaks with MovieList */
+
 @media screen and (max-width: 768px) {
   .tv-show-container {
     grid-template-columns: repeat(3, 1fr);
@@ -145,13 +147,9 @@
     gap: 16px;
     padding: 0 12px;
   }
-}
 
-@media screen and (max-width: 480px) {
   .tv-show-card {
     height: 460px;
-    width: 195px;
-    font-size: 10px;
   }
 
   .tv-show-card-front img,
@@ -164,4 +162,11 @@
   .tv-show-container {
     grid-template-columns: 1fr;
   }
+
+  .tv-show-card {
+    width: 195px;
+    margin: 0 auto;
+    font-size: 10px;
+  }
 }
+

@@ -9,7 +9,7 @@ const initialAnimes = [
     { id: 8, title: "Hunter x Hunter", year: 2007, poster: "" },
     { id: 9, title: "Bleach", year: 2025, poster: "" },
     { id: 10, title: "Boruto", year: 2022, poster: "" },
-    { id: 11, title: "Dan-Da-dan", year: 2022, poster: "" },
+    { id: 11, title: "Arcane", year: 2022, poster: "" },
     { id: 12, title: "Dr. Stone", year: 2024, poster: "" },
   ];
 
