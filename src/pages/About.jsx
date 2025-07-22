@@ -30,13 +30,13 @@ export default function About() {
 
     return (
         <div className="about-container">
-            <p>
-                This app is to bring a place to search for TV show and movie links without the potential ads all over the place.
+            <p style={{color: 'black'}}>
+                This app is to bring a place to search for TV show and movie links without egregious ads.
             </p>
 
           
 
-            <h3>Features to come soon: Favorites & Sign-up/LogIn Aren't functional just yet</h3>
+            <h3 style={{color: 'black'}}>Features to come soon: Favorites & Sign-up/LogIn Aren't functional just yet</h3>
 
             {/* Suggestion Box Form */}
             <form onSubmit={sendEmail}>
@@ -53,7 +53,7 @@ export default function About() {
 
             {/* Footer */}
             <footer className="about-footer">
-                <p>© 2025 Maurice Jones</p>
+                <p style={{color: 'black'}}>© 2025 Maurice Jones</p>
                 <a href="https://reesejones1989.github.io/Portfolio/" target="_blank" rel="noopener noreferrer">
                     Visit My Portfolio
                 </a>

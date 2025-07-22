@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import NewMovieFinder from '../../assets/NewMovieFinder.jpg';
 import './Nav.css';
 
+/*  <Link to="/Favorites" onClick={() => setMenuOpen(false)}>Favorites</Link>
+*/
+
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -22,14 +25,13 @@ export default function Nav() {
       </div>
 
 
-      <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
+  <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
   <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
   <Link to="/Movies" onClick={() => setMenuOpen(false)}>Movies</Link>
   <Link to="/TV-Shows" onClick={() => setMenuOpen(false)}>TV Shows</Link>
   <Link to="/Anime" onClick={() => setMenuOpen(false)}>Anime</Link>
   <Link to="/Sports" onClick={() => setMenuOpen(false)}>Sports</Link>
   <Link to="/LiveTv" onClick={() => setMenuOpen(false)}>Live TV</Link>
-  <Link to="/Favorites" onClick={() => setMenuOpen(false)}>Favorites</Link>
   <Link to="/About" onClick={() => setMenuOpen(false)}>About</Link>
   <Link to="/Login" onClick={() => setMenuOpen(false)}>Login/SignUp</Link>
     </div>
