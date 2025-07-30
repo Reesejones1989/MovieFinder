@@ -1,0 +1,20 @@
+.logout-button {
+    color: white;
+    font-weight: 600;
+    font-size: 24px;
+    padding: 10px 16px;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .logout-button:hover {
+    background-color: black;
+    color: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  }
+  

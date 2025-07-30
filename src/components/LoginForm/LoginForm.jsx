@@ -1,170 +1,79 @@
-import './LoginForm.css'
+import './LoginForm.css';
 import React, { useState, useEffect } from "react";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function LoginForm() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // State for tracking authentication
-  const [userNameLoggedIn, setUserNameLoggedIn] = useState(""); // State to store the logged-in user's username
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState("");
 
-  // Handle username change
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
+  const auth = getAuth();
+  
 
-  // Handle password change
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  // Handle user sign up
-  const handleCreateAccount = async (e) => {
-    e.preventDefault();
-    if (!username || !password) {
-      alert("Please fill in both username and password.");
-      return;
-    }
-
-    try {
-      const response = await fetch("https:localhost:5000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        alert("Account created successfully!");
-        setUsername(""); // Clear the input
-        setPassword(""); // Clear the input
-      } else {
-        alert(data.error || "Failed to create account.");
-      }
-    } catch (error) {
-      console.error("Error creating account:", error);
-      alert("Server error. Please try again later.");
-    }
-  };
-
-  // Handle login submission
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    if (!username || !password) {
-      alert("Please fill in both username and password.");
-      return;
-    }
-
-    try {
-      const response = await fetch("https:localhost:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        // Store the token and user info
-        localStorage.setItem("token", data.token);
-        setUserNameLoggedIn(username);
-        setIsAuthenticated(true); // Set user as authenticated
-        alert("Logged in successfully!");
-        Navigate("/Home");
-      } else {
-        alert(data.error || "Failed to log in.");
-      }
-    } catch (error) {
-      console.error("Error logging in:", error);
-      alert("Server error. Please try again later.");
-    }
-  };
-
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove the token from local storage
-    setIsAuthenticated(false); // Set user as not authenticated
-    setUserNameLoggedIn(""); // Clear the username
-  };
-
-  // Check if user is already logged in on component mount
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsAuthenticated(true);
-      setUserNameLoggedIn(localStorage.getItem("username")); // Set username if already logged in
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, [auth]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      return;
     }
-  }, []);
+
+    try {
+      if (isCreatingAccount) {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
+  };
 
   return (
     <div className="login-page">
-      {isAuthenticated ? (
+      {user ? (
         <div>
-          <p>Welcome, {userNameLoggedIn}!</p>
+          <p>Welcome, {user.email}!</p>
           <button onClick={handleLogout}>Log Out</button>
         </div>
       ) : (
-        <form>
-          {isCreatingAccount ? (
-            <>
-              <label>Username:</label>
-              <input
-                type="text"
-                name="username"
-                value={username}
-                onChange={handleUsernameChange}
-              />
-              <br />
-              <br />
-              <label>Password:</label>
-              <input
-                type="password"
-                name="password"
-                value={password}
-                onChange={handlePasswordChange}
-              />
-              <br />
-              <br />
-              <button onClick={handleCreateAccount}>Create Account</button>
-              <button onClick={() => setIsCreatingAccount(false)}>
-                Back to Login
-              </button>
-            </>
-          ) : (
-            <>
-              <label>Username:</label>
-              <input
-                type="text"
-                name="username"
-                value={username}
-                onChange={handleUsernameChange}
-              />
-              <br />
-              <br />
-              <label>Password:</label>
-              <input
-                type="password"
-                name="password"
-                value={password}
-                onChange={handlePasswordChange}
-              />
-              <br />
-              <br />
-              <button onClick={handleLogin}>Sign In</button>
-              <button onClick={() => setIsCreatingAccount(true)}>
-                Create Account
-              </button>
-            </>
-          )}
+        <form onSubmit={handleSubmit}>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <button type="submit">{isCreatingAccount ? "Create Account" : "Sign In"}</button>
+          <button type="button" onClick={() => setIsCreatingAccount(!isCreatingAccount)}>
+            {isCreatingAccount ? "Back to Login" : "Create Account"}
+          </button>
+
+          {error && <p className="error-message">{error}</p>}
         </form>
       )}
     </div>

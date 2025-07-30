@@ -12,11 +12,31 @@ import Login from './pages/Login.jsx';
 import Favorites from './pages/Favorite.jsx';
 import LiveTv from './pages/LiveTv.jsx';
 import Test from './components/Test/Test.jsx';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import NewMovieFinder from './assets/NewMovieFinder.jpg';
 import PrivateRoute from './components/PrivateRoute.jsx';
 
+import './components/firebaseConfig.jsx'; // ✅ Initialize Firebase once
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
 function App() {
+  const [user, setUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setAuthChecked(true);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (!authChecked) {
+    return <div>Loading...</div>; // Optional loading screen
+  }
+
   return (
     <Router>
       <div className="app-container">
@@ -44,8 +64,13 @@ function App() {
             <Route path="/Sports" element={<Sports />} />
             <Route path="/LiveTv" element={<LiveTv />} />
             <Route path="/About" element={<About />} />
-            <Route path="/Login" element={<Login />} />
+            
+            {/* Firebase Login logic */}
+            <Route path="/Login" element={user ? <Navigate to="/Favorites" replace /> : <Login />} />
+
+            {/* Protected Route */}
             <Route path="/Favorites" element={<PrivateRoute><Favorites /></PrivateRoute>} />
+
             <Route path="/Test" element={<Test />} />
 
             {/* Redirects & Aliases */}
