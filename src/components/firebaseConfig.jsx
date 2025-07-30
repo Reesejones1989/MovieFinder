@@ -3,8 +3,11 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 
+const FIREBASEapiKey = import.meta.env.FIREBASEAPIKEY;
+
+
 const firebaseConfig = {
-  apiKey: "AIzaSyD0M-Sj4kq5HNLpOg4XoNK-f3mB6T45XqQ",
+  apiKey: FIREBASEapiKey,
   authDomain: "moviefinder-auth.firebaseapp.com",
   projectId: "moviefinder-auth",
   storageBucket: "moviefinder-auth.firebasestorage.app",
