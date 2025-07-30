@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 
+console.log("API KEY:", import.meta.env.VITE_FIREBASE_API_KEY);
 
 
 const firebaseConfig = {
