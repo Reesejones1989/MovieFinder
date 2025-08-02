@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Nav from './components/Nav&Footer/Nav.jsx';
 import Footer from './components/Nav&Footer/Footer.jsx';
-import './App.css';
 import Home from './pages/Home.jsx';
 import About from './pages/About.jsx';
 import TvShows from './pages/TvShows.jsx';
@@ -16,7 +15,7 @@ import React, { useEffect, useState } from 'react';
 import NewMovieFinder from './assets/NewMovieFinder.jpg';
 import PrivateRoute from './components/PrivateRoute.jsx';
 
-import './components/firebaseConfig.jsx'; // ✅ Initialize Firebase once
+import './components/firebaseConfig.jsx'; // Initialize Firebase once
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 function App() {
@@ -34,28 +33,28 @@ function App() {
   }, []);
 
   if (!authChecked) {
-    return <div>Loading...</div>; // Optional loading screen
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>; // Tailwind loading screen
   }
 
   return (
     <Router>
-      <div className="app-container">
+      <div className="flex flex-col min-h-screen pt-20 pb-32 px-4 md:px-8 relative">
         {/* Navigation Bar */}
         <Nav />
 
         {/* Movie Finder Logo */}
-        <div className="logo-container">
-          <img 
-            src={NewMovieFinder} 
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-10 z-0 select-none">
+          <img
+            src={NewMovieFinder}
             alt="Movie Links Movie Finder"
-            height="300"
-            width="300"
-            className="movie-logo" 
+            height={300}
+            width={300}
+            className="w-[600px] max-w-full h-auto filter blur-[0.5px]"
           />
         </div>
 
         {/* Main Page Content */}
-        <div className="page-content">
+        <main className="flex flex-col flex-grow items-center justify-center px-2">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/Movies" element={<Movies />} />
@@ -64,7 +63,7 @@ function App() {
             <Route path="/Sports" element={<Sports />} />
             <Route path="/LiveTv" element={<LiveTv />} />
             <Route path="/About" element={<About />} />
-            
+
             {/* Firebase Login logic */}
             <Route path="/Login" element={user ? <Navigate to="/Favorites" replace /> : <Login />} />
 
@@ -86,7 +85,7 @@ function App() {
             {/* Catch-all */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-        </div>
+        </main>
 
         {/* Footer */}
         <Footer />

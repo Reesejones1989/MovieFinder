@@ -208,3 +208,9 @@
     grid-template-columns: 1fr;
   }
 }
+@media screen and (min-width: 2000px) {
+  .movie-container {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+}
+

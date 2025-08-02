@@ -3,9 +3,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NewMovieFinder from '../../assets/NewMovieFinder.jpg';
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-
 import './Nav.css';
-import '../LogoutButton.css'; // Make sure this is imported if not in global CSS
 
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,12 +11,10 @@ export default function Nav() {
   const auth = getAuth();
   const navigate = useNavigate();
 
-  const toggleMenu = () => setMenuOpen((prev) => !prev);
+  const toggleMenu = () => setMenuOpen(prev => !prev);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
+    const unsubscribe = onAuthStateChanged(auth, setUser);
     return () => unsubscribe();
   }, [auth]);
 
@@ -29,6 +25,7 @@ export default function Nav() {
 
   return (
     <nav className="Nav">
+      {/* Left side: Logo */}
       <div className="nav-left">
         <Link to="/" onClick={() => setMenuOpen(false)}>
           <img
@@ -39,36 +36,58 @@ export default function Nav() {
         </Link>
       </div>
 
+      {/* Right side: Links */}
       <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-        <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
-        <Link to="/Movies" onClick={() => setMenuOpen(false)}>Movies</Link>
-        <Link to="/TV-Shows" onClick={() => setMenuOpen(false)}>TV Shows</Link>
-        <Link to="/Anime" onClick={() => setMenuOpen(false)}>Anime</Link>
-        <Link to="/Sports" onClick={() => setMenuOpen(false)}>Sports</Link>
-        <Link to="/LiveTv" onClick={() => setMenuOpen(false)}>Live TV</Link>
-        <Link to="/About" onClick={() => setMenuOpen(false)}>About</Link>
+        {[
+          { to: "/", label: "Home" },
+          { to: "/Movies", label: "Movies" },
+          { to: "/TV-Shows", label: "TV Shows" },
+          { to: "/Anime", label: "Anime" },
+          { to: "/Sports", label: "Sports" },
+          { to: "/LiveTv", label: "Live TV" },
+          { to: "/About", label: "About" },
+        ].map(({ to, label }) => (
+          <Link
+            key={to}
+            to={to}
+            onClick={() => setMenuOpen(false)}
+          >
+            {label}
+          </Link>
+        ))}
 
         {user && (
-          <Link to="/Favorites" onClick={() => setMenuOpen(false)}>
+          <Link
+            to="/Favorites"
+            onClick={() => setMenuOpen(false)}
+          >
             Favorites
           </Link>
         )}
 
         {user ? (
-          <button className="logout-button" onClick={handleLogout}>
+          <button onClick={handleLogout} className="logout-button">
             Log Out
           </button>
         ) : (
-          <Link to="/Login" onClick={() => setMenuOpen(false)}>
+          <Link
+            to="/Login"
+            onClick={() => setMenuOpen(false)}
+          >
             Login / Sign Up
           </Link>
         )}
       </div>
 
-      <div className={`hamburger ${menuOpen ? 'open' : ''}`} onClick={toggleMenu}>
-        <span className="bar bar1"></span>
-        <span className="bar bar2"></span>
-        <span className="bar bar3"></span>
+      {/* Hamburger for Mobile */}
+      <div
+        className={`hamburger ${menuOpen ? 'open' : ''}`}
+        onClick={toggleMenu}
+        aria-label="Toggle menu"
+      >
+        <div className="bar bar1"></div>
+        <div className="bar bar2"></div>
+        <div className="bar bar3"></div>
       </div>
     </nav>
   );
