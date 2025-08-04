@@ -36,6 +36,17 @@ export default function Nav() {
         </Link>
       </div>
 
+      {/* Hamburger for Mobile */}
+      <div
+        className={`hamburger ${menuOpen ? 'open' : ''}`}
+        onClick={toggleMenu}
+        aria-label="Toggle menu"
+      >
+        <div className="bar bar1"></div>
+        <div className="bar bar2"></div>
+        <div className="bar bar3"></div>
+      </div>
+
       {/* Right side: Links */}
       <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
         {[
@@ -77,17 +88,8 @@ export default function Nav() {
             Login / Sign Up
           </Link>
         )}
-      </div>
 
-      {/* Hamburger for Mobile */}
-      <div
-        className={`hamburger ${menuOpen ? 'open' : ''}`}
-        onClick={toggleMenu}
-        aria-label="Toggle menu"
-      >
-        <div className="bar bar1"></div>
-        <div className="bar bar2"></div>
-        <div className="bar bar3"></div>
+
       </div>
     </nav>
   );

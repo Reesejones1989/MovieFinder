@@ -187,6 +187,7 @@ export default function MovieList() {
 
   const renderMovieCards = (movieArray) => (
     <div className="movie-container">
+      
       {movieArray.map((movie) => {
         const watchLinks = getWatchLinks(movie);
         return (

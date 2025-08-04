@@ -5,7 +5,8 @@ import React from 'react'
 export default function SportsList() {
   return (
     <div className="sports-list">
-      <h1>Sports Leagues </h1>
+<br></br>
+      <h2>Sports Leagues </h2>
       <div className="sports-container">
         <a href="https://the.streameast.app/nflstreams5" target="_blank" rel="noopener noreferrer">
           <img src="https://content.sportslogos.net/logos/7/1007/full/dwuw5lojnwsj12vfe0hfa6z47.gif" alt="NFL Logo" />
