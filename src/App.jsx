@@ -14,6 +14,7 @@ import Test from './components/Test/Test.jsx';
 import React, { useEffect, useState } from 'react';
 import NewMovieFinder from './assets/NewMovieFinder.jpg';
 import PrivateRoute from './components/PrivateRoute.jsx';
+import { FavoritesProvider } from './components/FavoritesContext.jsx';
 
 import './components/firebaseConfig.jsx'; // Initialize Firebase once
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -37,8 +38,9 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen pt-20 pb-32 px-4 md:px-8 relative">
+    <FavoritesProvider>
+      <Router>
+        <div className="flex flex-col min-h-screen pt-20 pb-32 px-4 md:px-8 relative">
             <br></br>
     <br></br>
     <br></br>
@@ -94,8 +96,9 @@ function App() {
 
         {/* Footer */}
         <Footer />
-      </div>
-    </Router>
+        </div>
+      </Router>
+    </FavoritesProvider>
   );
 }
 

@@ -3,6 +3,7 @@ import React from 'react'
 import initialTvShows from "../hardCodedLists/initialTvShows";
 import "./TvShowList.css";
 import { useState, useEffect } from "react";
+import { useFavorites } from '../FavoritesContext.jsx';
 
 
 
@@ -15,6 +16,7 @@ export default function TvShowList() {
   const [showPopularTv, setShowPopular] = useState(true);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+  const { addToFavorites, isFavorite } = useFavorites();
 
   useEffect(() => {
     fetchTrending();
@@ -133,6 +135,20 @@ export default function TvShowList() {
     return links;
   };
 
+  const handleAddToFavorites = async (show) => {
+    const showWithType = {
+      ...show,
+      type: 'tv'
+    };
+    
+    const success = await addToFavorites(showWithType);
+    if (success) {
+      alert(`${show.title} added to favorites!`);
+    } else {
+      alert(`${show.title} is already in your favorites!`);
+    }
+  };
+
   const renderShowCards = (shows) => (
     <div className="tv-show-container">
       {shows.map((show) => {
@@ -160,7 +176,15 @@ export default function TvShowList() {
                   src={show.poster || "https://via.placeholder.com/250x300"}
                   alt={show.title}
                 />
-                <button className="favorite-btn">⭐ Add to Favorites</button>
+                <button 
+                  className={`favorite-btn ${isFavorite(show.id, 'tv') ? 'active' : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToFavorites(show);
+                  }}
+                >
+                  {isFavorite(show.id, 'tv') ? '❤️ In Favorites' : '⭐ Add to Favorites'}
+                </button>
                 {watchLinks.map((link, index) => (
                   <a
                     key={index}
@@ -191,7 +215,7 @@ export default function TvShowList() {
   
       <div className="collapsible-section">
         <h2 onClick={togglePopularTv} className="collapsible-header">
-          ⭐ Popular TV Shows {showPopularTv ? "▲" : "▼"}
+          ⭐ Requested TV Shows {showPopularTv ? "▲" : "▼"}
         </h2>
         {showPopularTv && renderShowCards(tvShows)}
       </div>

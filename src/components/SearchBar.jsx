@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import './SearchBar.css';
+import { useFavorites } from './FavoritesContext.jsx';
 
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isTVShow, setIsTVShow] = useState(true);
   const [suggestions, setSuggestions] = useState([]);
-  const [favorites, setFavorites] = useState(() => {
-    return JSON.parse(localStorage.getItem("favorites")) || [];
-  });
+  const { addToFavorites, isFavorite } = useFavorites();
 
   useEffect(() => {
     const visitCount = localStorage.getItem("visitCount");
@@ -86,32 +85,16 @@ export default function SearchBar() {
   };
 
   const handleAddToFavorites = async (item) => {
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-      alert("You need to log in first!");
-      return;
-    }
-
-    try {
-      const response = await fetch("/favorites", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify({ movieId: item.id, title: item.title || item.name }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to add favorite: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Favorite added successfully:", data);
-    } catch (error) {
-      console.error("Error adding favorite:", error);
-      alert(error.message);
+    const itemWithType = {
+      ...item,
+      type: isTVShow ? 'tv' : 'movie'
+    };
+    
+    const success = await addToFavorites(itemWithType);
+    if (success) {
+      alert(`${item.title || item.name} added to favorites!`);
+    } else {
+      alert(`${item.title || item.name} is already in your favorites!`);
     }
   };
 
@@ -178,8 +161,11 @@ export default function SearchBar() {
                       </a>
                     )}
                   </div>
-                  <button onClick={() => handleAddToFavorites(item)}>
-                    Add to Favorites
+                  <button 
+                    onClick={() => handleAddToFavorites(item)}
+                    className={isFavorite(item.id, isTVShow ? 'tv' : 'movie') ? 'favorite-btn active' : 'favorite-btn'}
+                  >
+                    {isFavorite(item.id, isTVShow ? 'tv' : 'movie') ? '❤️ In Favorites' : '⭐ Add to Favorites'}
                   </button>
                 </div>
               </div>

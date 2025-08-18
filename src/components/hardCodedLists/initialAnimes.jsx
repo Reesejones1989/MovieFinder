@@ -11,6 +11,10 @@ const initialAnimes = [
     { id: 10, title: "Boruto", year: 2022, poster: "" },
     { id: 11, title: "Arcane", year: 2022, poster: "" },
     { id: 12, title: "Dr. Stone", year: 2024, poster: "" },
+    { id: 13, title: "South Park", year: 2024, poster: "" },
+    { id: 14, title: "What If...?", year: 2024, poster: "" },
+
+
   ];
 
   export default initialAnimes;

@@ -11,6 +11,14 @@ const initialTvShows = [
     { id: 10, title: "YellowJackets", year: 2022, poster: "" },
     { id: 11, title: "The Studio", year: 2025, poster: "" },
     { id: 12, title: "Paradise", year: 2025, poster: "" },
+    { id: 13, title: "BMF", year: 2023, poster: "" },
+    { id: 14, title: "Quarterback", year: "2022", poster: "" },
+    { id: 15, title: "South Park", year: "1997", poster: "" },
+    { id: 16, title: "Insecure", year: "2017", poster: "" },
+    
+  
+
+
   ];
 
   export default initialTvShows;
