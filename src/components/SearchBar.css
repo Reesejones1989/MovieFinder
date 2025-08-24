@@ -55,7 +55,11 @@
   border-radius: 8px;
   outline: none;
   background-color: #fff;
+  color: #00ff00; /* <-- green text */
   transition: all 0.3s ease;
+}
+.search-bar input::placeholder {
+  color: #888; /* dim gray for placeholder */
 }
 
 .search-bar input:focus {
