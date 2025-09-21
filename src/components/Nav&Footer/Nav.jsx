@@ -56,7 +56,7 @@ export default function Nav() {
           { to: "/Anime", label: "Anime" },
           { to: "/Sports", label: "Sports" },
           { to: "/LiveTv", label: "Live TV" },
-          { to: "/About", label: "About" },
+          { to: "/About", label: "Donate" },
         ].map(({ to, label }) => (
           <Link
             key={to}

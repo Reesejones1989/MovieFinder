@@ -11,6 +11,7 @@ import Login from './pages/Login.jsx';
 import Favorites from './pages/Favorite.jsx';
 import LiveTv from './pages/LiveTv.jsx';
 import Test from './components/Test/Test.jsx';
+
 import React, { useEffect, useState } from 'react';
 import NewMovieFinder from './assets/NewMovieFinder.jpg';
 import PrivateRoute from './components/PrivateRoute.jsx';
@@ -70,6 +71,7 @@ function App() {
             <Route path="/Sports" element={<Sports />} />
             <Route path="/LiveTv" element={<LiveTv />} />
             <Route path="/About" element={<About />} />
+
 
             {/* Firebase Login logic */}
             <Route path="/Login" element={user ? <Navigate to="/Favorites" replace /> : <Login />} />

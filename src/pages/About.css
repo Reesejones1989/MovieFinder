@@ -1,0 +1,199 @@
+.about-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color, #333);
+  background: var(--bg-color, #fff);
+}
+
+/* About Section */
+.about-section {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.about-section h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--heading-color, #111);
+  margin-bottom: 1rem;
+}
+
+.about-section p {
+  font-size: 1rem;
+  color: var(--text-muted, #555);
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* Suggestion Box */
+.suggestion-box {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.suggestion-box form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.suggestion-box label {
+  font-weight: 600;
+  color: var(--heading-color, #333);
+}
+
+.suggestion-box input {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  max-width: 400px;
+  background: var(--input-bg, #fff);
+  color: var(--text-color, #333);
+}
+
+.suggestion-box button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.suggestion-box button:hover {
+  background: #1e40af;
+}
+
+/* Donation Section */
+.donations {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.donations h2 {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--heading-color, #111);
+}
+
+.donations p {
+  font-size: 1rem;
+  color: var(--text-muted, #555);
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.donation-method {
+  margin-bottom: 2rem;
+}
+
+.donation-method h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--heading-color, #222);
+}
+
+/* Donation Buttons */
+.donation-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem 0.75rem 2.75rem; /* left padding for icon */
+  border-radius: 12px;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  background-repeat: no-repeat;
+  background-position: 0.75rem center;
+  background-size: 1.25rem;
+}
+
+.donation-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* Service-specific buttons with brand colors & logos */
+.paypal {
+  background-color: #0070ba;
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg");
+}
+
+.venmo {
+  background-color: #3d95ce;
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/f/f4/Venmo_Logo.svg");
+}
+
+.zelle {
+  background-color: #6a1b9a;
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/5/55/Zelle_logo.svg");
+}
+
+/* Footer */
+.about-footer {
+  text-align: center;
+  margin-top: 4rem;
+  font-size: 0.9rem;
+  color: var(--text-muted, #666);
+}
+
+.about-footer a {
+  color: #2563eb;
+  text-decoration: none;
+  margin-left: 0.5rem;
+}
+
+.about-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Dark mode (auto-detect) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #121212;
+    --text-color: #f5f5f5;
+    --heading-color: #ffffff;
+    --text-muted: #bbbbbb;
+    --input-bg: #1e1e1e;
+  }
+
+  .about-container {
+    background: var(--bg-color);
+    color: var(--text-color);
+  }
+
+  .suggestion-box input {
+    border: 1px solid #444;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .about-section h1 {
+    font-size: 1.5rem;
+  }
+
+  .donations h2 {
+    font-size: 1.5rem;
+  }
+
+  .donation-btn {
+    width: 100%;
+    max-width: 320px;
+  }
+}

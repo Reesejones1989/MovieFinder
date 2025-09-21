@@ -227,6 +227,7 @@ export default function MovieList() {
   return (
     <div className="movie-list">
       <div className="collapsible-section">
+          <h2> Movies </h2>
         <h2 onClick={toggleTrending} className="collapsible-header">
           🔥 Trending Movies {showTrending ? "▲" : "▼"}
         </h2>

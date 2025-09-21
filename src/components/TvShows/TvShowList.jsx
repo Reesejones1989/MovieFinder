@@ -207,6 +207,7 @@ export default function TvShowList() {
   return (
     <div className="tv-show-list">
       <div className="collapsible-section">
+          <h2> Tv Shows </h2>
         <h2 onClick={toggleTrendingTv} className="collapsible-header">
           🔥 Trending TV Shows {showTrendingTv ? "▲" : "▼"}
         </h2>
