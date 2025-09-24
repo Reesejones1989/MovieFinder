@@ -1,11 +1,11 @@
 
         const initialMovies = [
-            { id: 1, title: "Sinners", year: "2025", poster: "" },
-            { id: 2, title: "Thunderbolts*", year: "2025", poster: "" },
-            { id: 3, title: "A Minecraft Movie", year: "2025", poster: "" },
-            { id: 4, title: "Novocaine", year: "2025", poster: "" },
-            { id: 5, title: "Black Bag", year: "2025", poster: "" },
-            { id: 6, title: "Drop", year: "2025", poster: "" },
+            { id: 1, title: "HIM", year: "2025", poster: "" },
+            { id: 2, title: "The Fantastic 4: First Steps", year: "2025", poster: "" },
+            { id: 3, title: "Weapons", year: "2025", poster: "" },
+            { id: 4, title: "Thunderbolts*", year: "2025", poster: "" },
+            { id: 5, title: "Sinners", year: "2025", poster: "" },
+            { id: 6, title: "Honey Don't", year: "2025", poster: "" },
             { id: 7, title: "Cleaner", year: "2024", poster: "" },
             { id: 8, title: "Captain America: Brave New World", year: "2024", poster: "" },
             { id: 9, title: "Sacramento", year: "2025", poster: "" },
