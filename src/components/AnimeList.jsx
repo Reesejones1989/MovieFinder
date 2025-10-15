@@ -2,12 +2,12 @@ import "./AnimeList.css";
 import React, { useState, useEffect } from "react";
 import initialAnimes from "./hardCodedLists/initialAnimes";
 
-
 export default function AnimeList() {
   const [animes, setAnimes] = useState(initialAnimes);
   const [trending, setTrending] = useState([]);
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
+  // 🔹 Fetch posters and IMDb IDs for hardcoded anime list
   useEffect(() => {
     const fetchPostersAndIds = async () => {
       const updatedAnimes = await Promise.all(
@@ -22,7 +22,6 @@ export default function AnimeList() {
 
             if (searchData.results && searchData.results.length > 0) {
               const match = searchData.results[0];
-
               const detailsRes = await fetch(
                 `https://api.themoviedb.org/3/tv/${match.id}/external_ids?api_key=${apiKey}`
               );
@@ -31,7 +30,8 @@ export default function AnimeList() {
               return {
                 ...anime,
                 poster:
-                  anime.poster || `https://image.tmdb.org/t/p/w600_and_h900_bestv2${match.poster_path}`,
+                  anime.poster ||
+                  `https://image.tmdb.org/t/p/w600_and_h900_bestv2${match.poster_path}`,
                 imdb_id: detailsData.imdb_id,
               };
             }
@@ -51,6 +51,7 @@ export default function AnimeList() {
     }
   }, [animes, apiKey]);
 
+  // 🔹 Fetch trending anime
   useEffect(() => {
     const fetchTrendingAnime = async () => {
       try {
@@ -60,8 +61,8 @@ export default function AnimeList() {
         const data = await res.json();
 
         const trendingAnime = data.results.filter((item) =>
-          item.genre_ids.includes(16) // Filter for Animation genre (ID 16)
-        );
+          item.genre_ids.includes(16)
+        ); // Animation genre
 
         const animeSubset = await Promise.all(
           trendingAnime.slice(0, 12).map(async (item, index) => {
@@ -75,7 +76,7 @@ export default function AnimeList() {
               title: item.name,
               year: item.first_air_date?.split("-")[0] || "N/A",
               poster: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${item.poster_path}`,
-              imdb_id: detailsData.imdb_id || null, // Retrieve imdb_id for each trending anime
+              imdb_id: detailsData.imdb_id || null,
             };
           })
         );
@@ -89,6 +90,7 @@ export default function AnimeList() {
     fetchTrendingAnime();
   }, [apiKey]);
 
+  // 🔹 Create watch link list
   const getWatchLinks = (anime) => {
     const links = [];
 
@@ -107,22 +109,48 @@ export default function AnimeList() {
     return links;
   };
 
+  // 🔹 Render anime cards
   const renderAnimeCard = (anime) => {
     const links = getWatchLinks(anime);
 
+    // Detect Demon Slayer: Infinity Castle
+    const isDemonSlayerInfinityCastle =
+      anime.title.toLowerCase().includes("demon slayer") &&
+      anime.title.toLowerCase().includes("infinity castle");
+
+    // 🎨 Custom poster for Demon Slayer Infinity Castle
+    const customPoster = isDemonSlayerInfinityCastle
+      ? "https://4kwallpapers.com/images/wallpapers/demon-slayer-2880x1800-23615.jpg"
+      : anime.poster || "https://via.placeholder.com/250x300";
+
     return (
       <div key={anime.id} className="anime">
-        <img
-          src={anime.poster || "https://via.placeholder.com/250x300"}
-          height="300"
-          width="250"
-          alt={anime.title}
-        />
+        <img src={customPoster} alt={anime.title} />
         <div>
           <h3>{anime.title}</h3>
           <p>({anime.year})</p>
+
+          {/* 🟣 OnionPlay Button for Infinity Castle */}
+          {isDemonSlayerInfinityCastle && (
+            <a
+              href="https://onionplay.mx/movie/71461-watch-demon-slayer-kimetsu-no-yaiba-infinity-castle-2025-online/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="watch-link onionplay-btn"
+            >
+              ▶️ Watch on OnionPlay
+            </a>
+          )}
+
+          {/* Other buttons */}
           {links.map((link, i) => (
-            <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="watch-link">
+            <a
+              key={i}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="watch-link"
+            >
               {link.label}
             </a>
           ))}
@@ -131,6 +159,7 @@ export default function AnimeList() {
     );
   };
 
+  // 🔹 Render trending anime
   const renderTrendingAnimeCard = (anime) => {
     const links = getWatchLinks(anime);
 
@@ -138,15 +167,19 @@ export default function AnimeList() {
       <div key={anime.id} className="anime">
         <img
           src={anime.poster || "https://via.placeholder.com/250x300"}
-          height="300"
-          width="250"
           alt={anime.title}
         />
         <div>
           <h3>{anime.title}</h3>
           <p>({anime.year})</p>
           {links.map((link, i) => (
-            <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="watch-link">
+            <a
+              key={i}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="watch-link"
+            >
               {link.label}
             </a>
           ))}
@@ -157,12 +190,10 @@ export default function AnimeList() {
 
   return (
     <div className="anime-list">
-      <br></br>
-                  <h2> Anime </h2>
+      <br />
+      <h2>Anime</h2>
 
-      <div className="anime-container">
-        {animes.map(renderAnimeCard)}
-      </div>
+      <div className="anime-container">{animes.map(renderAnimeCard)}</div>
 
       <h2>Trending Anime</h2>
       <div className="anime-container">

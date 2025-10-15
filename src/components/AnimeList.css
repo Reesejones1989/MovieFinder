@@ -123,3 +123,22 @@
   }
 }
 
+/* Special OnionPlay button styling */
+.onionplay-btn {
+  background-color: #6a0dad;
+  color: white !important;
+  padding: 8px 14px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 6px;
+  font-weight: bold;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.onionplay-btn:hover {
+  background-color: #5500b3;
+  transform: scale(1.05);
+  text-decoration: none;
+}
+
+
