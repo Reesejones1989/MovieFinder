@@ -28,7 +28,7 @@ export default function LiveTvList() {
         </a>
 
                 <a href="https://tvpass.org/channel/nfl-network" target="_blank" rel="noopener noreferrer">
-          <img src="https://static.wikia.nocookie.net/logopedia/images/e/ea/NFL_Network_2022.png/revision/latest?cb=20221005140031" alt="NFL Network Logo" />
+          <img src="https://imengine.public.prod.cdr.navigacloud.com/?uuid=1053A078-4BE7-424E-B770-D2F2829F3A1A&function=cover&type=preview&source=false&width=1050&height=550" alt="NFL Network Logo" />
         </a>
 
         <a href="https://tvpass.org/channel/bet-eastern-feed" target="_blank" rel="noopener noreferrer">
@@ -115,20 +115,24 @@ export default function LiveTvList() {
           <img src="https://embroideres.com/files/8515/7105/3387/hallmark_logo_machine_embroidery_design.jpg" alt="HallMark" />
         </a>
 
-        <a href="https://tvpass.org/channel/nfl-redzone" target="_blank" rel="noopener noreferrer">
-          <img src="https://i.pinimg.com/474x/60/3a/60/603a60cefd74ac618b480f8085425860.jpg" alt="NFL Redzone" />
-        </a>
-
-        <a href="https://tvpass.org/channel/nfl-network" target="_blank" rel="noopener noreferrer">
-          <img src="https://imengine.public.prod.cdr.navigacloud.com/?uuid=1053A078-4BE7-424E-B770-D2F2829F3A1A&function=cover&type=preview&source=false&width=1050&height=550" alt="NFL Redzone" />
-        </a>
-
         <a href="https://tvpass.org/channel/tnt-eastern-feed" target="_blank" rel="noopener noreferrer">
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoCm97ocaTMAqgHS_WCP1A0OvwF0RTJWoV1g&s" alt="TNT" />
         </a>
 
         <a href="https://tvpass.org/channel/tv-one" target="_blank" rel="noopener noreferrer">
           <img src="https://upload.wikimedia.org/wikipedia/commons/e/e3/TV-One-logo-2016.png" alt="TV One" />
+        </a>
+
+         <a href="https://thetvapp.to/nfl" target="_blank" rel="noopener noreferrer">
+          <img src="https://1000logos.net/wp-content/uploads/2017/05/NFL-logo.jpg" alt="ALT ALL NFL" />
+        </a>
+
+         <a href="https://thetvapp.to/nba" target="_blank" rel="noopener noreferrer">
+          <img src="https://blog.logomyway.com/wp-content/uploads/2017/01/nba-logo-design.jpg" alt="ALT ALL NBA" />
+        </a>
+
+         <a href="https://thetvapp.to/ncaaf" target="_blank" rel="noopener noreferrer">
+          <img src="https://help.ea.com/_images/seegk6e7ypwi/1rtNkH86882SjDMuv8ABqF/e7afe6628307ce8ccd6ac3a08c4c9200/college-football-26-hero.webp" alt="ALT ALL CFB" />
         </a>
 
       </div>
