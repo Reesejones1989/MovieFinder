@@ -11,6 +11,26 @@ export default function LiveTvList() {
           <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/ESPN_wordmark.svg" alt="ESPN Logo" />
         </a>
 
+         <a href="https://tvpass.org/channel/tsn1" target="_blank" rel="noopener noreferrer">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/90/TSN_Logo.svg" alt="TSN Logo" />
+        </a>
+
+        <a href="https://tvpass.org/channel/tsn2" target="_blank" rel="noopener noreferrer">
+          <img src="https://www.start.ca/wp-content/uploads/2022/09/StartTV_ChannelLogos_TheSportsNetwork2.png" alt="TSN2 Logo" />
+        </a>
+
+                <a href="https://tvpass.org/channel/nba-tv-usa" target="_blank" rel="noopener noreferrer">
+          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d2/NBA_TV.svg/1024px-NBA_TV.svg.png" alt="NBATV Logo" />
+        </a>
+
+                <a href="https://tvpass.org/channel/nfl-redzone" target="_blank" rel="noopener noreferrer">
+          <img src="https://consolidatednd.com/wp-content/uploads/2023/08/NFL-RedZone-1024x420.jpg" alt="NFLRZ Logo" />
+        </a>
+
+                <a href="https://tvpass.org/channel/nfl-network" target="_blank" rel="noopener noreferrer">
+          <img src="https://static.wikia.nocookie.net/logopedia/images/e/ea/NFL_Network_2022.png/revision/latest?cb=20221005140031" alt="NFL Network Logo" />
+        </a>
+
         <a href="https://tvpass.org/channel/bet-eastern-feed" target="_blank" rel="noopener noreferrer">
           <img src="https://upload.wikimedia.org/wikipedia/commons/b/be/BET_logo_2005-2012.svg" alt="BET Logo" />
         </a>
