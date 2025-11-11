@@ -1,28 +1,22 @@
-import { useEffect, useState } from "react";
-import React from 'react'
-
+import React, { useEffect, useState } from "react";
 import "./TvShowList.css";
+import Cards from "../Cards.jsx"
 
 export default function NetflixShows() {
   const [shows, setShows] = useState([]);
-  const [flipped, setFlipped] = useState({});
-  const [showDescriptions, setShowDescriptions] = useState({});
   const [error, setError] = useState(null);
   const [showNetflixShows, setShowNetflixShows] = useState(true);
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
-  const toggleFlip = (id) => {
-    setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const toggleDescription = (id) => {
-    setShowDescriptions((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
   const toggleNetflixShows = () => setShowNetflixShows((prev) => !prev);
 
   const formatTitleForLevidia = (title) =>
-    title.replace(/:/g, "").replace(/\s+/g, "-").replace(/&/g, "").replace(/'/g, "");
+    (title || "")
+      .replace(/:/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/&/g, "")
+      .replace(/'/g, "")
+      .toLowerCase();
 
   const getWatchLinks = (show) => {
     const links = [];
@@ -30,14 +24,17 @@ export default function NetflixShows() {
     if (show.imdb_id) {
       links.push({
         url: `https://vidsrc.xyz/embed/tv/${show.imdb_id}`,
-        label: "▶️ Watch on Vidsrc",
+        label: "▶️ Watch on VidSrc",
       });
     }
 
-    links.push({
-      url: `https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(show.name)}`,
-      label: "▶️ Watch on Levidia",
-    });
+    const formattedTitle = formatTitleForLevidia(show.title);
+    if (formattedTitle) {
+      links.push({
+        url: `https://www.levidia.ch/tv-show.php?watch=${formattedTitle}`,
+        label: "▶️ Watch on Levidia",
+      });
+    }
 
     return links;
   };
@@ -50,14 +47,7 @@ export default function NetflixShows() {
         ninetyDaysAgo.setDate(today.getDate() - 90);
         const gteDate = ninetyDaysAgo.toISOString().split("T")[0];
 
-        const url = `https://api.themoviedb.org/3/discover/tv?` +
-          `api_key=${apiKey}` +
-          `&with_watch_providers=8` +
-          `&watch_region=US` +
-          `&with_watch_monetization_types=flatrate` +
-          `&first_air_date.gte=${gteDate}` +
-          `&sort_by=popularity.desc` +
-          `&page=1`;
+        const url = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&with_watch_providers=8&watch_region=US&with_watch_monetization_types=flatrate&first_air_date.gte=${gteDate}&sort_by=popularity.desc&page=1`;
 
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Failed to fetch Netflix shows: ${res.status}`);
@@ -73,7 +63,7 @@ export default function NetflixShows() {
 
             return {
               id: show.id,
-              name: show.name,
+              title: show.name,
               year: show.first_air_date ? parseInt(show.first_air_date.split("-")[0]) : "N/A",
               poster: show.poster_path
                 ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${show.poster_path}`
@@ -102,63 +92,9 @@ export default function NetflixShows() {
       {error && <p>{error}</p>}
       {showNetflixShows && (
         <div className="movie-container">
-          {shows.map((show) => {
-            const watchLinks = getWatchLinks(show);
-            return (
-              <div
-                key={show.id}
-                className={`movie-card ${flipped[show.id] ? "flipped" : ""}`}
-                onClick={() => toggleFlip(show.id)}
-              >
-                <div className="movie-card-inner">
-                  <div className="movie-card-front">
-                    <img
-                      src={show.poster || "https://via.placeholder.com/250x300"}
-                      alt={show.name}
-                    />
-                    <h3>{show.name}</h3>
-                    <p>({show.year})</p>
-
-                    {show.overview && (
-                      <>
-                        <button
-                          className="read-desc-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleDescription(show.id);
-                          }}
-                        >
-                          {showDescriptions[show.id] ? "Hide Description" : "Read Description"}
-                        </button>
-                        {showDescriptions[show.id] && (
-                          <p className="movie-description">{show.overview}</p>
-                        )}
-                      </>
-                    )}
-                  </div>
-
-                  <div className="movie-card-back">
-                    <img
-                      src={show.poster || "https://via.placeholder.com/250x300"}
-                      alt={show.name}
-                    />
-                    <button className="favorite-btn">⭐ Add to Favorites</button>
-                    {watchLinks.map((link, index) => (
-                      <a
-                        key={index}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="levidia-link"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {shows.map((show) => (
+            <Cards key={show.id} item={show} type="tv" getWatchLinks={getWatchLinks} />
+          ))}
         </div>
       )}
     </div>

@@ -1,144 +1,32 @@
-/* Anime List Container */
-.anime-list {
-  text-align: center;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.anime-list h2 {
-  margin: 40px 0 20px;
-  font-size: 28px;
-  color: #333;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
-}
-
-/* Anime Grid */
 .anime-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  justify-content: center;
-  align-items: stretch;
-}
-
-/* Anime Item */
-.anime {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  padding: 10px;
-  text-align: center;
-  border: 2px solid transparent;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+  gap: 15px;
+  background-color: #0b0b0b;
 }
 
-.anime:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-  border-color: purple;
+.collapsible-section {
+  text-align: center;
+  margin: 30px auto;
+  max-width: 1200px;
 }
 
-/* Anime Image */
-.anime img {
-  width: 100%;
-  max-width: 220px;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* Anime Title and Year */
-.anime h3 {
-  font-size: 16px;
-  margin-top: 10px;
-  color: #222;
-}
-
-.anime p {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-}
-
-/* Watch Links */
-.watch-link {
-  display: block;
-  margin: 4px 0;
-  color: #00afff;
+.collapsible-header {
+  font-size: 1.6rem;
   font-weight: bold;
-  text-decoration: none;
-  font-size: 14px;
+  color: #e50914;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
 }
 
-.watch-link:hover {
-  text-decoration: underline;
-  color: #007acc;
+.collapsible-header:hover {
+  color: #fff;
 }
 
-/* Responsive Grid */
-@media screen and (min-width: 1024px) {
-  .anime-container {
-    grid-template-columns: repeat(4, 1fr);
-  }
+.anime-container p {
+  color: #bbb;
+  font-size: 1.1rem;
 }
-
-@media screen and (max-width: 1023px) {
-  .anime-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .anime-container {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-/* Default: auto-fit behavior with minmax(260px, 1fr) works well for desktops and tablets */
-
-/* For medium screens (e.g. small tablets or large phones), show 3 per row */
-@media screen and (max-width: 768px) {
-  .movie-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* For small screens (mobile), show 2 per row if space allows */
-@media screen and (max-width: 600px) {
-  .movie-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* For very small screens, fallback to 1 per row */
-@media screen and (max-width: 400px) {
-  .movie-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Special OnionPlay button styling */
-.onionplay-btn {
-  background-color: #6a0dad;
-  color: white !important;
-  padding: 8px 14px;
-  border-radius: 6px;
-  display: inline-block;
-  margin-top: 6px;
-  font-weight: bold;
-  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-}
-
-.onionplay-btn:hover {
-  background-color: #5500b3;
-  transform: scale(1.05);
-  text-decoration: none;
-}
-
-

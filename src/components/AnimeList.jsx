@@ -1,203 +1,172 @@
+import React, { useEffect, useState } from "react";
 import "./AnimeList.css";
-import React, { useState, useEffect } from "react";
+import Card from "../components/Cards";
 import initialAnimes from "./hardCodedLists/initialAnimes";
 
 export default function AnimeList() {
-  const [animes, setAnimes] = useState(initialAnimes);
-  const [trending, setTrending] = useState([]);
-  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+  const [anime, setAnime] = useState([]);
+  const [initialAnime, setInitialAnime] = useState(initialAnimes);
+  const [error, setError] = useState(null);
+  const [showAnime, setShowAnime] = useState(true);
+  const [showInitialAnime, setShowInitialAnime] = useState(true);
+  const tmdbApiKey = import.meta.env.VITE_TMDB_API_KEY;
 
-  // 🔹 Fetch posters and IMDb IDs for hardcoded anime list
-  useEffect(() => {
-    const fetchPostersAndIds = async () => {
-      const updatedAnimes = await Promise.all(
-        animes.map(async (anime) => {
-          if (anime.poster && anime.imdb_id) return anime;
+  const toggleAnime = () => setShowAnime((prev) => !prev);
+  const toggleInitialAnime = () => setShowInitialAnime((prev) => !prev);
 
-          try {
-            const searchRes = await fetch(
-              `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${encodeURIComponent(anime.title)}`
+  const formatTitleForLevidia = (title) =>
+    (title || "")
+      .replace(/:/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/&/g, "")
+      .replace(/'/g, "")
+      .toLowerCase();
+
+const getWatchLinks = (animeItem) => {
+  const links = [];
+
+  if (animeItem.imdb_id) {
+    links.push({
+      url: `https://vidsrc.xyz/embed/tv/${animeItem.imdb_id}`,
+      label: "▶️ Watch on VidSrc",
+    });
+  }
+
+  const formattedTitle = formatTitleForLevidia(animeItem.title);
+  if (formattedTitle) {
+    links.push({
+      url: `https://www.levidia.ch/tv-show.php?watch=${formattedTitle}`,
+      label: "▶️ Watch on Levidia",
+    });
+  }
+
+  return links;
+};
+
+
+  // Fetch posters for initial anime if missing
+ useEffect(() => {
+  const fetchInitialAnimeDetails = async () => {
+    const updatedAnime = await Promise.all(
+      initialAnime.map(async (item) => {
+        try {
+          // Search TMDb for the anime by title
+          const searchTitle = encodeURIComponent(item.title);
+          const searchRes = await fetch(
+            `https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${searchTitle}&page=1`
+          );
+          const searchData = await searchRes.json();
+          const firstResult = searchData.results?.[0];
+
+          if (firstResult) {
+            const detailRes = await fetch(
+              `https://api.themoviedb.org/3/tv/${firstResult.id}?api_key=${tmdbApiKey}&append_to_response=external_ids`
             );
-            const searchData = await searchRes.json();
-
-            if (searchData.results && searchData.results.length > 0) {
-              const match = searchData.results[0];
-              const detailsRes = await fetch(
-                `https://api.themoviedb.org/3/tv/${match.id}/external_ids?api_key=${apiKey}`
-              );
-              const detailsData = await detailsRes.json();
-
-              return {
-                ...anime,
-                poster:
-                  anime.poster ||
-                  `https://image.tmdb.org/t/p/w600_and_h900_bestv2${match.poster_path}`,
-                imdb_id: detailsData.imdb_id,
-              };
-            }
-          } catch (error) {
-            console.error(`Error fetching data for ${anime.title}:`, error);
-          }
-
-          return anime;
-        })
-      );
-
-      setAnimes(updatedAnimes);
-    };
-
-    if (animes.some((anime) => !anime.poster || !anime.imdb_id)) {
-      fetchPostersAndIds();
-    }
-  }, [animes, apiKey]);
-
-  // 🔹 Fetch trending anime
-  useEffect(() => {
-    const fetchTrendingAnime = async () => {
-      try {
-        const res = await fetch(
-          `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}`
-        );
-        const data = await res.json();
-
-        const trendingAnime = data.results.filter((item) =>
-          item.genre_ids.includes(16)
-        ); // Animation genre
-
-        const animeSubset = await Promise.all(
-          trendingAnime.slice(0, 12).map(async (item, index) => {
-            const detailsRes = await fetch(
-              `https://api.themoviedb.org/3/tv/${item.id}/external_ids?api_key=${apiKey}`
-            );
-            const detailsData = await detailsRes.json();
+            const detailData = await detailRes.json();
 
             return {
-              id: `trend-${index}`,
-              title: item.name,
-              year: item.first_air_date?.split("-")[0] || "N/A",
-              poster: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${item.poster_path}`,
-              imdb_id: detailsData.imdb_id || null,
+              ...item,
+              poster:
+                item.poster ||
+                (firstResult.poster_path
+                  ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${firstResult.poster_path}`
+                  : ""),
+              year: item.year || (firstResult.first_air_date ? parseInt(firstResult.first_air_date.split("-")[0]) : "N/A"),
+              imdb_id: detailData?.external_ids?.imdb_id || null,
+            };
+          }
+          return item;
+        } catch (err) {
+          console.warn(`Failed to enrich ${item.title}:`, err);
+          return item;
+        }
+      })
+    );
+
+    setInitialAnime(updatedAnime);
+  };
+
+  fetchInitialAnimeDetails();
+}, []);
+
+
+  // Fetch dynamic anime from TMDb
+  useEffect(() => {
+    const fetchAnime = async () => {
+      try {
+        const today = new Date();
+        const ninetyDaysAgo = new Date(today);
+        ninetyDaysAgo.setDate(today.getDate() - 90);
+        const gteDate = ninetyDaysAgo.toISOString().split("T")[0];
+
+        const url = `https://api.themoviedb.org/3/discover/tv?api_key=${tmdbApiKey}&with_genres=16&with_keywords=210024&first_air_date.gte=${gteDate}&sort_by=popularity.desc&page=1`;
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Failed to fetch anime: ${res.status}`);
+
+        const data = await res.json();
+
+        const enrichedAnime = await Promise.all(
+          data.results.map(async (show) => {
+            const detailRes = await fetch(
+              `https://api.themoviedb.org/3/tv/${show.id}?api_key=${tmdbApiKey}&append_to_response=external_ids`
+            );
+            const detailData = await detailRes.json();
+
+            return {
+              id: show.id,
+              title: show.name,
+              year: show.first_air_date
+                ? parseInt(show.first_air_date.split("-")[0])
+                : "N/A",
+              poster: show.poster_path
+                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${show.poster_path}`
+                : "",
+              imdb_id: detailData?.external_ids?.imdb_id || null,
+              overview: detailData.overview || "",
             };
           })
         );
 
-        setTrending(animeSubset);
+        setAnime(enrichedAnime);
       } catch (err) {
-        console.error("Error fetching trending anime:", err);
+        console.error("Error fetching anime:", err);
+        setError("Could not load anime list.");
       }
     };
 
-    fetchTrendingAnime();
-  }, [apiKey]);
-
-  // 🔹 Create watch link list
-  const getWatchLinks = (anime) => {
-    const links = [];
-
-    if (anime.imdb_id) {
-      links.push({
-        url: `https://vidsrc.xyz/embed/tv/${anime.imdb_id}`,
-        label: "▶️ Watch on Vidsrc",
-      });
-    }
-
-    links.push({
-      url: `https://fastflix.to/tvshows/${anime.title.replace(/\s+/g, "-")}`,
-      label: "▶️ Search on FastFlix",
-    });
-
-    return links;
-  };
-
-  // 🔹 Render anime cards
-  const renderAnimeCard = (anime) => {
-    const links = getWatchLinks(anime);
-
-    // Detect Demon Slayer: Infinity Castle
-    const isDemonSlayerInfinityCastle =
-      anime.title.toLowerCase().includes("demon slayer") &&
-      anime.title.toLowerCase().includes("infinity castle");
-
-    // 🎨 Custom poster for Demon Slayer Infinity Castle
-    const customPoster = isDemonSlayerInfinityCastle
-      ? "https://4kwallpapers.com/images/wallpapers/demon-slayer-2880x1800-23615.jpg"
-      : anime.poster || "https://via.placeholder.com/250x300";
-
-    return (
-      <div key={anime.id} className="anime">
-        <img src={customPoster} alt={anime.title} />
-        <div>
-          <h3>{anime.title}</h3>
-          <p>({anime.year})</p>
-
-          {/* 🟣 OnionPlay Button for Infinity Castle */}
-          {isDemonSlayerInfinityCastle && (
-            <a
-              href="https://onionplay.mx/movie/71461-watch-demon-slayer-kimetsu-no-yaiba-infinity-castle-2025-online/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="watch-link onionplay-btn"
-            >
-              ▶️ Watch on OnionPlay
-            </a>
-          )}
-
-          {/* Other buttons */}
-          {links.map((link, i) => (
-            <a
-              key={i}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="watch-link"
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  // 🔹 Render trending anime
-  const renderTrendingAnimeCard = (anime) => {
-    const links = getWatchLinks(anime);
-
-    return (
-      <div key={anime.id} className="anime">
-        <img
-          src={anime.poster || "https://via.placeholder.com/250x300"}
-          alt={anime.title}
-        />
-        <div>
-          <h3>{anime.title}</h3>
-          <p>({anime.year})</p>
-          {links.map((link, i) => (
-            <a
-              key={i}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="watch-link"
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-      </div>
-    );
-  };
+    fetchAnime();
+  }, [tmdbApiKey]);
 
   return (
-    <div className="anime-list">
-      <br />
-      <h2>Anime</h2>
+    <div>
+      {/* Initial Hardcoded Anime Section */}
+      <div className="collapsible-section">
+        <h2 onClick={toggleInitialAnime} className="collapsible-header">
+          🎌 Requested Anime List {showInitialAnime ? "▲" : "▼"}
+        </h2>
+        {showInitialAnime && (
+          <div className="anime-container">
+            {initialAnime.map((item) => (
+              <Card key={item.id} item={item} type="anime" getWatchLinks={getWatchLinks} />
+            ))}
+          </div>
+        )}
+      </div>
 
-      <div className="anime-container">{animes.map(renderAnimeCard)}</div>
-
-      <h2>Trending Anime</h2>
-      <div className="anime-container">
-        {trending.map(renderTrendingAnimeCard)}
+      {/* Dynamically Fetched Anime Section */}
+      <div className="collapsible-section">
+        <h2 onClick={toggleAnime} className="collapsible-header">
+          🎌 Popular Anime (Last 90 Days) {showAnime ? "▲" : "▼"}
+        </h2>
+        {error && <p>{error}</p>}
+        {showAnime && (
+          <div className="anime-container">
+            {anime.map((item) => (
+              <Card key={item.id} item={item} type="anime" getWatchLinks={getWatchLinks} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
