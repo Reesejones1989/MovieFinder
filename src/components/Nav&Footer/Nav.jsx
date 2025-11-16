@@ -54,7 +54,6 @@ export default function Nav() {
           { to: "/Movies", label: "Movies" },
           { to: "/TV-Shows", label: "TV Shows" },
           { to: "/Anime", label: "Anime" },
-          { to: "/Sports", label: "Sports" },
           { to: "/LiveTv", label: "Live TV" },
           { to: "/About", label: "Donate" },
         ].map(({ to, label }) => (

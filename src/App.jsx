@@ -68,7 +68,6 @@ function App() {
             <Route path="/Movies" element={<Movies />} />
             <Route path="/TV-Shows" element={<TvShows />} />
             <Route path="/Anime" element={<Anime />} />
-            <Route path="/Sports" element={<Sports />} />
             <Route path="/LiveTv" element={<LiveTv />} />
             <Route path="/About" element={<About />} />
 
@@ -87,7 +86,6 @@ function App() {
             <Route path="/Movies" element={<Navigate to="/Movies" replace />} />
             <Route path="/Tv-Shows" element={<Navigate to="/TV-Shows" replace />} />
             <Route path="/LiveTV" element={<Navigate to="/LiveTv" replace />} />
-            <Route path="/Sport" element={<Navigate to="/Sports" replace />} />
             <Route path="/TvShow" element={<Navigate to="/TV-Shows" replace />} />
             <Route path="/TvShows" element={<Navigate to="/TV-Shows" replace />} />
 

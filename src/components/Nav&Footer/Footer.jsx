@@ -39,7 +39,6 @@ export default function Footer({ suggestionsLength = 0 }) {
        <Link to="/Movies">Movies</Link>
        <Link to="/TV-Shows">TV Shows</Link>
        <Link to="/Anime">Anime</Link>
-       <Link to="/Sports">Sports</Link>
        <Link to="/LiveTv">Live Tv</Link>
       </div>
       </div>

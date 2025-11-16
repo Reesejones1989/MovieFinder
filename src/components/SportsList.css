@@ -1,85 +1,81 @@
-/* Styles for the SportsList */
 .sports-list {
   text-align: center;
-  padding: 40px 20px;
+  padding: 20px;
   font-family: Arial, sans-serif;
-  position: relative;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
+}
+
+h2 {
+  font-size: 28px;
   color: white;
-
-  /* Background image of all major sports */
-  background: 
-    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), /* dark overlay for contrast */
-    url('../Sport.png') no-repeat center center;
-  background-size: cover;
-  border-radius: 15px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+  margin-bottom: 20px;
 }
 
-.sports-list h1 {
-  margin-bottom: 30px;
-  font-size: 32px;
-  font-weight: 700;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-  color: #fff;
-}
-
-/* Grid container for sports buttons */
-.sports-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 per row */
-  gap: 25px;
-  justify-content: center;
-  align-items: center;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-/* Uniform sports button */
-.sports-container a {
+/* ⭐ FEATURED SPORTS ⭐ */
+.featured-sports {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.featured-card {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  width: 150px; /* Bigger buttons */
-  height: 150px;
-  background: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
-  border-radius: 15px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  width: 230px;
   padding: 15px;
-  border: 2px solid transparent;
-  cursor: pointer;
+  background: #111;
+  border-radius: 12px;
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+  border: 2px solid #333;
 }
 
-/* Button hover effect */
-.sports-container a:hover {
-  transform: scale(1.15);
-  box-shadow: 0 8px 20px rgba(255, 0, 0, 0.6);
-  border-color: red;
-}
-
-/* Logo image styling */
-.sports-container img {
-  width: 100px; /* Bigger logos */
-  height: 100px;
+.featured-card img {
+  width: 180px;
+  height: 120px;
   object-fit: contain;
-  transition: transform 0.3s ease-in-out;
+  margin-top: 10px;
 }
 
-/* Responsive: 2 per row on mobile */
-@media screen and (max-width: 768px) {
-  .sports-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.featured-card:hover {
+  transform: scale(1.05);
+  border-color: #0af;
+}
 
-  .sports-container a {
-    width: 130px; /* Slightly smaller for mobile */
-    height: 130px;
-  }
+/* ⭐ GRID OF SPORTS LOGOS ⭐ */
+.sports-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 25px;
+  padding: 10px;
+}
 
-  .sports-container img {
-    width: 85px;
-    height: 85px;
-  }
+.sports-container a {
+  background: #111;
+  color: white;
+  padding: 15px;
+  text-decoration: none;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid #333;
+  transition: 0.3s;
+}
+
+.sports-container a img {
+  margin-top: 10px;
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+}
+
+.sports-container a:hover {
+  transform: scale(1.05);
+  border-color: #0af;
 }
