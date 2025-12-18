@@ -4,6 +4,9 @@ import initialTvShows from "../hardCodedLists/initialTvShows";
 import NetflixShows from "./NetflixShows";
 import Cards from "../Cards.jsx";
 
+//https://vidsrc-embed.ru/embed/tv?imdb=tt10380768&season=2&episode=3
+//https://vidsrc-embed.ru/embed/tv?imdb=tt7252812&season=8&episode=2
+
 export default function TvShowList() {
   const [tvShows, setTvShows] = useState(initialTvShows);
   const [trendingShows, setTrendingShows] = useState([]);
@@ -39,6 +42,7 @@ export default function TvShowList() {
               : "",
             imdb_id: detailData.external_ids?.imdb_id || null,
             overview: detailData.overview || "",
+            seasons: detailData.seasons || []
           };
         })
       );
@@ -70,6 +74,7 @@ export default function TvShowList() {
                     : show.poster,
                   imdb_id: details.external_ids?.imdb_id,
                   overview: details.overview,
+                  seasons: details.seasons || []
                 };
               }
             } catch (e) {

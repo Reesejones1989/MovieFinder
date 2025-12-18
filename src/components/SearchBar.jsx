@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
-import './SearchBar.css';
-import { useFavorites } from './FavoritesContext.jsx';
+import "./SearchBar.css";
+import { useFavorites } from "./FavoritesContext.jsx";
 
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isTVShow, setIsTVShow] = useState(true);
   const [suggestions, setSuggestions] = useState([]);
-  const { addToFavorites, isFavorite } = useFavorites();
+  const [activeVidSrc, setActiveVidSrc] = useState(null);
+  const [seasons, setSeasons] = useState([]);
+  const [selectedSeason, setSelectedSeason] = useState(null);
+  const [episodes, setEpisodes] = useState([]);
+  const [selectedEpisode, setSelectedEpisode] = useState(null);
 
-  useEffect(() => {
-    const visitCount = localStorage.getItem("visitCount");
-    localStorage.setItem("visitCount", visitCount ? Number(visitCount) + 1 : 1);
-    console.log("Visitor count:", localStorage.getItem("visitCount"));
-  }, []);
+  const { addToFavorites, isFavorite } = useFavorites();
+  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -21,158 +22,196 @@ export default function SearchBar() {
     }
 
     const fetchSuggestions = async () => {
-      const apiKey = import.meta.env.VITE_TMDB_API_KEY;
       const type = isTVShow ? "tv" : "movie";
       const url = `https://api.themoviedb.org/3/search/${type}?query=${searchTerm}&api_key=${apiKey}`;
 
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data.results) return;
 
-        if (data.results) {
-          const detailedResults = await Promise.all(
-            data.results.slice(0, 5).map(async (item) => {
-              const detailsUrl = `https://api.themoviedb.org/3/${type}/${item.id}?api_key=${apiKey}`;
-              const detailResp = await fetch(detailsUrl);
-              const detailData = await detailResp.json();
+      const detailed = await Promise.all(
+        data.results.slice(0, 5).map(async (item) => {
+          let imdb_id = null;
 
-              let imdb_id = detailData.imdb_id || null;
+          if (isTVShow) {
+            const extRes = await fetch(
+              `https://api.themoviedb.org/3/tv/${item.id}/external_ids?api_key=${apiKey}`
+            );
+            const extData = await extRes.json();
+            imdb_id = extData.imdb_id;
+          } else {
+            const detailRes = await fetch(
+              `https://api.themoviedb.org/3/movie/${item.id}?api_key=${apiKey}`
+            );
+            const detailData = await detailRes.json();
+            imdb_id = detailData.imdb_id;
+          }
 
-              if (isTVShow) {
-                const externalIdsUrl = `https://api.themoviedb.org/3/tv/${item.id}/external_ids?api_key=${apiKey}`;
-                const externalIdsResp = await fetch(externalIdsUrl);
-                const externalIdsData = await externalIdsResp.json();
-                imdb_id = externalIdsData.imdb_id || imdb_id;
-              }
+          return { ...item, imdb_id };
+        })
+      );
 
-              return {
-                ...item,
-                imdb_id,
-              };
-            })
-          );
-
-          setSuggestions(detailedResults);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      setSuggestions(detailed);
     };
 
-    const delayDebounceFn = setTimeout(fetchSuggestions, 500);
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, isTVShow]);
+    const delay = setTimeout(fetchSuggestions, 500);
+    return () => clearTimeout(delay);
+  }, [searchTerm, isTVShow, apiKey]);
 
-  const handleSearch = () => {
-    if (!searchTerm.trim()) return;
+  // Step 1: Click VidSrc → fetch seasons
+  const handleVidSrcClick = async (item) => {
+    if (!item.imdb_id) return;
 
-    let formattedSearch = searchTerm.trim().replace(/\s+/g, "-").replace(/:/g, "");
-    if (formattedSearch.includes("Spider-Man")) {
-      formattedSearch = formattedSearch.replace("Spider-Man", "Spiderman");
+    if (!isTVShow) {
+      window.open(
+        `https://vidsrc.xyz/embed/movie/${item.imdb_id}`,
+        "_blank"
+      );
+      return;
     }
 
-    const matchedSuggestion = suggestions.find(s =>
-      (s.title || s.name).toLowerCase().includes(searchTerm.trim().toLowerCase())
+    const res = await fetch(
+      `https://api.themoviedb.org/3/tv/${item.id}?api_key=${apiKey}`
     );
+    const data = await res.json();
 
-    const imdbId = matchedSuggestion?.imdb_id;
-    if (imdbId) {
-      const vidsrcUrl = `https://vidsrc.xyz/embed/${isTVShow ? "tv" : "movie"}/${imdbId}`;
-      window.open(vidsrcUrl, "_blank");
-    } else {
-      alert("No match with IMDb ID found. Try selecting a suggestion.");
-    }
+    setActiveVidSrc(item.id);
+    setSeasons(data.seasons.filter((s) => s.season_number > 0));
+    setSelectedSeason(null);
+    setEpisodes([]);
+    setSelectedEpisode(null);
   };
 
-  const handleAddToFavorites = async (item) => {
-    const itemWithType = {
-      ...item,
-      type: isTVShow ? 'tv' : 'movie'
-    };
-    
-    const success = await addToFavorites(itemWithType);
-    if (success) {
-      alert(`${item.title || item.name} added to favorites!`);
-    } else {
-      alert(`${item.title || item.name} is already in your favorites!`);
-    }
+  // Step 2: When season changes → populate episodes
+  const handleSeasonChange = (seasonNumber) => {
+    const season = seasons.find((s) => s.season_number === Number(seasonNumber));
+    if (!season) return;
+    const eps = Array.from({ length: season.episode_count }, (_, i) => i + 1);
+    setEpisodes(eps);
+    setSelectedSeason(seasonNumber);
+    setSelectedEpisode(null);
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    setSearchTerm(suggestion.title || suggestion.name);
-    setSuggestions([]);
+  // Step 3: Play button → open VidSrc
+  const handlePlay = (item) => {
+    if (!selectedSeason || !selectedEpisode) return;
+    window.open(
+      `https://vidsrc-embed.ru/embed/tv?imdb=${item.imdb_id}&season=${selectedSeason}&episode=${selectedEpisode}`,
+      "_blank"
+    );
   };
 
   return (
     <div className="search-wrapper">
       <div className="search-bar">
-        <button className="toggle-btn" onClick={() => setIsTVShow(!isTVShow)}>
-          {isTVShow ? "Switch to Search Movies" : "Switch to Search TV Shows"}
+        <button onClick={() => setIsTVShow(!isTVShow)}>
+          {isTVShow ? "Switch to Movies" : "Switch to TV Shows"}
         </button>
 
         <input
-          type="text"
-          placeholder={isTVShow ? "Search TV Shows..." : "Search Movies..."}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder={isTVShow ? "Search TV Shows..." : "Search Movies..."}
         />
-        <button className="search-btn" onClick={handleSearch}>Search</button>
       </div>
 
-      {suggestions.length > 0 && (
-        <ul className="suggestions">
-          {suggestions.map((item) => {
-            const formattedTitle = (item.title || item.name)
-              .replace(/\s+/g, "-")
-              .replace(/:/g, "")
-              .replace("Spider-Man", "Spiderman");
+      {suggestions.map((item) => {
+        const vidsrcActive = activeVidSrc === item.id;
 
-            const levidiaUrl = isTVShow
-              ? `https://www.levidia.ch/tv-show.php?watch=${formattedTitle}`
-              : `https://www.levidia.ch/movie.php?watch=${formattedTitle}`;
+        // Levidia link
+        const formattedTitle = (item.title || item.name)
+          .replace(/\s+/g, "-")
+          .replace(/:/g, "")
+          .replace("Spider-Man", "Spiderman");
 
-            const vidsrcUrl = item.imdb_id
-              ? `https://vidsrc.xyz/embed/${isTVShow ? "tv" : "movie"}/${item.imdb_id}`
-              : null;
+        const levidiaUrl = isTVShow
+          ? `https://www.levidia.ch/tv-show.php?watch=${formattedTitle}`
+          : `https://www.levidia.ch/movie.php?watch=${formattedTitle}`;
 
-            return (
-              <div key={item.id} className="suggestion-item">
-                <img
-                  src={
-                    item.poster_path
-                      ? `https://image.tmdb.org/t/p/w92${item.poster_path}`
-                      : "https://via.placeholder.com/50x75"
-                  }
-                  height="200"
-                  width="150"
-                  alt={item.title || item.name}
-                  className="poster"
-                  onClick={() => handleSuggestionClick(item)}
-                />
-                <div className="suggestion-details">
-                  <span>{item.title || item.name}</span>
-                  <div className="link-buttons">
-                    <a href={levidiaUrl} target="_blank" rel="noopener noreferrer">
-                      <button>Levidia</button>
-                    </a>
-                    {vidsrcUrl && (
-                      <a href={vidsrcUrl} target="_blank" rel="noopener noreferrer">
-                        <button>VidSrc</button>
-                      </a>
-                    )}
-                  </div>
-                  <button 
-                    onClick={() => handleAddToFavorites(item)}
-                    className={isFavorite(item.id, isTVShow ? 'tv' : 'movie') ? 'favorite-btn active' : 'favorite-btn'}
-                  >
-                    {isFavorite(item.id, isTVShow ? 'tv' : 'movie') ? '❤️ In Favorites' : '⭐ Add to Favorites'}
-                  </button>
-                </div>
+        return (
+          <div key={item.id} className="suggestion-item">
+            <img
+              src={
+                item.poster_path
+                  ? `https://image.tmdb.org/t/p/w92${item.poster_path}`
+                  : "https://via.placeholder.com/50x75"
+              }
+              alt={item.title || item.name}
+            />
+
+            <div className="suggestion-details">
+              <span>{item.title || item.name}</span>
+
+              <div className="link-buttons">
+                <a href={levidiaUrl} target="_blank" rel="noopener noreferrer">
+                  <button>Levidia</button>
+                </a>
+
+                {item.imdb_id && (
+                  <button onClick={() => handleVidSrcClick(item)}>VidSrc</button>
+                )}
               </div>
-            );
-          })}
-        </ul>
-      )}
+
+              {vidsrcActive && isTVShow && (
+                <div className="episode-selector">
+                  {/* Season Dropdown */}
+                  <select
+                    value={selectedSeason || ""}
+                    onChange={(e) => handleSeasonChange(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Select Season
+                    </option>
+                    {seasons.map((s) => (
+                      <option key={s.id} value={s.season_number}>
+                        Season {s.season_number}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Episode Dropdown */}
+                  {episodes.length > 0 && (
+                    <select
+                      value={selectedEpisode || ""}
+                      onChange={(e) => setSelectedEpisode(e.target.value)}
+                    >
+                      <option value="" disabled>
+                        Select Episode
+                      </option>
+                      {episodes.map((ep) => (
+                        <option key={ep} value={ep}>
+                          Episode {ep}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  {/* Play Button */}
+                  {selectedSeason && selectedEpisode && (
+                    <button onClick={() => handlePlay(item)}>▶️ Play</button>
+                  )}
+                </div>
+              )}
+
+              {/* Favorites */}
+              <button
+                onClick={() =>
+                  addToFavorites({ ...item, type: isTVShow ? "tv" : "movie" })
+                }
+                className={
+                  isFavorite(item.id, isTVShow ? "tv" : "movie")
+                    ? "favorite-btn active"
+                    : "favorite-btn"
+                }
+              >
+                {isFavorite(item.id, isTVShow ? "tv" : "movie")
+                  ? "❤️ In Favorites"
+                  : "⭐ Add to Favorites"}
+              </button>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
