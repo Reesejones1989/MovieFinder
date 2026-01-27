@@ -52,6 +52,9 @@
   text-align: center;
   position: relative;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+  max-height: 90vh;       /* never exceed viewport */
+  overflow-y: auto;       /* allow scrolling */
+  padding-bottom: 24px;   /* breathing room at bottom */
 }
 
 .modal-close {
@@ -95,4 +98,29 @@
 
 .modal-watch-link:hover {
   background-color: green;
+}
+
+.season-episode-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.season-episode-controls select {
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.play-episode-btn {
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.season-episode-controls {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
 }
