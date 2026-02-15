@@ -79,7 +79,7 @@ export default function SearchBar() {
     <div className="search-wrapper">
       <h3>MovieFinder Search</h3>
       <div className="search-bar">
-        <img src="../Public/MovieFinder.jpg" width={100} height={100} ></img>
+        <img src="/MovieFinder.jpg" width={100} height={100} ></img>
         <input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

@@ -11,7 +11,7 @@ export default function OneMovie() {
   useEffect(() => {
     async function fetchMovie() {
       try {
-        const res = await api.get(`/api/movies/${imdbID}`);
+        const res = await api.get(`/movies/${imdbID}`);
         setMovie(res.data);
       } catch (err) {
         console.error("Movie fetch error:", err);
