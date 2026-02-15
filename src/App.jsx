@@ -11,6 +11,8 @@ import Login from './pages/Login.jsx';
 import Favorites from './pages/Favorite.jsx';
 import LiveTv from './pages/LiveTv.jsx';
 import Test from './components/Test/Test.jsx';
+import OneMovie from './pages/OneMovie.jsx';
+import OneTvShow from './pages/OneTvShow.jsx';
 
 import React, { useEffect, useState } from 'react';
 import NewMovieFinder from './assets/NewMovieFinder.jpg';
@@ -70,6 +72,13 @@ function App() {
             <Route path="/Anime" element={<Anime />} />
             <Route path="/LiveTv" element={<LiveTv />} />
             <Route path="/About" element={<About />} />
+
+          <Route path="/movies/:imdbID" element={<OneMovie />} />
+          <Route path="/tvshows/:imdbID" element={<OneTvShow />} />
+
+          <Route path="/movie/:imdbID" element={<OneMovie />} />
+          <Route path="/tv/:imdbID" element={<OneTvShow />} />
+
 
 
             {/* Firebase Login logic */}

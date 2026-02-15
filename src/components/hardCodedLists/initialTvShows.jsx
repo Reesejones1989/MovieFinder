@@ -1,5 +1,5 @@
 const initialTvShows = [
-    { id: 1, title: "Love Life", year: 2020, poster: "" },
+    { id: 1, title: "90 Day Fiance: Before the 90 Days", year: 2020, poster: "" },
     { id: 2, title: "The Righteous Gemstones", year: 2011, poster: "" },
     { id: 3, title: "Last of Us", year: 2016, poster: "" },
     { id: 4, title: "Mayor of Kingstown", year: 2005, poster: "" },

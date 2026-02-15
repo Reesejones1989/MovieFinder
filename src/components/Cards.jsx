@@ -1,47 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Cards.css";
 
-export default function Cards({ item, type, getWatchLinks }) {
+export default function Cards({ item, type }) {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
-  const [showVidSrcControls, setShowVidSrcControls] = useState(false);
-  const [season, setSeason] = useState("");
-  const [episode, setEpisode] = useState("");
-  const [episodesForSeason, setEpisodesForSeason] = useState([]);
-
   const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setShowVidSrcControls(false);
-    setSeason("");
-    setEpisode("");
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleWatchMovie = () => {
+    if (!item.imdb_id) return;
+    navigate(`/movie/${item.imdb_id}`);
   };
 
-  const links = getWatchLinks ? getWatchLinks(item) : [];
+  const handleWatchTV = () => {
+    if (!item.imdb_id) return;
+    navigate(`/tv/${item.imdb_id}?season=1&episode=1`);
+  };
 
-  /* 🔁 Update episode list when season changes */
-  useEffect(() => {
-    if (!season || !item.seasons) return;
-
-    const selectedSeason = item.seasons.find(
-      (s) => s.season_number === Number(season)
-    );
-
-    if (selectedSeason?.episode_count) {
-      setEpisodesForSeason(
-        Array.from({ length: selectedSeason.episode_count }, (_, i) => i + 1)
-      );
-    } else {
-      setEpisodesForSeason([]);
-    }
-
-    setEpisode("");
-  }, [season, item.seasons]);
-
-  const vidsrcEpisodeUrl =
-    item.imdb_id && season && episode
-      ? `https://vidsrc-embed.ru/embed/tv?imdb=${item.imdb_id}&season=${season}&episode=${episode}`
-      : null;
+  const isTV = type === "tv" || type === "anime";
 
   return (
     <>
@@ -75,82 +53,25 @@ export default function Cards({ item, type, getWatchLinks }) {
               {item.overview || "No description available."}
             </p>
 
-            {/* 🎬 WATCH LINKS */}
             <div className="modal-links">
-              {links.map((link, i) => {
-                const isVidSrcTV =
-                  type === "tv" && link.label.toLowerCase().includes("vidsrc");
-
-                if (isVidSrcTV) {
-                  return (
-                    <button
-                      key={i}
-                      className="modal-watch-link"
-                      onClick={() => setShowVidSrcControls(true)}
-                    >
-                      ▶️ Watch on VidSrc
-                    </button>
-                  );
-                }
-
-                return (
-                  <a
-                    key={i}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="modal-watch-link"
-                  >
-                    {link.label}
-                  </a>
-                );
-              })}
-            </div>
-
-            {/* 📺 SEASON / EPISODE CONTROLS */}
-            {type === "tv" && showVidSrcControls && item.seasons?.length > 0 && (
-              <div className="season-episode-controls">
-                <select
-                  value={season}
-                  onChange={(e) => setSeason(e.target.value)}
+              {type === "movie" && (
+                <button
+                  className="modal-watch-link"
+                  onClick={handleWatchMovie}
                 >
-                  <option value="">Select Season</option>
-                  {item.seasons
-                    .filter((s) => s.season_number > 0)
-                    .map((s) => (
-                      <option key={s.id} value={s.season_number}>
-                        Season {s.season_number}
-                      </option>
-                    ))}
-                </select>
+                  ▶️ Watch Movie
+                </button>
+              )}
 
-                {season && (
-                  <select
-                    value={episode}
-                    onChange={(e) => setEpisode(e.target.value)}
-                  >
-                    <option value="">Select Episode</option>
-                    {episodesForSeason.map((ep) => (
-                      <option key={ep} value={ep}>
-                        Episode {ep}
-                      </option>
-                    ))}
-                  </select>
-                )}
-
-                {vidsrcEpisodeUrl && (
-                  <a
-                    href={vidsrcEpisodeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <button className="play-episode-btn">
-                      ▶ Play Episode
-                    </button>
-                  </a>
-                )}
-              </div>
-            )}
+              {isTV && (
+                <button
+                  className="modal-watch-link"
+                  onClick={handleWatchTV}
+                >
+                  ▶️ Watch This {type === "anime" ? "Anime" : "TV Show"}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

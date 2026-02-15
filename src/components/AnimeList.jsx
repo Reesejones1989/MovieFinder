@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./AnimeList.css";
 import Card from "../components/Cards";
 import initialAnimes from "./hardCodedLists/initialAnimes";
@@ -9,88 +10,69 @@ export default function AnimeList() {
   const [error, setError] = useState(null);
   const [showAnime, setShowAnime] = useState(true);
   const [showInitialAnime, setShowInitialAnime] = useState(true);
+
+  const navigate = useNavigate();
   const tmdbApiKey = import.meta.env.VITE_TMDB_API_KEY;
 
   const toggleAnime = () => setShowAnime((prev) => !prev);
   const toggleInitialAnime = () => setShowInitialAnime((prev) => !prev);
 
-  const formatTitleForLevidia = (title) =>
-    (title || "")
-      .replace(/:/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/&/g, "")
-      .replace(/'/g, "")
-      .toLowerCase();
+  const handleNavigate = (item) => {
+    if (!item.imdb_id) return;
 
-const getWatchLinks = (animeItem) => {
-  const links = [];
-
-  if (animeItem.imdb_id) {
-    links.push({
-      url: `https://vidsrc.xyz/embed/tv/${animeItem.imdb_id}`,
-      label: "▶️ Watch on VidSrc",
-    });
-  }
-
-  const formattedTitle = formatTitleForLevidia(animeItem.title);
-  if (formattedTitle) {
-    links.push({
-      url: `https://www.levidia.ch/tv-show.php?watch=${formattedTitle}`,
-      label: "▶️ Watch on Levidia",
-    });
-  }
-
-  return links;
-};
-
-
-  // Fetch posters for initial anime if missing
- useEffect(() => {
-  const fetchInitialAnimeDetails = async () => {
-    const updatedAnime = await Promise.all(
-      initialAnime.map(async (item) => {
-        try {
-          // Search TMDb for the anime by title
-          const searchTitle = encodeURIComponent(item.title);
-          const searchRes = await fetch(
-            `https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${searchTitle}&page=1`
-          );
-          const searchData = await searchRes.json();
-          const firstResult = searchData.results?.[0];
-
-          if (firstResult) {
-            const detailRes = await fetch(
-              `https://api.themoviedb.org/3/tv/${firstResult.id}?api_key=${tmdbApiKey}&append_to_response=external_ids`
-            );
-            const detailData = await detailRes.json();
-
-            return {
-              ...item,
-              poster:
-                item.poster ||
-                (firstResult.poster_path
-                  ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${firstResult.poster_path}`
-                  : ""),
-              year: item.year || (firstResult.first_air_date ? parseInt(firstResult.first_air_date.split("-")[0]) : "N/A"),
-              imdb_id: detailData?.external_ids?.imdb_id || null,
-            };
-          }
-          return item;
-        } catch (err) {
-          console.warn(`Failed to enrich ${item.title}:`, err);
-          return item;
-        }
-      })
-    );
-
-    setInitialAnime(updatedAnime);
+    navigate(`/tv/${item.imdb_id}?season=1&episode=1`);
   };
 
-  fetchInitialAnimeDetails();
-}, []);
+  // 🔹 Enrich Hardcoded Anime
+  useEffect(() => {
+    const fetchInitialAnimeDetails = async () => {
+      const updatedAnime = await Promise.all(
+        initialAnime.map(async (item) => {
+          try {
+            const searchTitle = encodeURIComponent(item.title);
+            const searchRes = await fetch(
+              `https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${searchTitle}`
+            );
+            const searchData = await searchRes.json();
+            const firstResult = searchData.results?.[0];
 
+            if (firstResult) {
+              const detailRes = await fetch(
+                `https://api.themoviedb.org/3/tv/${firstResult.id}?api_key=${tmdbApiKey}&append_to_response=external_ids`
+              );
+              const detailData = await detailRes.json();
 
-  // Fetch dynamic anime from TMDb
+              return {
+                ...item,
+                poster:
+                  item.poster ||
+                  (firstResult.poster_path
+                    ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${firstResult.poster_path}`
+                    : ""),
+                year:
+                  item.year ||
+                  (firstResult.first_air_date
+                    ? parseInt(firstResult.first_air_date.split("-")[0])
+                    : "N/A"),
+                imdb_id: detailData?.external_ids?.imdb_id || null,
+              };
+            }
+
+            return item;
+          } catch (err) {
+            console.warn(`Failed to enrich ${item.title}:`, err);
+            return item;
+          }
+        })
+      );
+
+      setInitialAnime(updatedAnime);
+    };
+
+    fetchInitialAnimeDetails();
+  }, [tmdbApiKey]);
+
+  // 🔹 Fetch Dynamic Anime
   useEffect(() => {
     const fetchAnime = async () => {
       try {
@@ -102,7 +84,7 @@ const getWatchLinks = (animeItem) => {
         const url = `https://api.themoviedb.org/3/discover/tv?api_key=${tmdbApiKey}&with_genres=16&with_keywords=210024&first_air_date.gte=${gteDate}&sort_by=popularity.desc&page=1`;
 
         const res = await fetch(url);
-        if (!res.ok) throw new Error(`Failed to fetch anime: ${res.status}`);
+        if (!res.ok) throw new Error("Failed to fetch anime");
 
         const data = await res.json();
 
@@ -140,30 +122,43 @@ const getWatchLinks = (animeItem) => {
 
   return (
     <div>
-      {/* Initial Hardcoded Anime Section */}
+      {/* Requested Anime */}
       <div className="collapsible-section">
         <h2 onClick={toggleInitialAnime} className="collapsible-header">
           🎌 Requested Anime List {showInitialAnime ? "▲" : "▼"}
         </h2>
+
         {showInitialAnime && (
           <div className="anime-container">
             {initialAnime.map((item) => (
-              <Card key={item.id} item={item} type="anime" getWatchLinks={getWatchLinks} />
+              <Card
+                key={item.id}
+                item={item}
+                type="anime"
+                onClick={() => handleNavigate(item)}
+              />
             ))}
           </div>
         )}
       </div>
 
-      {/* Dynamically Fetched Anime Section */}
+      {/* Popular Anime */}
       <div className="collapsible-section">
         <h2 onClick={toggleAnime} className="collapsible-header">
           🎌 Popular Anime (Last 90 Days) {showAnime ? "▲" : "▼"}
         </h2>
+
         {error && <p>{error}</p>}
+
         {showAnime && (
           <div className="anime-container">
             {anime.map((item) => (
-              <Card key={item.id} item={item} type="anime" getWatchLinks={getWatchLinks} />
+              <Card
+                key={item.id}
+                item={item}
+                type="anime"
+                onClick={() => handleNavigate(item)}
+              />
             ))}
           </div>
         )}
