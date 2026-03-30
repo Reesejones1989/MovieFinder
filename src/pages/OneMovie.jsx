@@ -27,9 +27,14 @@ export default function OneMovie() {
     }
   };
 
-  if (!movie) return <div className="loading">Loading...</div>;
+if (!movie?.vidSrc) {
+  return <div className="loading">Loading...</div>;
+}
 
-  const vidSrcUrl = `https://vidsrc.xyz/embed/movie/${imdbID}`;
+  //const vidSrcUrl = `https://vidsrc.xyz/embed/movie/${imdbID}`;
+  const vidSrcUrl = movie?.vidSrc;
+  console.log(imdbID);
+  console.log(vidSrcUrl);
 
   return (
     <div className="movie-page">
