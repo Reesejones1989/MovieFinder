@@ -1,4 +1,4 @@
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import api from "../api/axios";
 import "./OneTvShow.css";
@@ -6,7 +6,6 @@ import "./OneTvShow.css";
 export default function OneTvShow() {
   const { imdbID } = useParams();
   const location = useLocation();
-  const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
 
   const videoRef = useRef(null);
@@ -21,35 +20,24 @@ export default function OneTvShow() {
 
   const STORAGE_KEY = `continue-${imdbID}`;
 
-  // 🔥 Redirect if imdbID is missing
-  useEffect(() => {
-    if (!imdbID) {
-      navigate("/tv");
-    }
-  }, [imdbID, navigate]);
-
   // 🔥 Fetch show info
   useEffect(() => {
     async function fetchShow() {
       try {
         setLoading(true);
+
         const res = await api.get(`/tv/${imdbID}/info`);
         setShowInfo(res.data);
 
-        // Redirect if show not found
-        if (!res.data) {
-          navigate("/tv");
-        }
       } catch (err) {
         console.error("TV show fetch error:", err);
-        navigate("/tv");
       } finally {
         setLoading(false);
       }
     }
 
     if (imdbID) fetchShow();
-  }, [imdbID, navigate]);
+  }, [imdbID]);
 
   // 🔥 Fetch episodes
   useEffect(() => {
@@ -58,31 +46,36 @@ export default function OneTvShow() {
         const res = await api.get(`/tv/${imdbID}/info?season=${season}`);
         const eps = res.data.episodes || [];
         setEpisodes(eps);
+        
 
+        // 🔥 INITIAL LOAD LOGIC
         if (!initialized && eps.length > 0) {
           const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
           if (saved && saved.season === season) {
             setEpisode(saved.episode);
           } else {
-            const latest = eps[eps.length - 1];
-            setEpisode(latest.episode_number);
+            // ✅ Auto-select latest episode
+          setEpisode(latest.episode_number);
           }
+
           setInitialized(true);
         }
 
+        // Prevent overflow
         if (episode > eps.length) {
           setEpisode(1);
         }
+
       } catch (err) {
         console.error("Episode fetch error:", err);
-        navigate("/tv");
       }
     }
 
     if (imdbID && season) fetchEpisodes();
-  }, [season, imdbID, episode, initialized, navigate]);
+  }, [season, imdbID]);
 
-  // 🔥 Save progress
+  // 🔥 Save progress (Continue Watching)
   useEffect(() => {
     if (season && episode) {
       localStorage.setItem(
@@ -92,7 +85,7 @@ export default function OneTvShow() {
     }
   }, [season, episode]);
 
-  // 🔥 Auto Next Episode
+  // 🔥 Auto Next Episode (basic autoplay trigger)
   const goToNextEpisode = () => {
     if (episode < episodes.length) {
       setEpisode((prev) => prev + 1);
@@ -109,17 +102,9 @@ export default function OneTvShow() {
     }
   };
 
-  // Back button fallback
-  const handleBack = () => {
-    if (window.history.state?.idx > 0) {
-      navigate(-1);
-    } else {
-      navigate("/tv");
-    }
-  };
-
   const maxSeasons = Number(showInfo?.totalSeasons || 1);
   const maxEpisodes = episodes.length;
+
   const vidSrcUrl = `https://vidsrc.xyz/embed/tv/${imdbID}/${season}/${episode}`;
 
   if (loading || !showInfo) {
@@ -128,24 +113,25 @@ export default function OneTvShow() {
 
   return (
     <div className="tv-page">
-      <button className="back-btn" onClick={handleBack}>
-        ⬅ Back
-      </button>
-
+      
+      {/* 🎬 Title */}
       <h1 className="tv-title">
         {showInfo?.Title
           ? `${showInfo.Title} (${showInfo.Year})`
           : "Now Playing"}
       </h1>
 
+      {/* 🎛 Controls */}
       <div className="controls">
+        
+        {/* Season */}
         <label>
           Season:
           <select
             value={season}
             onChange={(e) => {
               setSeason(Number(e.target.value));
-              setInitialized(false);
+              setInitialized(false); // 🔥 re-trigger auto-select
             }}
           >
             {[...Array(maxSeasons)].map((_, i) => (
@@ -156,22 +142,25 @@ export default function OneTvShow() {
           </select>
         </label>
 
+        {/* Episode */}
         <label>
           Episode:
           <select
             value={episode}
             onChange={(e) => setEpisode(Number(e.target.value))}
           >
-            {episodes.map((ep) => (
-              <option key={ep.episode_number} value={ep.episode_number}>
-                Ep {ep.episode_number}: {ep.name}
-              </option>
-            ))}
+           {episodes.map((ep) => (
+  <option key={ep.episode_number} value={ep.episode_number}>
+    Ep {ep.episode_number}: {ep.name}
+  </option>
+))}
           </select>
         </label>
       </div>
 
+      {/* ⏯ Navigation */}
       <div className="nav-buttons">
+
         <button
           onClick={() => setEpisode((prev) => prev - 1)}
           disabled={episode <= 1}
@@ -198,10 +187,16 @@ export default function OneTvShow() {
           ⏭ Season
         </button>
 
-        <button onClick={goToNextEpisode}>▶ Auto Next</button>
-        <button onClick={handleFullscreen}>⛶ Fullscreen</button>
+        <button onClick={goToNextEpisode}>
+          ▶ Auto Next
+        </button>
+
+        <button onClick={handleFullscreen}>
+          ⛶ Fullscreen
+        </button>
       </div>
 
+      {/* 📺 Video */}
       <div className="video-container" ref={videoRef}>
         <iframe
           key={`${imdbID}-${season}-${episode}`}
@@ -210,7 +205,6 @@ export default function OneTvShow() {
           frameBorder="0"
           title="TV Player"
           referrerPolicy="no-referrer"
-          sandbox="allow-scripts allow-same-origin allow-popups"
         />
       </div>
     </div>
