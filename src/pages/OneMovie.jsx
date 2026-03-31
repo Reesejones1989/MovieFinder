@@ -1,25 +1,38 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import api from "../api/axios";
 import "./OneMovie.css";
 
 export default function OneMovie() {
   const { imdbID } = useParams();
+  const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const videoRef = useRef(null);
+
+  // 🔥 Redirect if imdbID missing
+  useEffect(() => {
+    if (!imdbID) {
+      navigate("/movies");
+    }
+  }, [imdbID, navigate]);
 
   useEffect(() => {
     async function fetchMovie() {
       try {
         const res = await api.get(`/movies/${imdbID}`);
         setMovie(res.data);
+
+        if (!res.data?.vidSrc) {
+          navigate("/movies");
+        }
       } catch (err) {
         console.error("Movie fetch error:", err);
+        navigate("/movies");
       }
     }
 
     if (imdbID) fetchMovie();
-  }, [imdbID]);
+  }, [imdbID, navigate]);
 
   const handleFullscreen = () => {
     if (videoRef.current?.requestFullscreen) {
@@ -27,21 +40,27 @@ export default function OneMovie() {
     }
   };
 
-if (!movie?.vidSrc) {
-  return <div className="loading">Loading...</div>;
-}
+  const handleBack = () => {
+    if (window.history.state?.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate("/movies");
+    }
+  };
 
-  //const vidSrcUrl = `https://vidsrc.xyz/embed/movie/${imdbID}`;
-  const vidSrcUrl = movie?.vidSrc;
-  console.log(imdbID);
-  console.log(vidSrcUrl);
+  if (!movie?.vidSrc) {
+    return <div className="loading">Loading...</div>;
+  }
 
   return (
     <div className="movie-page">
-     <h1 className="movie-title">
-  {movie?.Title ? `${movie.Title} (${movie.Year})` : "Now Playing"}
-</h1>
+      <button className="back-btn" onClick={handleBack}>
+        ⬅ Back
+      </button>
 
+      <h1 className="movie-title">
+        {movie?.Title ? `${movie.Title} (${movie.Year})` : "Now Playing"}
+      </h1>
 
       <button className="fullscreen-btn" onClick={handleFullscreen}>
         Fullscreen
@@ -49,10 +68,11 @@ if (!movie?.vidSrc) {
 
       <div className="video-container" ref={videoRef}>
         <iframe
-          src={vidSrcUrl}
+          src={movie.vidSrc}
           title="Movie Player"
           allowFullScreen
           frameBorder="0"
+          sandbox="allow-scripts allow-same-origin allow-popups"
         />
       </div>
     </div>
