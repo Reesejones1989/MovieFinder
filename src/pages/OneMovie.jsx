@@ -6,6 +6,8 @@ import "./OneMovie.css";
 export default function OneMovie() {
   const { imdbID } = useParams();
   const [movie, setMovie] = useState(null);
+  const [activated, setActivated] = useState(false);
+  const [loadingPlayer, setLoadingPlayer] = useState(false); // 🔥 NEW
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -21,39 +23,60 @@ export default function OneMovie() {
     if (imdbID) fetchMovie();
   }, [imdbID]);
 
-  const handleFullscreen = () => {
-    if (videoRef.current?.requestFullscreen) {
-      videoRef.current.requestFullscreen();
-    }
+  const handlePlay = () => {
+    setActivated(true);
+    setLoadingPlayer(true);
+
+    // 🔥 Auto fullscreen after slight delay (DOM ready)
+    setTimeout(() => {
+      if (videoRef.current?.requestFullscreen) {
+        videoRef.current.requestFullscreen();
+      }
+    }, 300);
   };
 
-if (!movie?.vidSrc) {
-  return <div className="loading">Loading...</div>;
-}
+  const handleIframeLoad = () => {
+    setLoadingPlayer(false);
+  };
 
-  //const vidSrcUrl = `https://vidsrc.xyz/embed/movie/${imdbID}`;
+  if (!movie?.vidSrc) {
+    return <div className="loading">Loading...</div>;
+  }
+
   const vidSrcUrl = movie?.vidSrc;
-  console.log(imdbID);
-  console.log(vidSrcUrl);
 
   return (
     <div className="movie-page">
-     <h1 className="movie-title">
-  {movie?.Title ? `${movie.Title} (${movie.Year})` : "Now Playing"}
-</h1>
-
-
-      <button className="fullscreen-btn" onClick={handleFullscreen}>
-        Fullscreen
-      </button>
+      <h1 className="movie-title">
+        {movie?.Title ? `${movie.Title} (${movie.Year})` : "Now Playing"}
+      </h1>
 
       <div className="video-container" ref={videoRef}>
-        <iframe
-          src={vidSrcUrl}
-          title="Movie Player"
-          allowFullScreen
-          frameBorder="0"
-        />
+        
+        {/* 🔥 CLICK SHIELD */}
+        {!activated && (
+          <div className="click-shield" onClick={handlePlay}>
+            <button className="play-btn">▶ Play Movie</button>
+          </div>
+        )}
+
+        {/* 🔥 LOADING SPINNER */}
+        {loadingPlayer && (
+          <div className="spinner-overlay">
+            <div className="spinner"></div>
+          </div>
+        )}
+
+        {/* 🔥 IFRAME */}
+        {activated && (
+          <iframe
+            src={vidSrcUrl}
+            title="Movie Player"
+            allowFullScreen
+            frameBorder="0"
+            onLoad={handleIframeLoad}
+          />
+        )}
       </div>
     </div>
   );
