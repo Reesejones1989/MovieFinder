@@ -7,8 +7,45 @@ export default function OneMovie() {
   const { imdbID } = useParams();
   const [movie, setMovie] = useState(null);
   const [activated, setActivated] = useState(false);
-  const [loadingPlayer, setLoadingPlayer] = useState(false); // 🔥 NEW
+  const [loadingPlayer, setLoadingPlayer] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const [showControls, setShowControls] = useState(true);
+  const hideTimeoutRef = useRef(null);
+
   const videoRef = useRef(null);
+
+  const resetHideTimer = () => {
+  setShowControls(true);
+
+  if (hideTimeoutRef.current) {
+    clearTimeout(hideTimeoutRef.current);
+  }
+
+  hideTimeoutRef.current = setTimeout(() => {
+    setShowControls(false);
+  }, 15000); // 15 seconds
+};
+
+useEffect(() => {
+  if (!activated) return;
+
+  const handleMouseMove = () => {
+    resetHideTimer();
+  };
+
+  window.addEventListener("mousemove", handleMouseMove);
+
+  // start timer immediately
+  resetHideTimer();
+
+  return () => {
+    window.removeEventListener("mousemove", handleMouseMove);
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+    }
+  };
+}, [activated]);
 
   useEffect(() => {
     async function fetchMovie() {
@@ -23,14 +60,16 @@ export default function OneMovie() {
     if (imdbID) fetchMovie();
   }, [imdbID]);
 
+  // ▶️ Play handler
   const handlePlay = () => {
     setActivated(true);
     setLoadingPlayer(true);
 
-    // 🔥 Auto fullscreen after slight delay (DOM ready)
+    // 🔥 Auto fullscreen
     setTimeout(() => {
       if (videoRef.current?.requestFullscreen) {
         videoRef.current.requestFullscreen();
+        setIsFullscreen(true);
       }
     }, 300);
   };
@@ -38,6 +77,31 @@ export default function OneMovie() {
   const handleIframeLoad = () => {
     setLoadingPlayer(false);
   };
+
+  // 🔲 Toggle fullscreen manually
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      videoRef.current?.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  // 🔄 Track fullscreen changes (user presses ESC, etc.)
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () =>
+      document.removeEventListener(
+        "fullscreenchange",
+        handleFullscreenChange
+      );
+  }, []);
 
   if (!movie?.vidSrc) {
     return <div className="loading">Loading...</div>;
@@ -47,35 +111,47 @@ export default function OneMovie() {
 
   return (
     <div className="movie-page">
+      {/* 🎬 UPDATED TITLE */}
       <h1 className="movie-title">
-        {movie?.Title ? `${movie.Title} (${movie.Year})` : "Now Playing"}
+        {movie?.Title
+          ? `Now Playing: ${movie.Title} (${movie.Year})`
+          : "Now Playing"}
       </h1>
 
       <div className="video-container" ref={videoRef}>
         
-        {/* 🔥 CLICK SHIELD */}
+        {/* ▶️ CLICK SHIELD */}
         {!activated && (
           <div className="click-shield" onClick={handlePlay}>
             <button className="play-btn">▶ Play Movie</button>
           </div>
         )}
 
-        {/* 🔥 LOADING SPINNER */}
+        {/* 🔄 LOADING */}
         {loadingPlayer && (
           <div className="spinner-overlay">
             <div className="spinner"></div>
           </div>
         )}
 
-        {/* 🔥 IFRAME */}
+        {/* 🎬 PLAYER */}
         {activated && (
-          <iframe
-            src={vidSrcUrl}
-            title="Movie Player"
-            allowFullScreen
-            frameBorder="0"
-            onLoad={handleIframeLoad}
-          />
+          <>
+            <iframe
+              src={vidSrcUrl}
+              title="Movie Player"
+              allowFullScreen
+              frameBorder="0"
+              onLoad={handleIframeLoad}
+            />
+
+            {/* 🔲 FULLSCREEN BUTTON */}
+           {activated && showControls && (
+  <button className="fullscreen-btn" onClick={toggleFullscreen}>
+    {isFullscreen ? "⤢ Exit Fullscreen" : "⤢ Fullscreen"}
+  </button>
+)}
+          </>
         )}
       </div>
     </div>

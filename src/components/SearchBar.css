@@ -5,13 +5,13 @@
   align-items: center;
   gap: 12px;
   padding: 20px;
-  background: linear-gradient(145deg, #ffffff, #f1f1f1);
-  border-radius: 12px;
+  background: #1a1a1a;
+  border-radius: 8px;
   width: 100%;
   max-width: 900px;
-  margin: 40px auto 20px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ddd;
+  margin: 10px auto;
+  box-shadow: none; /* removes floating card look */
+  border: 1px solid #333;
   box-sizing: border-box;
 }
 
@@ -68,8 +68,8 @@
 }
 
 .search-wrapper {
-  background: linear-gradient(145deg, #ffffff, #f1f1f1);
-  color: #000;
+  background: transparent;
+  padding: 0;
 }
 
 /* Suggestions */
@@ -136,6 +136,19 @@
   cursor: pointer;
   border-radius: 6px;
 }
+.search-wrapper h3 {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+  color: #aaa;
+}
+
+.suggestions,
+.suggestion-item {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 /* Responsive */
 @media (max-width: 600px) {
@@ -173,4 +186,5 @@
   .link-buttons button {
     margin-bottom: 8px;
   }
+  
 }

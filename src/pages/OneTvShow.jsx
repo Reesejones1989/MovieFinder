@@ -131,16 +131,16 @@ export default function OneTvShow() {
   if (loading || !showInfo) {
     return <div className="loading">Loading show...</div>;
   }
-
+  //console.log(showInfo.Title);
   return (
     <div className="tv-page">
       
       {/* 🎬 Title */}
-      <h1 className="tv-title">
-        {showInfo?.Title
-          ? `${showInfo.Title} (${showInfo.Year})`
-          : "Now Playing"}
-      </h1>
+    <h1 className="tv-title">
+  {showInfo?.Title
+    ? `Now Playing: ${showInfo.Title} (${showInfo.Year})`
+    : "Now Playing"}
+</h1>
 
       {/* 🎛 Controls */}
       <div className="controls">

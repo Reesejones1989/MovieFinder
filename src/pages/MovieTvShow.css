@@ -1,0 +1,17 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 🔥 This controls positioning under navbar */
+.search-section {
+  position: sticky;
+  top: 70px; /* match your navbar height */
+  z-index: 100;
+  background: #111; /* or match your theme */
+  padding: 10px 0 5px;
+  border-bottom: 1px solid #222;
+  width: 380px;
+  height: 280px;
+  
+}

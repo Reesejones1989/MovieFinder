@@ -13,6 +13,7 @@ import LiveTv from './pages/LiveTv.jsx';
 import Test from './components/Test/Test.jsx';
 import OneMovie from './pages/OneMovie.jsx';
 import OneTvShow from './pages/OneTvShow.jsx';
+import OverlaySearch from './components/OverlaySearch.jsx';
 
 import React, { useEffect, useState } from 'react';
 import NewMovieFinder from './assets/NewMovieFinder.jpg';
@@ -51,6 +52,9 @@ function App() {
 
         {/* Navigation Bar */}
         <Nav />
+
+        <OverlaySearch />
+
 
         {/* Movie Finder Logo */}
         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-10 z-0 select-none">
