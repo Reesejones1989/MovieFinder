@@ -21,6 +21,7 @@ export default function OneMovie() {
   const { imdbID } = useParams();
 
 const isValidIMDb = /^tt\d+$/.test(imdbID);
+console.log(imdbID);
 
 if (!isValidIMDb) {
   return <div className="loading">Invalid movie ID</div>;
@@ -119,6 +120,7 @@ useEffect(() => {
 
   return (
     <div className="movie-page">
+      <br></br>
       {/* 🎬 UPDATED TITLE */}
       <h1 className="movie-title">
         {movie?.Title
@@ -150,7 +152,10 @@ useEffect(() => {
               title="Movie Player"
               allowFullScreen
               frameBorder="0"
+              referrerPolicy="no-referrer"
+              allow="autoplay; fullscreen; encrypted-media; picture-in-picture" 
               onLoad={handleIframeLoad}
+
             />
 
             {/* 🔲 FULLSCREEN BUTTON */}
