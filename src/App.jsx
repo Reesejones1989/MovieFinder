@@ -14,13 +14,14 @@ import Test from './components/Test/Test.jsx';
 import OneMovie from './pages/OneMovie.jsx';
 import OneTvShow from './pages/OneTvShow.jsx';
 import OverlaySearch from './components/OverlaySearch.jsx';
+import RedirectByIMDb from "./pages/RedirectByIMDb";
 
 import React, { useEffect, useState } from 'react';
 import NewMovieFinder from './assets/NewMovieFinder.jpg';
 import PrivateRoute from './components/PrivateRoute.jsx';
 import { FavoritesProvider } from './components/FavoritesContext.jsx';
 
-import './components/firebaseConfig.jsx'; // Initialize Firebase once
+import './components/firebaseConfig.jsx';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 function App() {
@@ -38,77 +39,79 @@ function App() {
   }, []);
 
   if (!authChecked) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>; // Tailwind loading screen
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    );
   }
 
   return (
     <FavoritesProvider>
       <Router>
         <div className="flex flex-col min-h-screen pt-20 pb-32 px-4 md:px-8 relative">
-            <br></br>
-    <br></br>
-    <br></br>
-   
 
-        {/* Navigation Bar */}
-        <Nav />
+          <Nav />
+          <OverlaySearch />
 
-        <OverlaySearch />
+          {/* Background Logo */}
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-10 z-0 select-none">
+            <img
+              src={NewMovieFinder}
+              alt="Movie Finder"
+              className="w-[600px] max-w-full h-auto filter blur-[0.5px]"
+            />
+          </div>
 
+          <main className="flex flex-col flex-grow items-center justify-center px-2">
+            <Routes>
 
-        {/* Movie Finder Logo */}
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-10 z-0 select-none">
-          <img
-            src={NewMovieFinder}
-            alt="Movie Links Movie Finder"
-            height={300}
-            width={300}
-            className="w-[600px] max-w-full h-auto filter blur-[0.5px]"
-          />
-        </div>
+              {/* Main Pages */}
+              <Route path="/" element={<Home />} />
+              <Route path="/movies" element={<Movies />} />
+              <Route path="/tv-shows" element={<TvShows />} />
+              <Route path="/anime" element={<Anime />} />
+              <Route path="/sports" element={<Sports />} />
+              <Route path="/livetv" element={<LiveTv />} />
+              <Route path="/about" element={<About />} />
 
-        {/* Main Page Content */}
-        <main className="flex flex-col flex-grow items-center justify-center px-2">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/Movies" element={<Movies />} />
-            <Route path="/TV-Shows" element={<TvShows />} />
-            <Route path="/Anime" element={<Anime />} />
-            <Route path="/LiveTv" element={<LiveTv />} />
-            <Route path="/About" element={<About />} />
+              {/* Media Pages */}
+              <Route path="/movie/:imdbID" element={<OneMovie />} />
+              <Route path="/tv/:imdbID" element={<OneTvShow />} />
 
-          <Route path="/movies/:imdbID" element={<OneMovie />} />
-          <Route path="/tvshows/:imdbID" element={<OneTvShow />} />
+              {/* IMDb Smart Redirect (MUST BE BELOW MAIN ROUTES) */}
+              <Route path="/:imdbID" element={<RedirectByIMDb />} />
 
-          <Route path="/movie/:imdbID" element={<OneMovie />} />
-          <Route path="/tv/:imdbID" element={<OneTvShow />} />
+              {/* Auth */}
+              <Route
+                path="/login"
+                element={user ? <Navigate to="/favorites" replace /> : <Login />}
+              />
 
+              <Route
+                path="/favorites"
+                element={
+                  <PrivateRoute>
+                    <Favorites />
+                  </PrivateRoute>
+                }
+              />
 
+              {/* Misc */}
+              <Route path="/test" element={<Test />} />
 
-            {/* Firebase Login logic */}
-            <Route path="/Login" element={user ? <Navigate to="/Favorites" replace /> : <Login />} />
+              {/* Aliases (clean + safe) */}
+              <Route path="/tvshows" element={<Navigate to="/tv-shows" replace />} />
+              <Route path="/tvshow" element={<Navigate to="/tv-shows" replace />} />
+              <Route path="/live-tv" element={<Navigate to="/livetv" replace />} />
 
-            {/* Protected Route */}
-            <Route path="/Favorites" element={<PrivateRoute><Favorites /></PrivateRoute>} />
+              {/* Catch-all */}
+              <Route path="*" element={<Navigate to="/" replace />} />
 
-            <Route path="/Test" element={<Test />} />
+            </Routes>
+          </main>
 
-            {/* Redirects & Aliases */}
-            <Route path="/Sports" element={<Navigate to="/Sports" replace />} />
-            <Route path="/Anime" element={<Navigate to="/Anime" replace />} />
-            <Route path="/Movies" element={<Navigate to="/Movies" replace />} />
-            <Route path="/Tv-Shows" element={<Navigate to="/TV-Shows" replace />} />
-            <Route path="/LiveTV" element={<Navigate to="/LiveTv" replace />} />
-            <Route path="/TvShow" element={<Navigate to="/TV-Shows" replace />} />
-            <Route path="/TvShows" element={<Navigate to="/TV-Shows" replace />} />
-
-            {/* Catch-all */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-
-        {/* Footer */}
-        <Footer />
+          <Footer />
         </div>
       </Router>
     </FavoritesProvider>

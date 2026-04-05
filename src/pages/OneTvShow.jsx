@@ -4,7 +4,13 @@ import api from "../api/axios";
 import "./OneTvShow.css";
 
 export default function OneTvShow() {
-  const { imdbID } = useParams();
+const { imdbID } = useParams();
+
+const isValidIMDb = /^tt\d+$/.test(imdbID);
+
+if (!isValidIMDb) {
+  return <div className="loading">Invalid show ID</div>;
+}
   const location = useLocation();
   const params = new URLSearchParams(location.search);
 
@@ -127,6 +133,8 @@ export default function OneTvShow() {
   const maxEpisodes = episodes.length;
 
   const vidSrcUrl = `https://vidsrc.xyz/embed/tv/${imdbID}/${season}/${episode}`;
+
+  
 
   if (loading || !showInfo) {
     return <div className="loading">Loading show...</div>;

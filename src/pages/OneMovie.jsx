@@ -18,6 +18,14 @@ export default function OneMovie() {
   const resetHideTimer = () => {
   setShowControls(true);
 
+  const { imdbID } = useParams();
+
+const isValidIMDb = /^tt\d+$/.test(imdbID);
+
+if (!isValidIMDb) {
+  return <div className="loading">Invalid movie ID</div>;
+}
+
   if (hideTimeoutRef.current) {
     clearTimeout(hideTimeoutRef.current);
   }
