@@ -4,12 +4,6 @@ import { useEffect } from "react";
 export default function RedirectByIMDb() {
   const { imdbID } = useParams();
   const navigate = useNavigate();
-  const isValidIMDb = /^tt\d+$/.test(imdbID);
-
-if (!isValidIMDb) {
-  navigate("/");
-  return;
-}
 
   useEffect(() => {
     async function checkType() {
