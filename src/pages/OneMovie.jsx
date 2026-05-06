@@ -20,12 +20,6 @@ export default function OneMovie() {
 
   const { imdbID } = useParams();
 
-const isValidIMDb = /^tt\d+$/.test(imdbID);
-console.log(imdbID);
-
-if (!isValidIMDb) {
-  return <div className="loading">Invalid movie ID</div>;
-}
 
   if (hideTimeoutRef.current) {
     clearTimeout(hideTimeoutRef.current);

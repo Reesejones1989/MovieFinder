@@ -102,7 +102,7 @@ export default function MovieList() {
     const links = [];
     if (movie.imdb_id)
       links.push({
-        url: `https://vidsrc.xyz/embed/movie/${movie.imdb_id}`,
+        url: `https://vsembed.su/embed/movie/${movie.imdb_id}`,
         label: "▶️ Watch on Vidsrc",
       });
     links.push({

@@ -6,11 +6,7 @@ import "./OneTvShow.css";
 export default function OneTvShow() {
 const { imdbID } = useParams();
 
-const isValidIMDb = /^tt\d+$/.test(imdbID);
 
-if (!isValidIMDb) {
-  return <div className="loading">Invalid show ID</div>;
-}
   const location = useLocation();
   const params = new URLSearchParams(location.search);
 
