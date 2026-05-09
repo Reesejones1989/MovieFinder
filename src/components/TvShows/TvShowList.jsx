@@ -94,7 +94,7 @@ export default function TvShowList() {
     const links = [];
     if (show.imdb_id)
       links.push({
-        url: `https://vsembed.su/embed/tv/${show.imdb_id}`,
+        url: `https://vsembed.ru/tv/${show.imdb_id}`,
         label: "▶️ Watch on Vidsrc",
       });
     links.push({

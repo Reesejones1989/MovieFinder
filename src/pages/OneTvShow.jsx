@@ -1,18 +1,14 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import api from "../api/axios";
 import "./OneTvShow.css";
 
 export default function OneTvShow() {
-const { imdbID } = useParams();
-
-
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
+  const { imdbID } = useParams();
 
   const videoRef = useRef(null);
 
-  // 🔥 State
+  // 🎯 State
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
   const [showInfo, setShowInfo] = useState(null);
@@ -20,17 +16,18 @@ const { imdbID } = useParams();
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
 
-  // 🔥 NEW STATES
   const [activated, setActivated] = useState(false);
   const [loadingPlayer, setLoadingPlayer] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const STORAGE_KEY = `continue-${imdbID}`;
 
-  // 🔥 Fetch show info
+  // 🎬 Fetch show info
   useEffect(() => {
     async function fetchShow() {
       try {
         setLoading(true);
+
         const res = await api.get(`/tv/${imdbID}/info`);
         setShowInfo(res.data);
       } catch (err) {
@@ -40,25 +37,32 @@ const { imdbID } = useParams();
       }
     }
 
-    if (imdbID) fetchShow();
+    if (imdbID) {
+      fetchShow();
+    }
   }, [imdbID]);
 
-  // 🔥 Fetch episodes
+  // 📺 Fetch episodes
   useEffect(() => {
     async function fetchEpisodes() {
       try {
-        const res = await api.get(`/tv/${imdbID}/info?season=${season}`);
+        const res = await api.get(
+          `/tv/${imdbID}/info?season=${season}`
+        );
+
         const eps = res.data.episodes || [];
+
         setEpisodes(eps);
 
         if (!initialized && eps.length > 0) {
-          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          const saved = JSON.parse(
+            localStorage.getItem(STORAGE_KEY)
+          );
 
           if (saved && saved.season === season) {
             setEpisode(saved.episode);
           } else {
-            const latest = eps[eps.length - 1]; // ✅ FIXED
-            setEpisode(latest.episode_number);
+            setEpisode(eps[0].episode_number);
           }
 
           setInitialized(true);
@@ -73,26 +77,31 @@ const { imdbID } = useParams();
       }
     }
 
-    if (imdbID && season) fetchEpisodes();
-  }, [season, imdbID]);
+    if (imdbID && season) {
+      fetchEpisodes();
+    }
+  }, [season, imdbID, initialized, episode, STORAGE_KEY]);
 
-  // 🔥 Save progress
+  // 💾 Save progress
   useEffect(() => {
     if (season && episode) {
       localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({ season, episode })
+        JSON.stringify({
+          season,
+          episode,
+        })
       );
     }
-  }, [season, episode]);
+  }, [season, episode, STORAGE_KEY]);
 
-  // 🔥 Reset player when switching episodes/seasons
+  // 🔄 Reset player on episode change
   useEffect(() => {
     setActivated(false);
     setLoadingPlayer(false);
   }, [season, episode]);
 
-  // 🔥 Play handler
+  // ▶️ Play
   const handlePlay = () => {
     setActivated(true);
     setLoadingPlayer(true);
@@ -104,51 +113,77 @@ const { imdbID } = useParams();
     }, 300);
   };
 
-  // 🔥 Iframe load handler
+  // 📺 Loaded
   const handleIframeLoad = () => {
     setLoadingPlayer(false);
   };
 
-  // 🔥 Auto next episode
+  // ⏭ Next episode
   const goToNextEpisode = () => {
     if (episode < episodes.length) {
       setEpisode((prev) => prev + 1);
-    } else if (season < showInfo.totalSeasons) {
+    } else if (season < maxSeasons) {
       setSeason((prev) => prev + 1);
       setEpisode(1);
+      setInitialized(false);
     }
   };
 
-  const handleFullscreen = () => {
-    if (videoRef.current?.requestFullscreen) {
-      videoRef.current.requestFullscreen();
+  // 🔲 Fullscreen
+  const handleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await videoRef.current?.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      console.error("Fullscreen error:", err);
     }
   };
+
+  // 🔄 Fullscreen tracking
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener(
+      "fullscreenchange",
+      handleFullscreenChange
+    );
+
+    return () => {
+      document.removeEventListener(
+        "fullscreenchange",
+        handleFullscreenChange
+      );
+    };
+  }, []);
 
   const maxSeasons = Number(showInfo?.totalSeasons || 1);
   const maxEpisodes = episodes.length;
 
-  const vidSrcUrl = `https://vidsrc.xyz/embed/tv/${imdbID}/${season}/${episode}`;
-
-  
+  // ✅ UPDATED EMBED URL
+  const vidSrcUrl = `https://vsembed.su/embed/tv/${imdbID}/${season}/${episode}`;
 
   if (loading || !showInfo) {
     return <div className="loading">Loading show...</div>;
   }
-  //console.log(showInfo.Title);
+
   return (
     <div className="tv-page">
-      
-      {/* 🎬 Title */}
-    <h1 className="tv-title">
-  {showInfo?.Title
-    ? `Now Playing: ${showInfo.Title} (${showInfo.Year})`
-    : "Now Playing"}
-</h1>
 
-      {/* 🎛 Controls */}
+      {/* 🎬 TITLE */}
+      <h1 className="tv-title">
+        {showInfo?.Title
+          ? `Now Playing: ${showInfo.Title} (${showInfo.Year})`
+          : "Now Playing"}
+      </h1>
+
+      {/* 🎛 CONTROLS */}
       <div className="controls">
-        
+
         <label>
           Season:
           <select
@@ -159,7 +194,10 @@ const { imdbID } = useParams();
             }}
           >
             {[...Array(maxSeasons)].map((_, i) => (
-              <option key={i} value={i + 1}>
+              <option
+                key={i}
+                value={i + 1}
+              >
                 Season {i + 1}
               </option>
             ))}
@@ -170,10 +208,15 @@ const { imdbID } = useParams();
           Episode:
           <select
             value={episode}
-            onChange={(e) => setEpisode(Number(e.target.value))}
+            onChange={(e) =>
+              setEpisode(Number(e.target.value))
+            }
           >
             {episodes.map((ep) => (
-              <option key={ep.episode_number} value={ep.episode_number}>
+              <option
+                key={ep.episode_number}
+                value={ep.episode_number}
+              >
                 Ep {ep.episode_number}: {ep.name}
               </option>
             ))}
@@ -181,13 +224,24 @@ const { imdbID } = useParams();
         </label>
       </div>
 
-      {/* ⏯ Navigation */}
+      {/* ⏯ NAVIGATION */}
       <div className="nav-buttons">
-        <button onClick={() => setEpisode((prev) => prev - 1)} disabled={episode <= 1}>
+
+        <button
+          onClick={() =>
+            setEpisode((prev) => prev - 1)
+          }
+          disabled={episode <= 1}
+        >
           ◀ Previous
         </button>
 
-        <button onClick={() => setEpisode((prev) => prev + 1)} disabled={episode >= maxEpisodes}>
+        <button
+          onClick={() =>
+            setEpisode((prev) => prev + 1)
+          }
+          disabled={episode >= maxEpisodes}
+        >
           Next ▶
         </button>
 
@@ -195,6 +249,7 @@ const { imdbID } = useParams();
           onClick={() => {
             if (season < maxSeasons) {
               setSeason((prev) => prev + 1);
+              setEpisode(1);
               setInitialized(false);
             }
           }}
@@ -208,36 +263,41 @@ const { imdbID } = useParams();
         </button>
 
         <button onClick={handleFullscreen}>
-          ⛶ Fullscreen
+          {isFullscreen
+            ? "⤢ Exit Fullscreen"
+            : "⛶ Fullscreen"}
         </button>
       </div>
 
-      {/* 📺 Video */}
+      {/* 📺 PLAYER */}
       <div className="video-container" ref={videoRef}>
-        
-        {/* CLICK SHIELD */}
+
         {!activated && (
-          <div className="click-shield" onClick={handlePlay}>
-            <button className="play-btn">▶ Play Episode</button>
+          <div
+            className="click-shield"
+            onClick={handlePlay}
+          >
+            <button className="play-btn">
+              ▶ Play Episode
+            </button>
           </div>
         )}
 
-        {/* LOADING SPINNER */}
         {loadingPlayer && (
           <div className="spinner-overlay">
             <div className="spinner"></div>
           </div>
         )}
 
-        {/* VIDEO */}
         {activated && (
           <iframe
             key={`${imdbID}-${season}-${episode}`}
             src={vidSrcUrl}
-            allowFullScreen
-            frameBorder="0"
             title="TV Player"
+            frameBorder="0"
+            allowFullScreen
             referrerPolicy="no-referrer"
+            allow="autoplay; encrypted-media; picture-in-picture"
             onLoad={handleIframeLoad}
           />
         )}
