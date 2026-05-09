@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SearchBar.css";
 import { useFavorites } from "./FavoritesContext.jsx";
+import newMovieFinder from "../assets/NewMovieFinder.jpg";
+import MovieFinder from "../assets/MovieFinder.jpg";
+
 
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -79,7 +82,7 @@ export default function SearchBar() {
     <div className="search-wrapper">
       <h3>MovieFinder Search</h3>
       <div className="search-bar">
-        <img src="/MovieFinder.jpg" width={100} height={100} ></img>
+        <img src={MovieFinder} width={100} height={100} alt="Movie Finder"></img>
         <input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

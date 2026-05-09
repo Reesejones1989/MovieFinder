@@ -66,21 +66,29 @@ export default function MovieList() {
                 )}`
               );
               const data = await res.json();
-              if (data.results?.length > 0) {
-                const match = data.results[0];
-                const detailsRes = await fetch(
-                  `https://api.themoviedb.org/3/movie/${match.id}?api_key=${apiKey}`
-                );
-                const details = await detailsRes.json();
-                return {
-                  ...movie,
-                  poster: movie.poster
-                    ? movie.poster
-                    : `https://image.tmdb.org/t/p/w600_and_h900_bestv2${match.poster_path}`,
-                  imdb_id: details.imdb_id,
-                  overview: details.overview,
-                };
-              }
+        if (data.results?.length > 0) {
+  const match = data.results[0];
+
+  const detailRes = await fetch(
+    `https://api.themoviedb.org/3/movie/${match.id}?api_key=${apiKey}`
+  );
+
+  const details = await detailRes.json();
+
+  return {
+    ...movie,
+    id: match.id,
+    title: match.title,
+    year: match.release_date?.split("-")[0] || "N/A",
+
+    poster: match.poster_path
+      ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${match.poster_path}`
+      : movie.poster,
+
+    imdb_id: details.imdb_id || null,
+    overview: details.overview || "",
+  };
+}
             } catch (error) {
               console.error(`Error fetching ${movie.title}:`, error);
             }
@@ -102,9 +110,10 @@ export default function MovieList() {
     const links = [];
     if (movie.imdb_id)
       links.push({
-        url: `https://vsembed.ru/movie/${movie.imdb_id}`,
+        url: `https://vsembed.ru/embed/movie/${movie.imdb_id}`,
         label: "▶️ Watch on Vidsrc",
       });
+
     links.push({
       url: `https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(movie.title)}`,
       label: "▶️ Watch on Levidia",
