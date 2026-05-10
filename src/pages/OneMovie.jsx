@@ -2,20 +2,24 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";
 import api from "../api/axios";
 import "./OneMovie.css";
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function OneMovie() {
   const { imdbID } = useParams();
 
   const [movie, setMovie] = useState(null);
+
+  const [pageLoading, setPageLoading] = useState(true); // ⬅ main loading
   const [activated, setActivated] = useState(false);
   const [loadingPlayer, setLoadingPlayer] = useState(false);
+
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
 
   const hideTimeoutRef = useRef(null);
   const videoRef = useRef(null);
 
-  // 🎯 Reset hide controls timer
+  // 🎯 Hide controls timer
   const resetHideTimer = useCallback(() => {
     setShowControls(true);
 
@@ -28,61 +32,55 @@ export default function OneMovie() {
     }, 15000);
   }, []);
 
-  // 🎯 Mouse movement controls
-  useEffect(() => {
-    if (!activated) return;
-
-    const handleMouseMove = () => {
-      resetHideTimer();
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    resetHideTimer();
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-
-      if (hideTimeoutRef.current) {
-        clearTimeout(hideTimeoutRef.current);
-      }
-    };
-  }, [activated, resetHideTimer]);
-
   // 🎬 Fetch movie
   useEffect(() => {
     async function fetchMovie() {
+      setPageLoading(true);
+
       try {
         const res = await api.get(`/movies/${imdbID}`);
         setMovie(res.data);
       } catch (err) {
         console.error("Movie fetch error:", err);
+      } finally {
+        setPageLoading(false);
       }
     }
 
-    if (imdbID) {
-      fetchMovie();
-    }
+    if (imdbID) fetchMovie();
   }, [imdbID]);
 
-  // ▶️ Start playback
+  // 🎯 Mouse movement controls (only after activation)
+  useEffect(() => {
+    if (!activated) return;
+
+    const handleMouseMove = () => resetHideTimer();
+
+    window.addEventListener("mousemove", handleMouseMove);
+    resetHideTimer();
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+    };
+  }, [activated, resetHideTimer]);
+
+  // ▶️ Play
   const handlePlay = () => {
     setActivated(true);
     setLoadingPlayer(true);
 
     setTimeout(() => {
-      if (videoRef.current?.requestFullscreen) {
-        videoRef.current.requestFullscreen();
-      }
+      videoRef.current?.requestFullscreen?.();
     }, 300);
   };
 
-  // 📺 Iframe loaded
+  // 🎬 iframe loaded
   const handleIframeLoad = () => {
     setLoadingPlayer(false);
   };
 
-  // 🔲 Toggle fullscreen
+  // 🔲 fullscreen toggle
   const toggleFullscreen = async () => {
     try {
       if (!document.fullscreenElement) {
@@ -95,62 +93,51 @@ export default function OneMovie() {
     }
   };
 
-  // 🔄 Track fullscreen changes
+  // 🔄 fullscreen tracking
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
     };
 
-    document.addEventListener(
-      "fullscreenchange",
-      handleFullscreenChange
-    );
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
 
-    return () => {
-      document.removeEventListener(
-        "fullscreenchange",
-        handleFullscreenChange
-      );
-    };
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
-  if (!movie?.vidSrc) {
-    return <div className="loading">Loading...</div>;
-  }
+  // 🚨 GLOBAL LOADING SCREEN (FIRST THING USER SEES)
+  if (pageLoading) return <LoadingScreen />;
 
-  const vidSrcUrl = movie.vidSrc;
+  if (!movie?.vidSrc) {
+    return <div className="loading">Movie not found</div>;
+  }
 
   return (
     <div className="movie-page">
       <h1 className="movie-title">
-        {movie?.Title
-          ? `Now Playing: ${movie.Title} (${movie.Year})`
-          : "Now Playing"}
+        Now Playing: {movie?.Title} ({movie?.Year})
       </h1>
 
       <div className="video-container" ref={videoRef}>
-        
-        {/* ▶️ PLAY OVERLAY */}
+        {/* ▶ PLAY OVERLAY */}
         {!activated && (
           <div className="click-shield" onClick={handlePlay}>
-            <button className="play-btn">
-              ▶ Play Movie
-            </button>
+            <button className="play-btn">▶ Play Movie</button>
           </div>
         )}
 
-        {/* 🔄 LOADING */}
+        {/* 🔄 PLAYER LOADING */}
         {loadingPlayer && (
           <div className="spinner-overlay">
             <div className="spinner"></div>
           </div>
         )}
 
-        {/* 🎬 PLAYER */}
+        {/* 🎬 IFRAME */}
         {activated && (
           <>
             <iframe
-              src={vidSrcUrl}
+              src={movie.vidSrc}
               title="Movie Player"
               frameBorder="0"
               allowFullScreen
@@ -159,15 +146,13 @@ export default function OneMovie() {
               onLoad={handleIframeLoad}
             />
 
-            {/* 🔲 FULLSCREEN BUTTON */}
+            {/* 🔲 Controls */}
             {showControls && (
               <button
                 className="fullscreen-btn"
                 onClick={toggleFullscreen}
               >
-                {isFullscreen
-                  ? "⤢ Exit Fullscreen"
-                  : "⤢ Fullscreen"}
+                {isFullscreen ? "⤢ Exit Fullscreen" : "⤢ Fullscreen"}
               </button>
             )}
           </>

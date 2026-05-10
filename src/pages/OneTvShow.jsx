@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import api from "../api/axios";
 import "./OneTvShow.css";
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function OneTvShow() {
   const { imdbID } = useParams();
@@ -37,27 +38,20 @@ export default function OneTvShow() {
       }
     }
 
-    if (imdbID) {
-      fetchShow();
-    }
+    if (imdbID) fetchShow();
   }, [imdbID]);
 
   // 📺 Fetch episodes
   useEffect(() => {
     async function fetchEpisodes() {
       try {
-        const res = await api.get(
-          `/tv/${imdbID}/info?season=${season}`
-        );
-
+        const res = await api.get(`/tv/${imdbID}/info?season=${season}`);
         const eps = res.data.episodes || [];
 
         setEpisodes(eps);
 
         if (!initialized && eps.length > 0) {
-          const saved = JSON.parse(
-            localStorage.getItem(STORAGE_KEY)
-          );
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
 
           if (saved && saved.season === season) {
             setEpisode(saved.episode);
@@ -71,15 +65,12 @@ export default function OneTvShow() {
         if (episode > eps.length) {
           setEpisode(1);
         }
-
       } catch (err) {
         console.error("Episode fetch error:", err);
       }
     }
 
-    if (imdbID && season) {
-      fetchEpisodes();
-    }
+    if (imdbID && season) fetchEpisodes();
   }, [season, imdbID, initialized, episode, STORAGE_KEY]);
 
   // 💾 Save progress
@@ -87,10 +78,7 @@ export default function OneTvShow() {
     if (season && episode) {
       localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({
-          season,
-          episode,
-        })
+        JSON.stringify({ season, episode })
       );
     }
   }, [season, episode, STORAGE_KEY]);
@@ -148,42 +136,33 @@ export default function OneTvShow() {
       setIsFullscreen(!!document.fullscreenElement);
     };
 
-    document.addEventListener(
-      "fullscreenchange",
-      handleFullscreenChange
-    );
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
 
-    return () => {
-      document.removeEventListener(
-        "fullscreenchange",
-        handleFullscreenChange
-      );
-    };
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
   const maxSeasons = Number(showInfo?.totalSeasons || 1);
   const maxEpisodes = episodes.length;
 
-  // ✅ UPDATED EMBED URL
   const vidSrcUrl = `https://vsembed.su/embed/tv/${imdbID}/${season}/${episode}`;
 
+  // ✅ REPLACED SIMPLE LOADING WITH YOUR COMPONENT
   if (loading || !showInfo) {
-    return <div className="loading">Loading show...</div>;
+    return <LoadingScreen />;
   }
 
   return (
     <div className="tv-page">
 
-      {/* 🎬 TITLE */}
       <h1 className="tv-title">
         {showInfo?.Title
           ? `Now Playing: ${showInfo.Title} (${showInfo.Year})`
           : "Now Playing"}
       </h1>
 
-      {/* 🎛 CONTROLS */}
+      {/* CONTROLS */}
       <div className="controls">
-
         <label>
           Season:
           <select
@@ -194,10 +173,7 @@ export default function OneTvShow() {
             }}
           >
             {[...Array(maxSeasons)].map((_, i) => (
-              <option
-                key={i}
-                value={i + 1}
-              >
+              <option key={i} value={i + 1}>
                 Season {i + 1}
               </option>
             ))}
@@ -208,15 +184,10 @@ export default function OneTvShow() {
           Episode:
           <select
             value={episode}
-            onChange={(e) =>
-              setEpisode(Number(e.target.value))
-            }
+            onChange={(e) => setEpisode(Number(e.target.value))}
           >
             {episodes.map((ep) => (
-              <option
-                key={ep.episode_number}
-                value={ep.episode_number}
-              >
+              <option key={ep.episode_number} value={ep.episode_number}>
                 Ep {ep.episode_number}: {ep.name}
               </option>
             ))}
@@ -224,31 +195,20 @@ export default function OneTvShow() {
         </label>
       </div>
 
-      {/* ⏯ NAVIGATION */}
+      {/* NAV */}
       <div className="nav-buttons">
-
-        <button
-          onClick={() =>
-            setEpisode((prev) => prev - 1)
-          }
-          disabled={episode <= 1}
-        >
+        <button onClick={() => setEpisode((p) => p - 1)} disabled={episode <= 1}>
           ◀ Previous
         </button>
 
-        <button
-          onClick={() =>
-            setEpisode((prev) => prev + 1)
-          }
-          disabled={episode >= maxEpisodes}
-        >
+        <button onClick={() => setEpisode((p) => p + 1)} disabled={episode >= maxEpisodes}>
           Next ▶
         </button>
 
         <button
           onClick={() => {
             if (season < maxSeasons) {
-              setSeason((prev) => prev + 1);
+              setSeason((p) => p + 1);
               setEpisode(1);
               setInitialized(false);
             }
@@ -263,26 +223,20 @@ export default function OneTvShow() {
         </button>
 
         <button onClick={handleFullscreen}>
-          {isFullscreen
-            ? "⤢ Exit Fullscreen"
-            : "⛶ Fullscreen"}
+          {isFullscreen ? "⤢ Exit Fullscreen" : "⛶ Fullscreen"}
         </button>
       </div>
 
-      {/* 📺 PLAYER */}
+      {/* PLAYER */}
       <div className="video-container" ref={videoRef}>
 
         {!activated && (
-          <div
-            className="click-shield"
-            onClick={handlePlay}
-          >
-            <button className="play-btn">
-              ▶ Play Episode
-            </button>
+          <div className="click-shield" onClick={handlePlay}>
+            <button className="play-btn">▶ Play Episode</button>
           </div>
         )}
 
+        {/* ✅ KEEP SPINNER FOR PLAYER LOAD */}
         {loadingPlayer && (
           <div className="spinner-overlay">
             <div className="spinner"></div>
