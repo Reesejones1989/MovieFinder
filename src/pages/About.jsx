@@ -31,7 +31,7 @@ export default function About() {
     <div className="about-container">
       {/* About Section */}
       <section className="about-section">
-        <h1>About This App</h1>
+        <h2>About This App</h2>
         <p>
           This app provides a place to search for TV show and movie links
           without egregious ads.  
