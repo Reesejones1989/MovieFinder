@@ -5,7 +5,7 @@ import "./SportsList.css";
 
 export default function LiveTv() {
   return (
-    <div>
+    <div className="LiveTv">
 
       {/* ⭐ SPORTS SECTION ⭐ */}
       <SportsList />

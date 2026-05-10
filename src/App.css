@@ -17,3 +17,8 @@ body {
   background-color: #121212; /* or set via Tailwind config */
   color: #fff;
 }
+
+.main-content {
+  padding-top: 90px;
+
+}

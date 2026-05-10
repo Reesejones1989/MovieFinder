@@ -63,7 +63,7 @@ function App() {
             />
           </div>
 
-          <main className="flex flex-col flex-grow items-center justify-center px-2">
+          <main className="main-content">
             <Routes>
 
               {/* Main Pages */}

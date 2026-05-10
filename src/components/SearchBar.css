@@ -14,6 +14,47 @@
   border: 1px solid #333;
   box-sizing: border-box;
 }
+.search-wrapper h3 {
+  margin: 0 0 12px 0;
+
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+
+  text-align: center;
+
+  background: linear-gradient(
+    90deg,
+    #ff4fd8,
+    #7c3aed,
+    #00d4ff,
+    #ffffff,
+    #ff4fd8
+  );
+
+  background-size: 300% auto;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: searchGlow 6s linear infinite;
+
+  text-shadow:
+    0 0 8px rgba(255, 79, 216, 0.25),
+    0 0 16px rgba(124, 58, 237, 0.2),
+    0 0 24px rgba(0, 212, 255, 0.15);
+}
+
+@keyframes searchGlow {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 300% center;
+  }
+}
+
 
 .toggle-btn,
 .search-btn {
@@ -70,7 +111,11 @@
 .search-wrapper {
   background: transparent;
   padding: 0;
+  padding-top: 310px;
+  min-height: 40vh;
 }
+
+
 
 /* Suggestions */
 .suggestions {

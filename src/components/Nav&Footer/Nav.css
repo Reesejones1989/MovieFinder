@@ -7,12 +7,17 @@ html, body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  right: 0;
+
+  box-sizing: border-box;
+
   background: linear-gradient(90deg, lightgreen, green);
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 10px 5vw;
+
   z-index: 1000;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   font-family: 'Poppins', sans-serif;
@@ -155,5 +160,7 @@ html, body {
   .Nav {
     flex-wrap: nowrap;
     padding: 10px 20px;
+    min-height: 80px;
+
   }
 }

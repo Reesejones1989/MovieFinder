@@ -7,6 +7,12 @@
   background-color: #0b0b0b;
 }
 
+.anime-page {
+  padding-top: 110px;
+  min-height: 100vh;
+  background-color: #0b0b0b;
+}
+
 .collapsible-section {
   text-align: center;
   margin: 30px auto;
@@ -30,3 +36,4 @@
   color: #bbb;
   font-size: 1.1rem;
 }
+

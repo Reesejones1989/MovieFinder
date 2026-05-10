@@ -7,6 +7,8 @@
   flex-direction: column;
   align-items: center;
   padding: 20px 10px;
+  padding-top: 110px;
+
 }
 
 .loading {

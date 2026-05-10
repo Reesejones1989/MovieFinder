@@ -7,6 +7,12 @@ body {
   color: white;
 }
 
+.LiveTv {
+  padding-top: 110px;
+  min-height: 100vh;
+  background-color: #0b0b0b;
+}
+
 .channels-list {
   position: relative; /* needed for pseudo-element */
   padding: 3rem 2rem;

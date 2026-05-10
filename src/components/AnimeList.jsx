@@ -121,7 +121,7 @@ export default function AnimeList() {
   }, [tmdbApiKey]);
 
   return (
-    <div>
+    <div className="anime-page">
       {/* Requested Anime */}
       <div className="collapsible-section">
         <h2 onClick={toggleInitialAnime} className="collapsible-header">

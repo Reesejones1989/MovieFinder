@@ -4,6 +4,8 @@
   font-family: Arial, sans-serif;
   max-width: 1200px;
   margin: 0 auto;
+  padding-top: 110px;
+
 }
 
 .tv-show-container {
@@ -24,4 +26,44 @@
 
 .collapsible-header:hover {
   color: #fff;
+}
+
+h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+
+  background: linear-gradient(
+    90deg,
+    #a855f7,
+    #00d4ff,
+    #ffffff,
+    #ff4fd8,
+    #a855f7
+  );
+
+  background-size: 300% auto;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: neonShift 7s linear infinite;
+
+  text-shadow:
+    0 0 8px rgba(168, 85, 247, 0.4),
+    0 0 18px rgba(0, 212, 255, 0.3),
+    0 0 28px rgba(255, 79, 216, 0.2);
+
+  margin-bottom: 25px;
+}
+
+@keyframes neonShift {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 300% center;
+  }
 }
