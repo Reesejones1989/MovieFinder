@@ -11,6 +11,7 @@ export default function MovieList() {
   const [postersFetched, setPostersFetched] = useState(false);
   const [showTrending, setShowTrending] = useState(true);
   const [showPopular, setShowPopular] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const { addToFavorites } = useFavorites();
@@ -21,9 +22,12 @@ export default function MovieList() {
   useEffect(() => {
     const fetchTrendingMovies = async () => {
       try {
+        setLoading(true);
+
         const res = await fetch(
           `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}`
         );
+
         const data = await res.json();
 
         const enriched = await Promise.all(
@@ -31,7 +35,9 @@ export default function MovieList() {
             const detailRes = await fetch(
               `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`
             );
+
             const detailData = await detailRes.json();
+
             return {
               id: movie.id,
               title: movie.title,
@@ -48,6 +54,8 @@ export default function MovieList() {
         setTrendingMovies(enriched);
       } catch (err) {
         console.error("Failed to fetch trending movies:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -57,57 +65,72 @@ export default function MovieList() {
   useEffect(() => {
     if (!postersFetched) {
       const fetchPosters = async () => {
-        const updated = await Promise.all(
-          movies.map(async (movie) => {
-            try {
-              const res = await fetch(
-                `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(
-                  movie.title
-                )}`
-              );
-              const data = await res.json();
-        if (data.results?.length > 0) {
-  const match = data.results[0];
+        try {
+          setLoading(true);
 
-  const detailRes = await fetch(
-    `https://api.themoviedb.org/3/movie/${match.id}?api_key=${apiKey}`
-  );
+          const updated = await Promise.all(
+            movies.map(async (movie) => {
+              try {
+                const res = await fetch(
+                  `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(
+                    movie.title
+                  )}`
+                );
 
-  const details = await detailRes.json();
+                const data = await res.json();
 
-  return {
-    ...movie,
-    id: match.id,
-    title: match.title,
-    year: match.release_date?.split("-")[0] || "N/A",
+                if (data.results?.length > 0) {
+                  const match = data.results[0];
 
-    poster: match.poster_path
-      ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${match.poster_path}`
-      : movie.poster,
+                  const detailRes = await fetch(
+                    `https://api.themoviedb.org/3/movie/${match.id}?api_key=${apiKey}`
+                  );
 
-    imdb_id: details.imdb_id || null,
-    overview: details.overview || "",
-  };
-}
-            } catch (error) {
-              console.error(`Error fetching ${movie.title}:`, error);
-            }
-            return movie;
-          })
-        );
+                  const details = await detailRes.json();
 
-        setMovies(updated);
-        setPostersFetched(true);
+                  return {
+                    ...movie,
+                    id: match.id,
+                    title: match.title,
+                    year: match.release_date?.split("-")[0] || "N/A",
+
+                    poster: match.poster_path
+                      ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${match.poster_path}`
+                      : movie.poster,
+
+                    imdb_id: details.imdb_id || null,
+                    overview: details.overview || "",
+                  };
+                }
+              } catch (error) {
+                console.error(`Error fetching ${movie.title}:`, error);
+              }
+
+              return movie;
+            })
+          );
+
+          setMovies(updated);
+          setPostersFetched(true);
+        } finally {
+          setLoading(false);
+        }
       };
+
       fetchPosters();
     }
-  }, [postersFetched, apiKey, movies]);
+  }, [postersFetched, apiKey]);
 
   const formatTitleForLevidia = (title) =>
-    title.replace(/:/g, "").replace(/\s+/g, "-").replace(/&/g, "").replace(/'/g, "");
+    title
+      .replace(/:/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/&/g, "")
+      .replace(/'/g, "");
 
   const getWatchLinks = (movie) => {
     const links = [];
+
     if (movie.imdb_id)
       links.push({
         url: `https://vsembed.ru/embed/movie/${movie.imdb_id}`,
@@ -115,11 +138,23 @@ export default function MovieList() {
       });
 
     links.push({
-      url: `https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(movie.title)}`,
+      url: `https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(
+        movie.title
+      )}`,
       label: "▶️ Watch on Levidia",
     });
+
     return links;
   };
+
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
+        <h2 className="loading-text">Loading Movies...</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="movie-list">
@@ -128,10 +163,16 @@ export default function MovieList() {
       <h2 onClick={toggleTrending} className="collapsible-header">
         🔥 Trending Movies {showTrending ? "▲" : "▼"}
       </h2>
+
       {showTrending && (
         <div className="movie-container">
           {trendingMovies.map((m) => (
-            <Cards key={m.id} item={m} type="movie" getWatchLinks={getWatchLinks} />
+            <Cards
+              key={m.id}
+              item={m}
+              type="movie"
+              getWatchLinks={getWatchLinks}
+            />
           ))}
         </div>
       )}
@@ -139,10 +180,16 @@ export default function MovieList() {
       <h2 onClick={togglePopular} className="collapsible-header">
         🎬 Popular Movies {showPopular ? "▲" : "▼"}
       </h2>
+
       {showPopular && (
         <div className="movie-container">
           {movies.map((m) => (
-            <Cards key={m.id} item={m} type="movie" getWatchLinks={getWatchLinks} />
+            <Cards
+              key={m.id}
+              item={m}
+              type="movie"
+              getWatchLinks={getWatchLinks}
+            />
           ))}
         </div>
       )}
