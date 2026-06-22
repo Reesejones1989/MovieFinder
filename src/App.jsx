@@ -79,9 +79,6 @@ function App() {
               <Route path="/movie/:imdbID" element={<OneMovie />} />
               <Route path="/tv/:imdbID" element={<OneTvShow />} />
 
-              {/* IMDb Smart Redirect (MUST BE BELOW MAIN ROUTES) */}
-              <Route path="/:imdbID" element={<RedirectByIMDb />} />
-
               {/* Auth */}
               <Route
                 path="/login"
@@ -96,6 +93,9 @@ function App() {
                   </PrivateRoute>
                 }
               />
+
+              {/* IMDb Smart Redirect (MUST BE BELOW ALL NAMED ROUTES) */}
+              <Route path="/:imdbID" element={<RedirectByIMDb />} />
 
               {/* Misc */}
               <Route path="/test" element={<Test />} />
