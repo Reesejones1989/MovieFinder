@@ -13,7 +13,6 @@ import LiveTv from './pages/LiveTv.jsx';
 import Test from './components/Test/Test.jsx';
 import OneMovie from './pages/OneMovie.jsx';
 import OneTvShow from './pages/OneTvShow.jsx';
-import OverlaySearch from './components/OverlaySearch.jsx';
 import RedirectByIMDb from "./pages/RedirectByIMDb";
 
 import React, { useEffect, useState } from 'react';
@@ -52,7 +51,6 @@ function App() {
         <div className="flex flex-col min-h-screen pt-20 pb-32 px-4 md:px-8 relative">
 
           <Nav />
-          <OverlaySearch />
 
           {/* Background Logo */}
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-10 z-0 select-none">

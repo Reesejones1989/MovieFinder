@@ -109,6 +109,35 @@ html, body {
   transform: scaleX(1);
 }
 
+/* ── Right cluster (search + auth + hamburger) ──────────────────────────── */
+.nav__right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Search icon button ─────────────────────────────────────────────────── */
+.nav__search-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.nav__search-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
 /* ── Auth buttons ───────────────────────────────────────────────────────── */
 .nav__auth {
   flex-shrink: 0;
@@ -259,11 +288,28 @@ html, body {
   padding: 16px 5vw 0;
 }
 
+.nav__drawer-auth {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .nav__drawer-auth .nav__btn {
   width: 100%;
   padding: 12px;
   font-size: 15px;
   border-radius: 10px;
+}
+
+.nav__btn--search {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.nav__btn--search:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 /* ── Backdrop ───────────────────────────────────────────────────────────── */
