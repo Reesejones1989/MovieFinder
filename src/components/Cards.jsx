@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useFavorites } from "./FavoritesContext.jsx";
 import "./Cards.css";
 
 export default function Cards({ item, type }) {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const { addToFavorites, removeFromFavorites, isFavorite, user } = useFavorites();
 
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
@@ -20,6 +22,17 @@ export default function Cards({ item, type }) {
   };
 
   const isTV = type === "tv" || type === "anime";
+  const favoriteType = isTV ? "tv" : "movie";
+  const favorited = isFavorite(item.id, favoriteType);
+
+  const handleToggleFavorite = async (e) => {
+    e.stopPropagation();
+    if (favorited) {
+      await removeFromFavorites(item.id, favoriteType);
+    } else {
+      await addToFavorites({ ...item, type: favoriteType });
+    }
+  };
 
   return (
     <>
@@ -69,6 +82,15 @@ export default function Cards({ item, type }) {
                   onClick={handleWatchTV}
                 >
                   ▶️ Watch This {type === "anime" ? "Anime" : "TV Show"}
+                </button>
+              )}
+
+              {user && (
+                <button
+                  className={`modal-favorite-btn ${favorited ? "favorited" : ""}`}
+                  onClick={handleToggleFavorite}
+                >
+                  {favorited ? "❤️ Remove from Favorites" : "🤍 Add to Favorites"}
                 </button>
               )}
             </div>

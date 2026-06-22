@@ -1,9 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./FavoriteList.css";
 import { useFavorites } from './FavoritesContext.jsx';
 
 export default function FavoriteList() {
   const { favorites, removeFromFavorites, loading, user } = useFavorites();
+  const navigate = useNavigate();
 
   const handleRemoveFavorite = async (id, type) => {
     await removeFromFavorites(id, type);
@@ -31,32 +33,13 @@ export default function FavoriteList() {
     );
   }
 
-  const getWatchLinks = (item) => {
-    const links = [];
-    
-    if (item.imdb_id) {
-      links.push({
-        url: `https://vidsrc.xyz/embed/${item.type}/${item.imdb_id}`,
-        label: `▶️ Watch on Vidsrc`,
-      });
+  const handleWatch = (item) => {
+    if (!item.imdb_id) return;
+    if (item.type === "tv") {
+      navigate(`/tv/${item.imdb_id}?season=1&episode=1`);
+    } else {
+      navigate(`/movie/${item.imdb_id}`);
     }
-
-    const formatTitleForLevidia = (title) =>
-      title
-        .replace(/:/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/&/g, "")
-        .replace(/'/g, "")
-        .toLowerCase();
-
-    links.push({
-      url: item.type === 'tv' 
-        ? `https://www.levidia.ch/tv-show.php?watch=${formatTitleForLevidia(item.title)}`
-        : `https://www.levidia.ch/movie.php?watch=${formatTitleForLevidia(item.title)}`,
-      label: `▶️ Watch on Levidia`,
-    });
-
-    return links;
   };
 
   if (favorites.length === 0) {
@@ -74,9 +57,7 @@ export default function FavoriteList() {
     <div className="favorite-container">
       <h2>Your Favorites ({favorites.length})</h2>
       <div className="card-grid">
-        {favorites.map((item) => {
-          const watchLinks = getWatchLinks(item);
-          return (
+        {favorites.map((item) => (
             <div className="flip-card" key={`${item.movieId}-${item.type}`}>
               <div className="flip-card-inner">
                 <div className="flip-card-front">
@@ -104,22 +85,18 @@ export default function FavoriteList() {
                   {item.overview && (
                     <p className="overview">{item.overview.substring(0, 150)}...</p>
                   )}
-                  {watchLinks.map((link, index) => (
-                    <a
-                      key={index}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                  {item.imdb_id && (
+                    <button
                       className="watch-link"
+                      onClick={() => handleWatch(item)}
                     >
-                      {link.label}
-                    </a>
-                  ))}
+                      ▶️ Watch Now
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
-          );
-        })}
+        ))}
       </div>
     </div>
   );

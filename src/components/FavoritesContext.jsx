@@ -73,7 +73,7 @@ export const FavoritesProvider = ({ children }) => {
         movieId: item.id,
         title: item.title || item.name,
         year: item.year || item.release_date?.split('-')[0] || item.first_air_date?.split('-')[0] || 'N/A',
-        poster: item.poster || item.poster_path ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${item.poster_path}` : '',
+        poster: item.poster || (item.poster_path ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${item.poster_path}` : ''),
         imdb_id: item.imdb_id,
         type: item.type || 'movie', // 'movie' or 'tv'
         overview: item.overview || '',
