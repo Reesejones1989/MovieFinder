@@ -1,0 +1,267 @@
+/* ==========================================
+   GenreTrending.css
+   Netflix-style Genre Trending Page
+========================================== */
+
+.genre-page {
+  min-height: 100vh;
+  background: #111;
+  color: #fff;
+  padding: 30px 20px 80px;
+}
+
+.genre-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.genre-header h1 {
+  font-size: 2.8rem;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.genre-header p {
+  font-size: 1.05rem;
+  color: #bdbdbd;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ==========================================
+   Genre Sections
+========================================== */
+
+.genre-section {
+  margin-bottom: 55px;
+}
+
+.genre-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding: 0 8px;
+}
+
+.genre-title-row h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #ffffff;
+}
+
+.genre-title-row span {
+  color: #8b8b8b;
+  font-size: 0.95rem;
+}
+
+/* ==========================================
+   Horizontal Scroll
+========================================== */
+
+.genre-scroll {
+
+  display:flex;
+
+  flex-direction:row;
+
+  align-items:flex-start;
+
+  gap:20px;
+
+  overflow-x:auto;
+
+  width:100%;
+
+  padding:15px 5px 25px;
+
+}
+.genre-section {
+
+  width:100%;
+
+  overflow:hidden;
+
+}
+
+
+.genre-scroll .card {
+
+  width:180px;
+
+  min-width:180px;
+
+}
+
+.genre-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.genre-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.genre-scroll::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 999px;
+}
+
+.genre-scroll::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* ==========================================
+   Cards
+========================================== */
+
+/* Prevent cards from shrinking inside
+   horizontal rows */
+
+.genre-scroll > * {
+  flex: 0 0 auto;
+}
+
+.genre-scroll .card {
+  transition: transform 0.25s ease;
+}
+
+.genre-scroll .card:hover {
+  transform: scale(1.06);
+}
+
+/* ==========================================
+   Empty Genre
+========================================== */
+
+.empty-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  min-height: 180px;
+
+  border: 2px dashed #444;
+  border-radius: 12px;
+
+  color: #888;
+  font-size: 1rem;
+}
+
+/* ==========================================
+   Loading
+========================================== */
+
+.genre-loading {
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.6rem;
+  color: white;
+}
+
+.genre-loading::after {
+  content: "";
+  width: 22px;
+  height: 22px;
+  margin-left: 12px;
+
+  border: 3px solid #555;
+  border-top-color: white;
+  border-radius: 50%;
+
+  animation: genreSpin 0.8s linear infinite;
+}
+
+@keyframes genreSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================
+   Fade In
+========================================== */
+
+.genre-section {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media (max-width: 1200px) {
+
+  .genre-header h1 {
+    font-size: 2.4rem;
+  }
+
+  .genre-title-row h2 {
+    font-size: 1.5rem;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .genre-page {
+    padding: 20px 12px 60px;
+  }
+
+  .genre-header h1 {
+    font-size: 2rem;
+  }
+
+  .genre-header p {
+    font-size: .95rem;
+  }
+
+  .genre-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .genre-title-row h2 {
+    font-size: 1.3rem;
+  }
+
+  .genre-scroll {
+    gap: 12px;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .genre-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .genre-header p {
+    font-size: .9rem;
+  }
+
+  .genre-title-row h2 {
+    font-size: 1.15rem;
+  }
+
+}

@@ -14,6 +14,7 @@ import Test from './components/Test/Test.jsx';
 import OneMovie from './pages/OneMovie.jsx';
 import OneTvShow from './pages/OneTvShow.jsx';
 import RedirectByIMDb from "./pages/RedirectByIMDb";
+import GenrePage from './pages/GenrePage.jsx'
 
 import React, { useEffect, useState } from 'react';
 import NewMovieFinder from './assets/NewMovieFinder.jpg';
@@ -68,6 +69,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/movies" element={<Movies />} />
               <Route path="/tv-shows" element={<TvShows />} />
+              <Route path="/genrepage" element={<GenrePage />} />
               <Route path="/anime" element={<Anime />} />
               <Route path="/sports" element={<Sports />} />
               <Route path="/livetv" element={<LiveTv />} />

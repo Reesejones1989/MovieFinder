@@ -1,121 +1,270 @@
-import React, { useEffect, useState } from "react";
 import "./TvShowList.css";
+import React, { useEffect, useState } from "react";
 import Cards from "../Cards.jsx";
+import NetflixRealityShows from "./NetflixRealityShows";
+import RealityTVShows from "../hardCodedLists/realityTvShows.jsx";
 
-export default function NetflixRealityShows() {
+
+export default function RealityTv() {
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
-  const [shows, setShows] = useState([]);
-  const [error, setError] = useState(null);
-  const [showNetflix, setShowNetflix] = useState(true);
 
-  const toggleNetflix = () =>
-    setShowNetflix(!showNetflix);
+  const [trendingShows, setTrendingShows] = useState([]);
+  const [popularShows, setPopularShows] = useState([]);
 
-  const getWatchLinks = (show) => {
-    const links = [];
 
-    if (show.imdb_id) {
-      links.push({
-        url: `https://vsembed.ru/tv/${show.imdb_id}`,
-        label: "▶️ Watch on Vidsrc",
-      });
-    }
+  const [showTrending, setShowTrending] = useState(true);
+  const [showPopular, setShowPopular] = useState(true);
 
-    links.push({
-      url: `https://www.levidia.ch/tv-show.php?watch=${show.title
-        .replace(/:/g, "")
-        .replace(/\s+/g, "-")
-        .toLowerCase()}`,
-      label: "▶️ Watch on Levidia",
-    });
 
-    return links;
-  };
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchNetflixReality() {
+
+
+  const toggleTrending = () =>
+    setShowTrending(!showTrending);
+
+
+  const togglePopular = () =>
+    setShowPopular(!showPopular);
+
+
+
+  async function enrichShow(show) {
+
+    const detailRes = await fetch(
+      `https://api.themoviedb.org/3/tv/${show.id}?api_key=${apiKey}&append_to_response=external_ids`
+    );
+
+
+    const details = await detailRes.json();
+
+
+    return {
+
+      id: show.id,
+
+      title: show.name,
+
+      year:
+        show.first_air_date?.split("-")[0] || "N/A",
+
+      poster:
+        show.poster_path
+          ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${show.poster_path}`
+          : "",
+
+      imdb_id:
+        details.external_ids?.imdb_id || null,
+
+      overview:
+        details.overview || "",
+
+      type:"tv"
+
+    };
+
+  }
+
+
+
+  useEffect(()=>{
+
+
+    async function fetchRealityShows(){
+
+
       try {
-        const today = new Date();
-        const ninety = new Date(today);
 
-        ninety.setDate(today.getDate() - 90);
 
-        const date = ninety.toISOString().split("T")[0];
+        setLoading(true);
 
-        const url =
-          `https://api.themoviedb.org/3/discover/tv?` +
-          `api_key=${apiKey}` +
-          `&with_watch_providers=8` +
-          `&watch_region=US` +
-          `&with_watch_monetization_types=flatrate` +
-          `&with_genres=10764` +
-          `&first_air_date.gte=${date}` +
-          `&sort_by=popularity.desc`;
 
-        const res = await fetch(url);
 
-        const data = await res.json();
+        /*
+          Trending Reality TV
+          --------------------
+          Now loaded from hardcoded list
+        */
 
-        const enriched = await Promise.all(
-          data.results.map(async (show) => {
-
-            const detailRes = await fetch(
-              `https://api.themoviedb.org/3/tv/${show.id}?api_key=${apiKey}&append_to_response=external_ids`
-            );
-
-            const details = await detailRes.json();
-
-            return {
-              id: show.id,
-              title: show.name,
-              year: show.first_air_date?.split("-")[0] || "N/A",
-              poster: show.poster_path
-                ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${show.poster_path}`
-                : "",
-              imdb_id: details.external_ids?.imdb_id,
-              overview: details.overview,
-            };
-          })
+        setTrendingShows(
+          RealityTVShows
         );
 
-        setShows(enriched);
 
-      } catch (err) {
-        console.error(err);
-        setError("Unable to load Netflix Reality TV.");
+
+        /*
+          Popular Reality TV
+          --------------------
+          Still loaded from TMDB
+        */
+
+
+        const popularRes = await fetch(
+
+          `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&with_genres=10764&sort_by=popularity.desc&page=1`
+
+        );
+
+
+        const popularData =
+          await popularRes.json();
+
+
+
+        const popular =
+          await Promise.all(
+
+            popularData.results.map(enrichShow)
+
+          );
+
+
+        setPopularShows(popular);
+
+
+
+      } catch(err){
+
+        console.error(
+          "Reality TV Error:",
+          err
+        );
+
+
+      } finally {
+
+        setLoading(false);
+
       }
+
     }
 
-    fetchNetflixReality();
-  }, [apiKey]);
+
+
+    fetchRealityShows();
+
+
+  },[apiKey]);
+
+
+
+
+  if(loading){
+
+    return (
+
+      <div className="loading-screen">
+
+        <div className="loading-spinner"></div>
+
+        <h2 className="loading-text">
+          Loading Reality TV...
+        </h2>
+
+      </div>
+
+    );
+
+  }
+
+
+
 
   return (
-    <div className="collapsible-section">
+
+    <div className="tv-show-list">
+
+
+      <h2>
+        Reality TV
+      </h2>
+
+
 
       <h2
         className="collapsible-header"
-        onClick={toggleNetflix}
+        onClick={toggleTrending}
       >
-        📺 Netflix Reality TV (Last 90 Days) {showNetflix ? "▲" : "▼"}
+
+        🔥 Trending Reality TV {showTrending ? "▲" : "▼"}
+
       </h2>
 
-      {error && <p>{error}</p>}
 
-      {showNetflix && (
+
+      {showTrending && (
+
         <div className="tv-show-container">
-          {shows.map((show) => (
-            <Cards
-              key={show.id}
-              item={show}
-              type="tv"
-              getWatchLinks={getWatchLinks}
-            />
-          ))}
+
+          {
+            trendingShows.map((show)=>(
+
+              <Cards
+
+                key={show.id}
+
+                item={show}
+
+                type="tv"
+
+              />
+
+            ))
+          }
+
         </div>
+
       )}
 
+
+
+
+      <h2
+        className="collapsible-header"
+        onClick={togglePopular}
+      >
+
+        ⭐ Popular Reality TV {showPopular ? "▲" : "▼"}
+
+      </h2>
+
+
+
+      {showPopular && (
+
+        <div className="tv-show-container">
+
+
+          {
+            popularShows.map((show)=>(
+
+              <Cards
+
+                key={show.id}
+
+                item={show}
+
+                type="tv"
+
+              />
+
+            ))
+          }
+
+
+        </div>
+
+      )}
+
+
+
+      <NetflixRealityShows />
+
+
     </div>
+
   );
+
 }

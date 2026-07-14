@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { to: "/",         label: "Home"    },
   { to: "/movies",   label: "Movies"  },
   { to: "/tv-shows", label: "TV Shows"},
+  { to: "/genrePage",    label: "By Genre"   },
   { to: "/anime",    label: "Anime"   },
   { to: "/livetv",   label: "Live TV" },
   { to: "/about",    label: "Donate"  },
