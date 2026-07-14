@@ -8,7 +8,6 @@ export default function GenrePage(){
         <div>  
             
             <RealityTv />
-            <GenreTrending />
         </div> 
         
     )
