@@ -3,11 +3,13 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import api from "../api/axios";
 import "./OneMovie.css";
 import LoadingScreen from "../components/LoadingScreen";
+import { PROVIDERS, DEFAULT_PROVIDER_ID, getProvider } from "../utils/providers";
 
 export default function OneMovie() {
   const { imdbID } = useParams();
 
   const [movie, setMovie] = useState(null);
+  const [providerId, setProviderId] = useState(DEFAULT_PROVIDER_ID);
 
   const [pageLoading, setPageLoading] = useState(true); // ⬅ main loading
   const [activated, setActivated] = useState(false);
@@ -80,6 +82,13 @@ export default function OneMovie() {
     setLoadingPlayer(false);
   };
 
+  // 🔀 Switch provider
+  const handleProviderChange = (id) => {
+    if (id === providerId) return;
+    setProviderId(id);
+    if (activated) setLoadingPlayer(true);
+  };
+
   // 🔲 fullscreen toggle
   const toggleFullscreen = async () => {
     try {
@@ -112,11 +121,26 @@ export default function OneMovie() {
     return <div className="loading">Movie not found</div>;
   }
 
+  const embedUrl = getProvider(providerId).movie(imdbID);
+
   return (
     <div className="movie-page">
       <h1 className="movie-title">
         Now Playing: {movie?.Title} ({movie?.Year})
       </h1>
+
+      {/* 🔀 PROVIDER SWITCH */}
+      <div className="provider-switch">
+        {PROVIDERS.map((p) => (
+          <button
+            key={p.id}
+            className={`provider-btn ${providerId === p.id ? "active" : ""}`}
+            onClick={() => handleProviderChange(p.id)}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
 
       <div className="video-container" ref={videoRef}>
         {/* ▶ PLAY OVERLAY */}
@@ -137,7 +161,8 @@ export default function OneMovie() {
         {activated && (
           <>
             <iframe
-              src={movie.vidSrc}
+              key={providerId}
+              src={embedUrl}
               title="Movie Player"
               frameBorder="0"
               allowFullScreen

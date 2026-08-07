@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import api from "../api/axios";
 import "./OneTvShow.css";
 import LoadingScreen from "../components/LoadingScreen";
+import { PROVIDERS, DEFAULT_PROVIDER_ID, getProvider } from "../utils/providers";
 
 export default function OneTvShow() {
   const { imdbID } = useParams();
@@ -16,6 +17,8 @@ export default function OneTvShow() {
   const [episodes, setEpisodes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
+
+  const [providerId, setProviderId] = useState(DEFAULT_PROVIDER_ID);
 
   const [activated, setActivated] = useState(false);
   const [loadingPlayer, setLoadingPlayer] = useState(false);
@@ -106,6 +109,13 @@ export default function OneTvShow() {
     setLoadingPlayer(false);
   };
 
+  // 🔀 Switch provider
+  const handleProviderChange = (id) => {
+    if (id === providerId) return;
+    setProviderId(id);
+    if (activated) setLoadingPlayer(true);
+  };
+
   // ⏭ Next episode
   const goToNextEpisode = () => {
     if (episode < episodes.length) {
@@ -145,7 +155,7 @@ export default function OneTvShow() {
   const maxSeasons = Number(showInfo?.totalSeasons || 1);
   const maxEpisodes = episodes.length;
 
-  const vidSrcUrl = `https://vsembed.su/embed/tv/${imdbID}/${season}/${episode}`;
+  const vidSrcUrl = getProvider(providerId).tv(imdbID, season, episode);
 
   // ✅ REPLACED SIMPLE LOADING WITH YOUR COMPONENT
   if (loading || !showInfo) {
@@ -160,6 +170,19 @@ export default function OneTvShow() {
           ? `Now Playing: ${showInfo.Title} (${showInfo.Year})`
           : "Now Playing"}
       </h1>
+
+      {/* 🔀 PROVIDER SWITCH */}
+      <div className="provider-switch">
+        {PROVIDERS.map((p) => (
+          <button
+            key={p.id}
+            className={`provider-btn ${providerId === p.id ? "active" : ""}`}
+            onClick={() => handleProviderChange(p.id)}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
 
       {/* CONTROLS */}
       <div className="controls">
@@ -245,7 +268,7 @@ export default function OneTvShow() {
 
         {activated && (
           <iframe
-            key={`${imdbID}-${season}-${episode}`}
+            key={`${imdbID}-${season}-${episode}-${providerId}`}
             src={vidSrcUrl}
             title="TV Player"
             frameBorder="0"
