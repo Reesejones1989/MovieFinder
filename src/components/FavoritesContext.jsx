@@ -1,17 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth, db } from './firebaseConfig.jsx';
-import { 
-  collection, 
-  doc, 
-  setDoc, 
-  deleteDoc, 
-  getDocs, 
-  query, 
-  where,
-  onSnapshot,
-  serverTimestamp 
-} from 'firebase/firestore';
+import { auth } from './firebaseConfig.jsx';
 import { onAuthStateChanged } from 'firebase/auth';
+import api from '../api/axios.js';
 
 const FavoritesContext = createContext();
 
@@ -23,6 +13,10 @@ export const useFavorites = () => {
   return context;
 };
 
+// Favorites are stored per-user in MongoDB (see moviefinder-backend), keyed
+// off the user's stable Firebase uid via the /api/favorites routes. Because
+// the data lives in the database (not the browser), it follows the user's
+// account across any computer or device they sign in on.
 export const FavoritesProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
   const [user, setUser] = useState(null);
@@ -30,36 +24,43 @@ export const FavoritesProvider = ({ children }) => {
 
   // Listen for auth state changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      if (!firebaseUser) {
+        setFavorites([]);
+        setLoading(false);
+      }
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Listen for favorites changes when user changes
+  // Fetch favorites from the backend whenever the signed-in user changes
   useEffect(() => {
-    if (!user) {
-      setFavorites([]);
-      return;
-    }
+    if (!user) return;
 
-    const favoritesRef = collection(db, 'favorites');
-    const userFavoritesQuery = query(favoritesRef, where('userId', '==', user.uid));
+    let cancelled = false;
 
-    const unsubscribe = onSnapshot(userFavoritesQuery, (snapshot) => {
-      const favoritesData = [];
-      snapshot.forEach((doc) => {
-        favoritesData.push({ id: doc.id, ...doc.data() });
-      });
-      setFavorites(favoritesData);
-    }, (error) => {
-      console.error('Error fetching favorites:', error);
-    });
+    const fetchFavorites = async () => {
+      setLoading(true);
+      try {
+        const { data } = await api.get('/favorites');
+        if (!cancelled) setFavorites(data || []);
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
 
-    return () => unsubscribe();
+    fetchFavorites();
+
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
+
+  const normalizeType = (type) => (type === 'tv' || type === 'anime' ? 'tv' : 'movie');
 
   const addToFavorites = async (item) => {
     if (!user) {
@@ -67,34 +68,34 @@ export const FavoritesProvider = ({ children }) => {
       return false;
     }
 
+    const type = normalizeType(item.type);
+    const movieId = String(item.id);
+
+    // Check if already exists locally first to avoid an unnecessary request
+    const exists = favorites.some(
+      (fav) => String(fav.movieId) === movieId && fav.type === type
+    );
+    if (exists) return false;
+
+    const newFavorite = {
+      movieId,
+      type,
+      title: item.title || item.name,
+      year: item.year || item.release_date?.split('-')[0] || item.first_air_date?.split('-')[0] || 'N/A',
+      poster: item.poster || (item.poster_path ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${item.poster_path}` : ''),
+      imdb_id: item.imdb_id,
+      overview: item.overview || '',
+    };
+
     try {
-      const newFavorite = {
-        userId: user.uid,
-        movieId: item.id,
-        title: item.title || item.name,
-        year: item.year || item.release_date?.split('-')[0] || item.first_air_date?.split('-')[0] || 'N/A',
-        poster: item.poster || (item.poster_path ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${item.poster_path}` : ''),
-        imdb_id: item.imdb_id,
-        type: item.type || 'movie', // 'movie' or 'tv'
-        overview: item.overview || '',
-        addedAt: serverTimestamp()
-      };
-
-      // Check if already exists
-      const exists = favorites.find(fav => 
-        fav.movieId === item.id && fav.type === newFavorite.type
-      );
-      
-      if (exists) {
-        return false; // Already exists
-      }
-
-      // Add to Firestore
-      const docRef = doc(collection(db, 'favorites'));
-      await setDoc(docRef, newFavorite);
-      
+      const { data } = await api.post('/favorites', newFavorite);
+      setFavorites(data.favorites || []);
       return true;
     } catch (error) {
+      if (error.response?.status === 400) {
+        // Already in favorites (e.g. added from another tab/device)
+        return false;
+      }
       console.error('Error adding favorite:', error);
       alert('Failed to add favorite. Please try again.');
       return false;
@@ -104,14 +105,13 @@ export const FavoritesProvider = ({ children }) => {
   const removeFromFavorites = async (id, type = 'movie') => {
     if (!user) return;
 
+    const normalizedType = normalizeType(type);
+
     try {
-      const favoriteToRemove = favorites.find(fav => 
-        fav.movieId === id && fav.type === type
-      );
-      
-      if (favoriteToRemove) {
-        await deleteDoc(doc(db, 'favorites', favoriteToRemove.id));
-      }
+      const { data } = await api.delete(`/favorites/${id}`, {
+        params: { type: normalizedType },
+      });
+      setFavorites(data.favorites || []);
     } catch (error) {
       console.error('Error removing favorite:', error);
       alert('Failed to remove favorite. Please try again.');
@@ -119,7 +119,10 @@ export const FavoritesProvider = ({ children }) => {
   };
 
   const isFavorite = (id, type = 'movie') => {
-    return favorites.some(fav => fav.movieId === id && fav.type === type);
+    const normalizedType = normalizeType(type);
+    return favorites.some(
+      (fav) => String(fav.movieId) === String(id) && fav.type === normalizedType
+    );
   };
 
   const getFavorites = () => {
@@ -130,11 +133,14 @@ export const FavoritesProvider = ({ children }) => {
     if (!user) return;
 
     try {
-      const batch = [];
-      favorites.forEach(favorite => {
-        batch.push(deleteDoc(doc(db, 'favorites', favorite.id)));
-      });
-      await Promise.all(batch);
+      await Promise.all(
+        favorites.map((favorite) =>
+          api.delete(`/favorites/${favorite.movieId}`, {
+            params: { type: favorite.type },
+          })
+        )
+      );
+      setFavorites([]);
     } catch (error) {
       console.error('Error clearing favorites:', error);
       alert('Failed to clear favorites. Please try again.');
@@ -157,4 +163,4 @@ export const FavoritesProvider = ({ children }) => {
       {children}
     </FavoritesContext.Provider>
   );
-}; 
+};
