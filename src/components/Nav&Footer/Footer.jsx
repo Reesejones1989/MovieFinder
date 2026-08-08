@@ -45,7 +45,7 @@ export default function Footer({ suggestionsLength = 0 }) {
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2025 MovieFinder. All rights reserved.</p>
+        <p>&copy; 2026 MovieFinder. All rights reserved.</p>
       </div>
 
       {showTopBtn && (
