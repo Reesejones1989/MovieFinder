@@ -20,6 +20,9 @@ import React, { useEffect, useState } from 'react';
 import NewMovieFinder from './assets/NewMovieFinder.jpg';
 import PrivateRoute from './components/PrivateRoute.jsx';
 import { FavoritesProvider } from './components/FavoritesContext.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import AdminRoute from './components/AdminRoute.jsx';
+import { trackVisitOnce } from './utils/trackVisit.js';
 
 import './components/firebaseConfig.jsx';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -36,6 +39,10 @@ function App() {
     });
 
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    trackVisitOnce();
   }, []);
 
   if (!authChecked) {
@@ -91,6 +98,16 @@ function App() {
                   <PrivateRoute>
                     <Favorites />
                   </PrivateRoute>
+                }
+              />
+
+              {/* Admin */}
+              <Route
+                path="/dashboard"
+                element={
+                  <AdminRoute>
+                    <Dashboard />
+                  </AdminRoute>
                 }
               />
 

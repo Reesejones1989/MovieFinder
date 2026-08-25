@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFavorites } from "./FavoritesContext.jsx";
+import api from "../api/axios.js";
 import "./Cards.css";
 
 export default function Cards({ item, type }) {
@@ -11,13 +12,25 @@ export default function Cards({ item, type }) {
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
+  const trackSelection = (selectionType) => {
+    api
+      .post("/analytics/select", {
+        movieId: item.imdb_id,
+        title: item.title,
+        type: selectionType,
+      })
+      .catch(() => {});
+  };
+
   const handleWatchMovie = () => {
     if (!item.imdb_id) return;
+    trackSelection("movie");
     navigate(`/movie/${item.imdb_id}`);
   };
 
   const handleWatchTV = () => {
     if (!item.imdb_id) return;
+    trackSelection("tv");
     navigate(`/tv/${item.imdb_id}?season=1&episode=1`);
   };
 

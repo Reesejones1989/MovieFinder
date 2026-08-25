@@ -4,6 +4,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import NewMovieFinder from '../../assets/NewMovieFinder.jpg';
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import OverlaySearch from '../OverlaySearch.jsx';
+import { ADMIN_EMAIL } from '../../utils/admin.js';
 import './Nav.css';
 
 const NAV_LINKS = [
@@ -94,6 +95,18 @@ export default function Nav() {
               </NavLink>
             </li>
           )}
+          {user?.email === ADMIN_EMAIL && (
+            <li>
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                  `nav__link${isActive ? ' nav__link--active' : ''}`
+                }
+              >
+                Dashboard
+              </NavLink>
+            </li>
+          )}
         </ul>
 
         {/* Right side: search + auth */}
@@ -161,6 +174,19 @@ export default function Nav() {
                 onClick={close}
               >
                 Favorites
+              </NavLink>
+            </li>
+          )}
+          {user?.email === ADMIN_EMAIL && (
+            <li>
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                  `nav__drawer-link${isActive ? ' nav__drawer-link--active' : ''}`
+                }
+                onClick={close}
+              >
+                Dashboard
               </NavLink>
             </li>
           )}
