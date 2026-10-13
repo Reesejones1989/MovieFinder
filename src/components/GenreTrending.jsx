@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./GenreTrending.css";
 import Cards from "../components/Cards";
+import ListStatus from "./ListStatus.jsx";
 
 
 const IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
@@ -33,6 +34,7 @@ export default function GenreTrending() {
 
   const [genreRows,setGenreRows] = useState({});
   const [loading,setLoading] = useState(true);
+  const [failed,setFailed] = useState({});
 
 
   useEffect(()=>{
@@ -48,6 +50,7 @@ async function loadGenres(){
   setLoading(true);
 
   const rows={};
+  const failedRows={};
 
 
   await Promise.all(
@@ -60,6 +63,8 @@ async function loadGenres(){
           `${import.meta.env.VITE_API_URL}/genres/movie/${genre.id}`
         );
 
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const data = await res.json();
 
@@ -76,6 +81,7 @@ async function loadGenres(){
 
 
         rows[genre.name]=[];
+        failedRows[genre.name]=true;
 
       }
 
@@ -85,6 +91,7 @@ async function loadGenres(){
 
 
   setGenreRows(rows);
+  setFailed(failedRows);
 
   setLoading(false);
 
@@ -187,9 +194,12 @@ genreRows[genre.name].slice(0,5).map(movie=>(
 
                 :
 
-                <div className="empty-row">
-                  No movies found.
-                </div>
+                <ListStatus
+                  error={failed[genre.name] ? `Couldn't load ${genre.name} movies.` : null}
+                  empty={!failed[genre.name]}
+                  emptyText="No movies found."
+                  onRetry={loadGenres}
+                />
 
 
               }
@@ -209,4 +219,4 @@ genreRows[genre.name].slice(0,5).map(movie=>(
 
   );
 
-}
+}

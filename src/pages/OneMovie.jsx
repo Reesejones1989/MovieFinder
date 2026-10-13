@@ -126,7 +126,9 @@ export default function OneMovie() {
   return (
     <div className="movie-page">
       <h1 className="movie-title">
-        Now Playing: {movie?.Title} ({movie?.Year})
+        {movie?.Title
+          ? `Now Playing: ${movie.Title}${movie.Year ? ` (${movie.Year})` : ""}`
+          : "Now Playing"}
       </h1>
 
       {/* 🔀 PROVIDER SWITCH */}

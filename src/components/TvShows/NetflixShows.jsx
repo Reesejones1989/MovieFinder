@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./TvShowList.css";
 import Cards from "../Cards.jsx"
+import ListStatus from "../ListStatus.jsx";
 
 export default function NetflixShows() {
   const [shows, setShows] = useState([]);
   const [error, setError] = useState(null);
+  const [loaded, setLoaded] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [showNetflixShows, setShowNetflixShows] = useState(true);
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -42,6 +45,7 @@ export default function NetflixShows() {
   useEffect(() => {
     const fetchPopularNetflixShows = async () => {
       try {
+        setError(null);
         const today = new Date();
         const ninetyDaysAgo = new Date(today);
         ninetyDaysAgo.setDate(today.getDate() - 90);
@@ -75,6 +79,7 @@ export default function NetflixShows() {
         );
 
         setShows(enrichedShows);
+        setLoaded(true);
       } catch (err) {
         console.error("Error fetching Netflix shows:", err);
         setError("Could not load Netflix shows.");
@@ -82,15 +87,23 @@ export default function NetflixShows() {
     };
 
     fetchPopularNetflixShows();
-  }, [apiKey]);
+  }, [apiKey, reloadKey]);
 
   return (
     <div className="collapsible-section">
       <h2 onClick={toggleNetflixShows} className="collapsible-header">
         📺 Popular Netflix Shows (Last 90 Days) {showNetflixShows ? "▲" : "▼"}
       </h2>
-      {error && <p>{error}</p>}
       {showNetflixShows && (
+        <ListStatus
+          error={error}
+          empty={loaded && !error && shows.length === 0}
+          emptyText="No new Netflix shows in the last 90 days."
+          onRetry={() => setReloadKey((k) => k + 1)}
+        />
+      )}
+
+      {showNetflixShows && shows.length > 0 && (
         <div className="movie-container">
           {shows.map((show) => (
             <Cards key={show.id} item={show} type="tv" getWatchLinks={getWatchLinks} />

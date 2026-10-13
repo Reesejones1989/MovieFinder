@@ -42,7 +42,7 @@ export default function OverlaySearch({ open, onClose }) {
       setLoading(true);
       try {
         const res = await fetch(
-          `https://api.themoviedb.org/3/search/multi?query=${searchTerm}&api_key=${apiKey}`
+          `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(searchTerm.trim())}&api_key=${apiKey}`
         );
         const data = await res.json();
         const filtered = (data.results || []).filter(

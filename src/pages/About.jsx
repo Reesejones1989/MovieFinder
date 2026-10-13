@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import emailjs from "emailjs-com";
 import "./About.css";
+import { useToast } from "../components/Toast/ToastContext.jsx";
 
 export default function About() {
   const [suggestion, setSuggestion] = useState("");
+  const toast = useToast();
 
   const sendEmail = (event) => {
     event.preventDefault();
@@ -17,12 +19,12 @@ export default function About() {
       )
       .then(
         () => {
-          alert("Suggestion sent successfully!");
+          toast.success("Suggestion sent — thank you!");
           setSuggestion("");
         },
         (error) => {
-          console.log("Failed to send suggestion", error);
-          alert("Failed to send suggestion.");
+          console.error("Failed to send suggestion", error);
+          toast.error("Failed to send suggestion. Please try again.");
         }
       );
   };

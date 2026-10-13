@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AnimeList.css";
 import Card from "../components/Cards";
+import ListStatus from "./ListStatus.jsx";
 import initialAnimes from "./hardCodedLists/initialAnimes";
 
 export default function AnimeList() {
   const [anime, setAnime] = useState([]);
   const [initialAnime, setInitialAnime] = useState(initialAnimes);
   const [error, setError] = useState(null);
+  const [loaded, setLoaded] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [showAnime, setShowAnime] = useState(true);
   const [showInitialAnime, setShowInitialAnime] = useState(true);
 
@@ -76,6 +79,7 @@ export default function AnimeList() {
   useEffect(() => {
     const fetchAnime = async () => {
       try {
+        setError(null);
         const today = new Date();
         const ninetyDaysAgo = new Date(today);
         ninetyDaysAgo.setDate(today.getDate() - 90);
@@ -111,6 +115,7 @@ export default function AnimeList() {
         );
 
         setAnime(enrichedAnime);
+        setLoaded(true);
       } catch (err) {
         console.error("Error fetching anime:", err);
         setError("Could not load anime list.");
@@ -118,7 +123,7 @@ export default function AnimeList() {
     };
 
     fetchAnime();
-  }, [tmdbApiKey]);
+  }, [tmdbApiKey, reloadKey]);
 
   return (
     <div className="anime-page">
@@ -148,9 +153,16 @@ export default function AnimeList() {
           🎌 Popular Anime (Last 90 Days) {showAnime ? "▲" : "▼"}
         </h2>
 
-        {error && <p>{error}</p>}
-
         {showAnime && (
+          <ListStatus
+            error={error}
+            empty={loaded && !error && anime.length === 0}
+            emptyText="No new anime in the last 90 days."
+            onRetry={() => setReloadKey((k) => k + 1)}
+          />
+        )}
+
+        {showAnime && anime.length > 0 && (
           <div className="anime-container">
             {anime.map((item) => (
               <Card

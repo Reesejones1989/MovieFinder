@@ -1,6 +1,7 @@
 import "./TvShowList.css";
 import React, { useEffect, useState } from "react";
 import Cards from "../Cards.jsx";
+import ListStatus from "../ListStatus.jsx";
 import NetflixRealityShows from "./NetflixRealityShows";
 import RealityTVShows from "../hardCodedLists/realityTvShows.jsx";
 
@@ -19,6 +20,8 @@ export default function RealityTv() {
 
 
   const [loading, setLoading] = useState(true);
+  const [popularError, setPopularError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
 
 
@@ -108,6 +111,8 @@ export default function RealityTv() {
         );
 
 
+        if (!popularRes.ok) throw new Error(`TMDB error ${popularRes.status}`);
+
         const popularData =
           await popularRes.json();
 
@@ -122,6 +127,7 @@ export default function RealityTv() {
 
 
         setPopularShows(popular);
+        setPopularError(null);
 
 
 
@@ -131,6 +137,8 @@ export default function RealityTv() {
           "Reality TV Error:",
           err
         );
+
+        setPopularError("Couldn't load popular reality TV.");
 
 
       } finally {
@@ -146,7 +154,7 @@ export default function RealityTv() {
     fetchRealityShows();
 
 
-  },[apiKey]);
+  },[apiKey, reloadKey]);
 
 
 
@@ -233,6 +241,15 @@ export default function RealityTv() {
 
 
       {showPopular && (
+        <ListStatus
+          error={popularError}
+          empty={!popularError && popularShows.length === 0}
+          emptyText="No popular reality TV right now."
+          onRetry={() => setReloadKey((k) => k + 1)}
+        />
+      )}
+
+      {showPopular && popularShows.length > 0 && (
 
         <div className="tv-show-container">
 
@@ -267,4 +284,4 @@ export default function RealityTv() {
 
   );
 
-}
+}

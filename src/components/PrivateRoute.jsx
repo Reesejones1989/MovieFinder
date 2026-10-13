@@ -3,9 +3,9 @@ import { Navigate } from "react-router-dom";
 import { useFavorites } from "./FavoritesContext.jsx";
 
 const PrivateRoute = ({ children }) => {
-  const { user, loading } = useFavorites();
+  const { user, authReady } = useFavorites();
 
-  if (loading) return null;
+  if (!authReady) return null;
 
   return user ? children : <Navigate to="/login" replace />;
 };

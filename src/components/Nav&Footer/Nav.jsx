@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import React from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import NewMovieFinder from '../../assets/NewMovieFinder.jpg';
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
+import { useFavorites } from '../FavoritesContext.jsx';
 import OverlaySearch from '../OverlaySearch.jsx';
 import { ADMIN_EMAIL } from '../../utils/admin.js';
 import './Nav.css';
@@ -21,18 +22,13 @@ export default function Nav() {
   const [menuOpen, setMenuOpen]     = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled]     = useState(false);
-  const [user, setUser]             = useState(null);
+  const { user }  = useFavorites();
   const auth     = getAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const path = location.pathname.toLowerCase();
   const isSearchAllowed = path.startsWith("/movies") || path.startsWith("/tv");
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return () => unsubscribe();
-  }, [auth]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);

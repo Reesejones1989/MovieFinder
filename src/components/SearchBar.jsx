@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SearchBar.css";
 import { useFavorites } from "./FavoritesContext.jsx";
@@ -9,6 +9,9 @@ import MovieFinder from "../assets/MovieFinder.jpg";
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [searchError, setSearchError] = useState(null);
+  const itemRefs = useRef([]);
   const navigate = useNavigate();
   const { addToFavorites, isFavorite } = useFavorites();
 
@@ -17,6 +20,8 @@ export default function SearchBar() {
   useEffect(() => {
     if (!searchTerm.trim()) {
       setSuggestions([]);
+      setSearchError(null);
+      setActiveIndex(-1);
       return;
     }
 
@@ -24,9 +29,10 @@ export default function SearchBar() {
       try {
         // 🔥 Multi search (movie + tv automatically)
         const res = await fetch(
-          `https://api.themoviedb.org/3/search/multi?query=${searchTerm}&api_key=${apiKey}`
+          `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(searchTerm.trim())}&api_key=${apiKey}`
         );
 
+        if (!res.ok) throw new Error(`TMDB search failed (${res.status})`);
         const data = await res.json();
         if (!data.results) return;
 
@@ -56,8 +62,12 @@ export default function SearchBar() {
         );
 
         setSuggestions(detailed.filter((item) => item.imdb_id));
+        setSearchError(null);
+        setActiveIndex(-1);
       } catch (err) {
         console.error("Search error:", err);
+        setSuggestions([]);
+        setSearchError("Search is unavailable right now. Please try again in a moment.");
       }
     };
 
@@ -76,7 +86,34 @@ export default function SearchBar() {
 
     setSearchTerm("");
     setSuggestions([]);
+    setActiveIndex(-1);
   };
+
+  // ⌨️ Arrow keys move through suggestions, Enter opens, Escape clears
+  const handleKeyDown = (e) => {
+    if (!suggestions.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((i) => (i + 1) % suggestions.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((i) => (i <= 0 ? suggestions.length - 1 : i - 1));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      handleNavigate(suggestions[activeIndex >= 0 ? activeIndex : 0]);
+    } else if (e.key === "Escape") {
+      setSuggestions([]);
+      setActiveIndex(-1);
+    }
+  };
+
+  // Keep the highlighted suggestion visible
+  useEffect(() => {
+    if (activeIndex >= 0) {
+      itemRefs.current[activeIndex]?.scrollIntoView({ block: "nearest" });
+    }
+  }, [activeIndex]);
 
   return (
     <div className="search-wrapper">
@@ -86,11 +123,19 @@ export default function SearchBar() {
         <input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Search Movies or TV Shows..."
+          role="combobox"
+          aria-expanded={suggestions.length > 0}
+          aria-controls="search-suggestions"
+          aria-activedescendant={activeIndex >= 0 ? `suggestion-${activeIndex}` : undefined}
         />
       </div>
 
-      {suggestions.map((item) => {
+      {searchError && <p className="search-error" role="alert">{searchError}</p>}
+
+      <div id="search-suggestions" role="listbox">
+      {suggestions.map((item, index) => {
         const title = item.title || item.name;
         const year =
           (item.release_date && item.release_date.substring(0, 4)) ||
@@ -98,8 +143,18 @@ export default function SearchBar() {
           "";
 
         return (
-          <div key={item.id} className="suggestion-item">
+          <div
+            key={`${item.media_type}-${item.id}`}
+            id={`suggestion-${index}`}
+            ref={(el) => (itemRefs.current[index] = el)}
+            role="option"
+            aria-selected={index === activeIndex}
+            className={`suggestion-item${index === activeIndex ? " active" : ""}`}
+            onMouseEnter={() => setActiveIndex(index)}
+          >
             <img
+              loading="lazy"
+              decoding="async"
               src={
                 item.poster_path
                   ? `https://image.tmdb.org/t/p/w92${item.poster_path}`
@@ -140,6 +195,7 @@ export default function SearchBar() {
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

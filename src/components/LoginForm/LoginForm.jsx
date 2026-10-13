@@ -1,23 +1,16 @@
 import './LoginForm.css';
-import React, { useState, useEffect } from "react";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import React, { useState } from "react";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { useFavorites } from "../FavoritesContext.jsx";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
-  const [user, setUser] = useState(null);
   const [error, setError] = useState("");
 
+  const { user } = useFavorites();
   const auth = getAuth();
-  
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, [auth]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

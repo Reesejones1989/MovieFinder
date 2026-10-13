@@ -54,6 +54,8 @@ export default function Cards({ item, type }) {
           src={item.poster || "/no-poster.png"}
           alt={item.title}
           className="card-poster"
+          loading="lazy"
+          decoding="async"
         />
         <div className="card-title">
           {item.title} ({item.year})
@@ -71,6 +73,7 @@ export default function Cards({ item, type }) {
               src={item.poster || "/no-poster.png"}
               alt={item.title}
               className="modal-poster"
+              decoding="async"
             />
 
             <h2>{item.title}</h2>

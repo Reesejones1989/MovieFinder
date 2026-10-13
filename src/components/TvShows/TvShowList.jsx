@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import initialTvShows from "../hardCodedLists/initialTvShows";
 import NetflixShows from "./NetflixShows";
 import Cards from "../Cards.jsx";
+import ListStatus from "../ListStatus.jsx";
 
 export default function TvShowList() {
   const [tvShows, setTvShows] = useState(initialTvShows);
@@ -11,6 +12,8 @@ export default function TvShowList() {
   const [showTrending, setShowTrending] = useState(true);
   const [showPopular, setShowPopular] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [trendingError, setTrendingError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -21,10 +24,12 @@ export default function TvShowList() {
     const fetchTrending = async () => {
       try {
         setLoading(true);
+        setTrendingError(null);
 
         const res = await fetch(
           `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}`
         );
+        if (!res.ok) throw new Error(`TMDB error ${res.status}`);
 
         const data = await res.json();
 
@@ -53,13 +58,14 @@ export default function TvShowList() {
         setTrendingShows(enriched);
       } catch (err) {
         console.error("Failed to fetch trending TV shows:", err);
+        setTrendingError("Couldn't load trending TV shows.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchTrending();
-  }, [apiKey]);
+  }, [apiKey, reloadKey]);
 
   useEffect(() => {
     if (!postersFetched) {
@@ -154,6 +160,15 @@ export default function TvShowList() {
       </h2>
 
       {showTrending && (
+        <ListStatus
+          error={trendingError}
+          empty={!trendingError && trendingShows.length === 0}
+          emptyText="No trending TV shows right now."
+          onRetry={() => setReloadKey((k) => k + 1)}
+        />
+      )}
+
+      {showTrending && trendingShows.length > 0 && (
         <div className="tv-show-container">
           {trendingShows.map((s) => (
             <Cards
@@ -186,4 +201,4 @@ export default function TvShowList() {
       <NetflixShows />
     </div>
   );
-}
+}

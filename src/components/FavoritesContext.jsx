@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth } from './firebaseConfig.jsx';
 import { onAuthStateChanged } from 'firebase/auth';
 import api from '../api/axios.js';
+import { useToast } from './Toast/ToastContext.jsx';
 
 const FavoritesContext = createContext();
 
@@ -17,15 +18,22 @@ export const useFavorites = () => {
 // off the user's stable Firebase uid via the /api/favorites routes. Because
 // the data lives in the database (not the browser), it follows the user's
 // account across any computer or device they sign in on.
+//
+// This provider is also the app's SINGLE Firebase auth listener. Components
+// that need the current user (App, Nav, LoginForm, route guards) read `user`
+// and `authReady` from here instead of subscribing on their own.
 export const FavoritesProvider = ({ children }) => {
+  const toast = useToast();
   const [favorites, setFavorites] = useState([]);
   const [user, setUser] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
+      setAuthReady(true);
       if (!firebaseUser) {
         setFavorites([]);
         setLoading(false);
@@ -64,7 +72,7 @@ export const FavoritesProvider = ({ children }) => {
 
   const addToFavorites = async (item) => {
     if (!user) {
-      alert('Please log in to add favorites!');
+      toast.info('Please log in to add favorites.');
       return false;
     }
 
@@ -90,6 +98,7 @@ export const FavoritesProvider = ({ children }) => {
     try {
       const { data } = await api.post('/favorites', newFavorite);
       setFavorites(data.favorites || []);
+      toast.success(`Added "${newFavorite.title}" to favorites`);
       return true;
     } catch (error) {
       if (error.response?.status === 400) {
@@ -97,7 +106,7 @@ export const FavoritesProvider = ({ children }) => {
         return false;
       }
       console.error('Error adding favorite:', error);
-      alert('Failed to add favorite. Please try again.');
+      toast.error('Failed to add favorite. Please try again.');
       return false;
     }
   };
@@ -112,9 +121,10 @@ export const FavoritesProvider = ({ children }) => {
         params: { type: normalizedType },
       });
       setFavorites(data.favorites || []);
+      toast.info('Removed from favorites');
     } catch (error) {
       console.error('Error removing favorite:', error);
-      alert('Failed to remove favorite. Please try again.');
+      toast.error('Failed to remove favorite. Please try again.');
     }
   };
 
@@ -133,17 +143,13 @@ export const FavoritesProvider = ({ children }) => {
     if (!user) return;
 
     try {
-      await Promise.all(
-        favorites.map((favorite) =>
-          api.delete(`/favorites/${favorite.movieId}`, {
-            params: { type: favorite.type },
-          })
-        )
-      );
+      // One request clears everything (see DELETE /api/favorites on the backend)
+      await api.delete('/favorites');
       setFavorites([]);
+      toast.success('Favorites cleared');
     } catch (error) {
       console.error('Error clearing favorites:', error);
-      alert('Failed to clear favorites. Please try again.');
+      toast.error('Failed to clear favorites. Please try again.');
     }
   };
 
@@ -155,7 +161,8 @@ export const FavoritesProvider = ({ children }) => {
     getFavorites,
     clearFavorites,
     loading,
-    user
+    user,
+    authReady
   };
 
   return (

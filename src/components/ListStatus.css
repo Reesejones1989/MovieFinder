@@ -1,0 +1,29 @@
+.list-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 12px 0 24px;
+  padding: 18px 20px;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  color: #c7c7cf;
+  text-align: center;
+}
+.list-status p { margin: 0; }
+
+.list-status--error {
+  border-color: rgba(239, 68, 68, 0.6);
+  color: #fca5a5;
+}
+
+.list-status__retry {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.list-status__retry:hover { background: rgba(255, 255, 255, 0.08); }

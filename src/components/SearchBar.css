@@ -233,3 +233,17 @@
   }
   
 }
+
+/* Keyboard-highlighted suggestion */
+.suggestion-item.active {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+  background-color: #4b4b55;
+}
+
+.search-error {
+  max-width: 900px;
+  margin: 8px auto 16px;
+  color: #fca5a5;
+  text-align: center;
+}

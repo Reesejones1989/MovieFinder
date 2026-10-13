@@ -18,7 +18,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           <span>All NFL Games</span>
-          <img
+          <img loading="lazy" decoding="async"
             src="https://1000logos.net/wp-content/uploads/2017/05/NFL-logo.jpg"
             alt="NFL ALL"
           />
@@ -31,7 +31,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           <span>All NBA Games</span>
-          <img
+          <img loading="lazy" decoding="async"
             src="https://blog.logomyway.com/wp-content/uploads/2017/01/nba-logo-design.jpg"
             alt="NBA ALL"
           />
@@ -44,7 +44,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           <span>All CFB Games</span>
-          <img
+          <img loading="lazy" decoding="async"
             src="https://ih1.redbubble.net/image.1895314886.6937/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.webp"
             alt="CFB ALL"
           />
@@ -57,7 +57,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           <span>All CBB Games</span>
-          <img
+          <img loading="lazy" decoding="async"
             src="https://images.seeklogo.com/logo-png/22/1/ncaa-basketball-logo-png_seeklogo-221771.png"
             alt="CBB ALL"
           />
@@ -73,7 +73,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           StreamEast
-          <img
+          <img loading="lazy" decoding="async"
             src="https://content.sportslogos.net/logos/7/1007/full/dwuw5lojnwsj12vfe0hfa6z47.gif"
             alt="NFL Logo"
           />
@@ -85,7 +85,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           StreamEast
-          <img
+          <img loading="lazy" decoding="async"
             src="https://content.sportslogos.net/logos/6/982/full/_national_basketball_association_logo_primary_20182722.png"
             alt="NBA Logo"
           />
@@ -97,7 +97,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           StreamEast
-          <img
+          <img loading="lazy" decoding="async"
             src="https://content.sportslogos.net/logos/4/490/full/4227__major_league_baseball-primary-2019.png"
             alt="MLB Logo"
           />
@@ -109,7 +109,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           StreamEast
-          <img
+          <img loading="lazy" decoding="async"
             src="https://content.sportslogos.net/logos/85/6894/thumbs/689412712024.gif"
             alt="CFB Logo"
           />
@@ -121,7 +121,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           StreamEast
-          <img
+          <img loading="lazy" decoding="async"
             src="https://content.sportslogos.net/logos/85/2536/thumbs/253661192025.gif"
             alt="College Basketball Logo"
           />
@@ -133,7 +133,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           StreamEast
-          <img
+          <img loading="lazy" decoding="async"
             src="https://c8.alamy.com/comp/2K9YANB/mike-tyson-boxing-boxer-champion-vector-t-shirt-design-red-boxing-gloves-download-it-now-2K9YANB.jpg"
             alt="Boxing Logo"
           />
@@ -145,7 +145,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           StreamEast
-          <img
+          <img loading="lazy" decoding="async"
             src="https://1000logos.net/wp-content/uploads/2017/06/Logo-UFC.png"
             alt="UFC Logo"
           />
@@ -157,7 +157,7 @@ export default function SportsList() {
           rel="noopener noreferrer"
         >
           StreamEast
-          <img
+          <img loading="lazy" decoding="async"
             src="https://www.ppvliveevents.com/static/sitefiles/images/logo.png"
             alt="PPV Logo"
           />

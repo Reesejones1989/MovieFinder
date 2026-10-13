@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import initialMovies from "../hardCodedLists/InitialMovies";
 import NetflixMovies from "./NetflixMovies";
 import Cards from "../Cards.jsx";
+import ListStatus from "../ListStatus.jsx";
 import { useFavorites } from "../FavoritesContext.jsx";
 
 export default function MovieList() {
@@ -12,6 +13,8 @@ export default function MovieList() {
   const [showTrending, setShowTrending] = useState(true);
   const [showPopular, setShowPopular] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [trendingError, setTrendingError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const { addToFavorites } = useFavorites();
@@ -23,10 +26,12 @@ export default function MovieList() {
     const fetchTrendingMovies = async () => {
       try {
         setLoading(true);
+        setTrendingError(null);
 
         const res = await fetch(
           `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}`
         );
+        if (!res.ok) throw new Error(`TMDB error ${res.status}`);
 
         const data = await res.json();
 
@@ -54,13 +59,14 @@ export default function MovieList() {
         setTrendingMovies(enriched);
       } catch (err) {
         console.error("Failed to fetch trending movies:", err);
+        setTrendingError("Couldn't load trending movies.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchTrendingMovies();
-  }, [apiKey]);
+  }, [apiKey, reloadKey]);
 
   useEffect(() => {
     if (!postersFetched) {
@@ -165,6 +171,15 @@ export default function MovieList() {
       </h2>
 
       {showTrending && (
+        <ListStatus
+          error={trendingError}
+          empty={!trendingError && trendingMovies.length === 0}
+          emptyText="No trending movies right now."
+          onRetry={() => setReloadKey((k) => k + 1)}
+        />
+      )}
+
+      {showTrending && trendingMovies.length > 0 && (
         <div className="movie-container">
           {trendingMovies.map((m) => (
             <Cards
@@ -197,4 +212,4 @@ export default function MovieList() {
       <NetflixMovies />
     </div>
   );
-}
+}

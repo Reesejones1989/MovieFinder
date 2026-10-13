@@ -167,7 +167,7 @@ export default function OneTvShow() {
 
       <h1 className="tv-title">
         {showInfo?.Title
-          ? `Now Playing: ${showInfo.Title} (${showInfo.Year})`
+          ? `Now Playing: ${showInfo.Title}${showInfo.Year ? ` (${showInfo.Year})` : ""}`
           : "Now Playing"}
       </h1>
 

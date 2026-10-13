@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./TvShowList.css";
 import Cards from "../Cards.jsx";
+import ListStatus from "../ListStatus.jsx";
 
 export default function NetflixRealityShows() {
 
@@ -8,6 +9,8 @@ export default function NetflixRealityShows() {
 
   const [shows, setShows] = useState([]);
   const [error, setError] = useState(null);
+  const [loaded, setLoaded] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [showNetflix, setShowNetflix] = useState(true);
 
   const toggleNetflix = () =>
@@ -54,7 +57,9 @@ export default function NetflixRealityShows() {
           `&first_air_date.gte=${date}` +
           `&sort_by=popularity.desc`;
 
+        setError(null);
         const res = await fetch(url);
+        if (!res.ok) throw new Error(`TMDB error ${res.status}`);
 
         const data = await res.json();
 
@@ -81,6 +86,7 @@ export default function NetflixRealityShows() {
         );
 
         setShows(enriched);
+        setLoaded(true);
 
       } catch (err) {
         console.error(err);
@@ -89,7 +95,7 @@ export default function NetflixRealityShows() {
     }
 
     fetchNetflixReality();
-  }, [apiKey]);
+  }, [apiKey, reloadKey]);
 
   return (
     <div className="collapsible-section">
@@ -101,9 +107,16 @@ export default function NetflixRealityShows() {
         📺 Netflix Reality TV (Last 90 Days) {showNetflix ? "▲" : "▼"}
       </h2>
 
-      {error && <p>{error}</p>}
-
       {showNetflix && (
+        <ListStatus
+          error={error}
+          empty={loaded && !error && shows.length === 0}
+          emptyText="No new Netflix reality shows in the last 90 days."
+          onRetry={() => setReloadKey((k) => k + 1)}
+        />
+      )}
+
+      {showNetflix && shows.length > 0 && (
         <div className="tv-show-container">
           {shows.map((show) => (
             <Cards
@@ -118,4 +131,4 @@ export default function NetflixRealityShows() {
 
     </div>
   );
-}
+}
