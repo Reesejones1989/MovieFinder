@@ -2,16 +2,13 @@ import "./MovieList.css";
 import React, { useState, useEffect } from "react";
 import initialMovies from "../hardCodedLists/InitialMovies";
 import NetflixMovies from "./NetflixMovies";
-import Cards from "../Cards.jsx";
-import ListStatus from "../ListStatus.jsx";
+import MediaRow from "../MediaRow/MediaRow.jsx";
 import { useFavorites } from "../FavoritesContext.jsx";
 
 export default function MovieList() {
   const [movies, setMovies] = useState(initialMovies);
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [postersFetched, setPostersFetched] = useState(false);
-  const [showTrending, setShowTrending] = useState(true);
-  const [showPopular, setShowPopular] = useState(true);
   const [loading, setLoading] = useState(true);
   const [trendingError, setTrendingError] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -19,8 +16,6 @@ export default function MovieList() {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const { addToFavorites } = useFavorites();
 
-  const toggleTrending = () => setShowTrending((prev) => !prev);
-  const togglePopular = () => setShowPopular((prev) => !prev);
 
   useEffect(() => {
     const fetchTrendingMovies = async () => {
@@ -166,50 +161,19 @@ export default function MovieList() {
     <div className="movie-list">
       <h2>Movies</h2>
 
-      <h2 onClick={toggleTrending} className="collapsible-header">
-        🔥 Trending Movies {showTrending ? "▲" : "▼"}
-      </h2>
+      <MediaRow
+        title="🔥 Trending Movies"
+        items={trendingMovies}
+        type="movie"
+        error={trendingError}
+        empty={!trendingError && trendingMovies.length === 0}
+        emptyText="No trending movies right now."
+        onRetry={() => setReloadKey((k) => k + 1)}
+      />
 
-      {showTrending && (
-        <ListStatus
-          error={trendingError}
-          empty={!trendingError && trendingMovies.length === 0}
-          emptyText="No trending movies right now."
-          onRetry={() => setReloadKey((k) => k + 1)}
-        />
-      )}
-
-      {showTrending && trendingMovies.length > 0 && (
-        <div className="movie-container">
-          {trendingMovies.map((m) => (
-            <Cards
-              key={m.id}
-              item={m}
-              type="movie"
-              getWatchLinks={getWatchLinks}
-            />
-          ))}
-        </div>
-      )}
-
-      <h2 onClick={togglePopular} className="collapsible-header">
-        🎬 Popular Movies {showPopular ? "▲" : "▼"}
-      </h2>
-
-      {showPopular && (
-        <div className="movie-container">
-          {movies.map((m) => (
-            <Cards
-              key={m.id}
-              item={m}
-              type="movie"
-              getWatchLinks={getWatchLinks}
-            />
-          ))}
-        </div>
-      )}
+      <MediaRow title="🎬 Popular Movies" items={movies} type="movie" />
 
       <NetflixMovies />
     </div>
   );
-}
+}

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./TvShowList.css";
-import Cards from "../Cards.jsx";
-import ListStatus from "../ListStatus.jsx";
+import MediaRow from "../MediaRow/MediaRow.jsx";
 
 export default function NetflixRealityShows() {
 
@@ -11,10 +10,7 @@ export default function NetflixRealityShows() {
   const [error, setError] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
-  const [showNetflix, setShowNetflix] = useState(true);
 
-  const toggleNetflix = () =>
-    setShowNetflix(!showNetflix);
 
   const getWatchLinks = (show) => {
     const links = [];
@@ -98,37 +94,14 @@ export default function NetflixRealityShows() {
   }, [apiKey, reloadKey]);
 
   return (
-    <div className="collapsible-section">
-
-      <h2
-        className="collapsible-header"
-        onClick={toggleNetflix}
-      >
-        📺 Netflix Reality TV (Last 90 Days) {showNetflix ? "▲" : "▼"}
-      </h2>
-
-      {showNetflix && (
-        <ListStatus
-          error={error}
-          empty={loaded && !error && shows.length === 0}
-          emptyText="No new Netflix reality shows in the last 90 days."
-          onRetry={() => setReloadKey((k) => k + 1)}
-        />
-      )}
-
-      {showNetflix && shows.length > 0 && (
-        <div className="tv-show-container">
-          {shows.map((show) => (
-            <Cards
-              key={show.id}
-              item={show}
-              type="tv"
-              getWatchLinks={getWatchLinks}
-            />
-          ))}
-        </div>
-      )}
-
-    </div>
+    <MediaRow
+      title="📺 Netflix Reality TV (Last 90 Days)"
+      items={shows}
+      type="tv"
+      error={error}
+      empty={loaded && !error && shows.length === 0}
+      emptyText="No new Netflix reality shows in the last 90 days."
+      onRetry={() => setReloadKey((k) => k + 1)}
+    />
   );
-}
+}

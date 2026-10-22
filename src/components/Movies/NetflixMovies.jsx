@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./MovieList.css";
-import Card from "../Cards";
-import ListStatus from "../ListStatus.jsx";
+import MediaRow from "../MediaRow/MediaRow.jsx";
 
 export default function NetflixMovies() {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
-  const [showMovies, setShowMovies] = useState(true);
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
-  const toggleMovies = () => setShowMovies((prev) => !prev);
 
   const formatTitleForLevidia = (title) =>
     (title || "")
@@ -90,26 +87,14 @@ export default function NetflixMovies() {
   }, [apiKey, reloadKey]);
 
   return (
-    <div className="collapsible-section">
-      <h2 onClick={toggleMovies} className="collapsible-header">
-        🎬 Popular Netflix Movies (Last 90 Days) {showMovies ? "▲" : "▼"}
-      </h2>
-      {showMovies && (
-        <ListStatus
-          error={error}
-          empty={loaded && !error && movies.length === 0}
-          emptyText="No new Netflix movies in the last 90 days."
-          onRetry={() => setReloadKey((k) => k + 1)}
-        />
-      )}
-
-      {showMovies && movies.length > 0 && (
-        <div className="movie-container">
-          {movies.map((movie) => (
-            <Card key={movie.id} item={movie} type="movie" getWatchLinks={getWatchLinks} />
-          ))}
-        </div>
-      )}
-    </div>
+    <MediaRow
+      title="🎬 Popular Netflix Movies (Last 90 Days)"
+      items={movies}
+      type="movie"
+      error={error}
+      empty={loaded && !error && movies.length === 0}
+      emptyText="No new Netflix movies in the last 90 days."
+      onRetry={() => setReloadKey((k) => k + 1)}
+    />
   );
 }

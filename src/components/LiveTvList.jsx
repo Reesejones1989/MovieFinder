@@ -12,7 +12,7 @@ export default function LiveTv() {
 
       <hr style={{ margin: "40px 0", opacity: 0.3 }} />
 
-      {/* ⭐ LIVE TV SECTION ⭐ */}
+      {/* ⭐ LIVE TV SECTION ⭐ 
       <div className="channels-list">
         <h1>Live TV Channels</h1>
 
@@ -133,7 +133,7 @@ export default function LiveTv() {
             <img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/e/e3/TV-One-logo-2016.png" alt="TV One" />
           </a>
         </div>
-      </div>
+      </div>*/}
     </div>
   );
 }

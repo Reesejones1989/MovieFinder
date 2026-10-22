@@ -8,62 +8,6 @@ export default function SportsList() {
 
       <h2>Sports Leagues</h2>
 
-      {/* ⭐ FEATURED TOP 4 LINKS ⭐ */}
-      <div className="featured-sports">
-
-        <a
-          className="featured-card"
-          href="https://thetvapp.to/nfl"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>All NFL Games</span>
-          <img loading="lazy" decoding="async"
-            src="https://1000logos.net/wp-content/uploads/2017/05/NFL-logo.jpg"
-            alt="NFL ALL"
-          />
-        </a>
-
-        <a
-          className="featured-card"
-          href="https://thetvapp.to/nba"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>All NBA Games</span>
-          <img loading="lazy" decoding="async"
-            src="https://blog.logomyway.com/wp-content/uploads/2017/01/nba-logo-design.jpg"
-            alt="NBA ALL"
-          />
-        </a>
-
-        <a
-          className="featured-card"
-          href="https://thetvapp.to/ncaaf"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>All CFB Games</span>
-          <img loading="lazy" decoding="async"
-            src="https://ih1.redbubble.net/image.1895314886.6937/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.webp"
-            alt="CFB ALL"
-          />
-        </a>
-
-        <a
-          className="featured-card"
-          href="https://thetvapp.to/ncaab"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>All CBB Games</span>
-          <img loading="lazy" decoding="async"
-            src="https://images.seeklogo.com/logo-png/22/1/ncaa-basketball-logo-png_seeklogo-221771.png"
-            alt="CBB ALL"
-          />
-        </a>
-      </div>
-
       {/* ⭐ MAIN GRID LOGOS ⭐ */}
       <div className="sports-container">
 
@@ -74,7 +18,7 @@ export default function SportsList() {
         >
           StreamEast
           <img loading="lazy" decoding="async"
-            src="https://content.sportslogos.net/logos/7/1007/full/dwuw5lojnwsj12vfe0hfa6z47.gif"
+            src="https://1000logos.net/wp-content/uploads/2017/05/NFL-logo.jpg"
             alt="NFL Logo"
           />
         </a>
@@ -86,7 +30,7 @@ export default function SportsList() {
         >
           StreamEast
           <img loading="lazy" decoding="async"
-            src="https://content.sportslogos.net/logos/6/982/full/_national_basketball_association_logo_primary_20182722.png"
+            src="https://blog.logomyway.com/wp-content/uploads/2017/01/nba-logo-design.jpg"
             alt="NBA Logo"
           />
         </a>
@@ -110,7 +54,7 @@ export default function SportsList() {
         >
           StreamEast
           <img loading="lazy" decoding="async"
-            src="https://content.sportslogos.net/logos/85/6894/thumbs/689412712024.gif"
+            src="https://ih1.redbubble.net/image.1895314886.6937/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.webp"
             alt="CFB Logo"
           />
         </a>
@@ -122,7 +66,7 @@ export default function SportsList() {
         >
           StreamEast
           <img loading="lazy" decoding="async"
-            src="https://content.sportslogos.net/logos/85/2536/thumbs/253661192025.gif"
+            src="https://images.seeklogo.com/logo-png/22/1/ncaa-basketball-logo-png_seeklogo-221771.png"
             alt="College Basketball Logo"
           />
         </a>

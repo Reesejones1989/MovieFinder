@@ -1,7 +1,6 @@
 import "./TvShowList.css";
 import React, { useEffect, useState } from "react";
-import Cards from "../Cards.jsx";
-import ListStatus from "../ListStatus.jsx";
+import MediaRow from "../MediaRow/MediaRow.jsx";
 import NetflixRealityShows from "./NetflixRealityShows";
 import RealityTVShows from "../hardCodedLists/realityTvShows.jsx";
 
@@ -15,8 +14,6 @@ export default function RealityTv() {
   const [popularShows, setPopularShows] = useState([]);
 
 
-  const [showTrending, setShowTrending] = useState(true);
-  const [showPopular, setShowPopular] = useState(true);
 
 
   const [loading, setLoading] = useState(true);
@@ -25,12 +22,8 @@ export default function RealityTv() {
 
 
 
-  const toggleTrending = () =>
-    setShowTrending(!showTrending);
 
 
-  const togglePopular = () =>
-    setShowPopular(!showPopular);
 
 
 
@@ -181,107 +174,22 @@ export default function RealityTv() {
 
 
   return (
-
     <div className="tv-show-list">
+      <h2>Reality TV</h2>
 
+      <MediaRow title="🔥 Trending Reality TV" items={trendingShows} type="tv" />
 
-      <h2>
-        Reality TV
-      </h2>
-
-
-
-      <h2
-        className="collapsible-header"
-        onClick={toggleTrending}
-      >
-
-        🔥 Trending Reality TV {showTrending ? "▲" : "▼"}
-
-      </h2>
-
-
-
-      {showTrending && (
-
-        <div className="tv-show-container">
-
-          {
-            trendingShows.map((show)=>(
-
-              <Cards
-
-                key={show.id}
-
-                item={show}
-
-                type="tv"
-
-              />
-
-            ))
-          }
-
-        </div>
-
-      )}
-
-
-
-
-      <h2
-        className="collapsible-header"
-        onClick={togglePopular}
-      >
-
-        ⭐ Popular Reality TV {showPopular ? "▲" : "▼"}
-
-      </h2>
-
-
-
-      {showPopular && (
-        <ListStatus
-          error={popularError}
-          empty={!popularError && popularShows.length === 0}
-          emptyText="No popular reality TV right now."
-          onRetry={() => setReloadKey((k) => k + 1)}
-        />
-      )}
-
-      {showPopular && popularShows.length > 0 && (
-
-        <div className="tv-show-container">
-
-
-          {
-            popularShows.map((show)=>(
-
-              <Cards
-
-                key={show.id}
-
-                item={show}
-
-                type="tv"
-
-              />
-
-            ))
-          }
-
-
-        </div>
-
-      )}
-
-
+      <MediaRow
+        title="⭐ Popular Reality TV"
+        items={popularShows}
+        type="tv"
+        error={popularError}
+        empty={!popularError && popularShows.length === 0}
+        emptyText="No popular reality TV right now."
+        onRetry={() => setReloadKey((k) => k + 1)}
+      />
 
       <NetflixRealityShows />
-
-
     </div>
-
   );
-
-}
+}

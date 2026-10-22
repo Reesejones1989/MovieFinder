@@ -2,23 +2,18 @@ import "./TvShowList.css";
 import React, { useState, useEffect } from "react";
 import initialTvShows from "../hardCodedLists/initialTvShows";
 import NetflixShows from "./NetflixShows";
-import Cards from "../Cards.jsx";
-import ListStatus from "../ListStatus.jsx";
+import MediaRow from "../MediaRow/MediaRow.jsx";
 
 export default function TvShowList() {
   const [tvShows, setTvShows] = useState(initialTvShows);
   const [trendingShows, setTrendingShows] = useState([]);
   const [postersFetched, setPostersFetched] = useState(false);
-  const [showTrending, setShowTrending] = useState(true);
-  const [showPopular, setShowPopular] = useState(true);
   const [loading, setLoading] = useState(true);
   const [trendingError, setTrendingError] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
-  const toggleTrending = () => setShowTrending((prev) => !prev);
-  const togglePopular = () => setShowPopular((prev) => !prev);
 
   useEffect(() => {
     const fetchTrending = async () => {
@@ -155,50 +150,19 @@ export default function TvShowList() {
     <div className="tv-show-list">
       <h2>TV Shows</h2>
 
-      <h2 onClick={toggleTrending} className="collapsible-header">
-        🔥 Trending TV Shows {showTrending ? "▲" : "▼"}
-      </h2>
+      <MediaRow
+        title="🔥 Trending TV Shows"
+        items={trendingShows}
+        type="tv"
+        error={trendingError}
+        empty={!trendingError && trendingShows.length === 0}
+        emptyText="No trending TV shows right now."
+        onRetry={() => setReloadKey((k) => k + 1)}
+      />
 
-      {showTrending && (
-        <ListStatus
-          error={trendingError}
-          empty={!trendingError && trendingShows.length === 0}
-          emptyText="No trending TV shows right now."
-          onRetry={() => setReloadKey((k) => k + 1)}
-        />
-      )}
-
-      {showTrending && trendingShows.length > 0 && (
-        <div className="tv-show-container">
-          {trendingShows.map((s) => (
-            <Cards
-              key={s.id}
-              item={s}
-              type="tv"
-              getWatchLinks={getWatchLinks}
-            />
-          ))}
-        </div>
-      )}
-
-      <h2 onClick={togglePopular} className="collapsible-header">
-        ⭐ Requested TV Shows {showPopular ? "▲" : "▼"}
-      </h2>
-
-      {showPopular && (
-        <div className="tv-show-container">
-          {tvShows.map((s) => (
-            <Cards
-              key={s.id}
-              item={s}
-              type="tv"
-              getWatchLinks={getWatchLinks}
-            />
-          ))}
-        </div>
-      )}
+      <MediaRow title="⭐ Requested TV Shows" items={tvShows} type="tv" />
 
       <NetflixShows />
     </div>
   );
-}
+}

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./AnimeList.css";
-import Card from "../components/Cards";
-import ListStatus from "./ListStatus.jsx";
+import MediaRow from "./MediaRow/MediaRow.jsx";
 import initialAnimes from "./hardCodedLists/initialAnimes";
 
 export default function AnimeList() {
@@ -11,20 +9,9 @@ export default function AnimeList() {
   const [error, setError] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
-  const [showAnime, setShowAnime] = useState(true);
-  const [showInitialAnime, setShowInitialAnime] = useState(true);
 
-  const navigate = useNavigate();
   const tmdbApiKey = import.meta.env.VITE_TMDB_API_KEY;
 
-  const toggleAnime = () => setShowAnime((prev) => !prev);
-  const toggleInitialAnime = () => setShowInitialAnime((prev) => !prev);
-
-  const handleNavigate = (item) => {
-    if (!item.imdb_id) return;
-
-    navigate(`/tv/${item.imdb_id}?season=1&episode=1`);
-  };
 
   // 🔹 Enrich Hardcoded Anime
   useEffect(() => {
@@ -127,54 +114,19 @@ export default function AnimeList() {
 
   return (
     <div className="anime-page">
-      {/* Requested Anime */}
-      <div className="collapsible-section">
-        <h2 onClick={toggleInitialAnime} className="collapsible-header">
-          🎌 Requested Anime List {showInitialAnime ? "▲" : "▼"}
-        </h2>
+      <h2>Anime</h2>
 
-        {showInitialAnime && (
-          <div className="anime-container">
-            {initialAnime.map((item) => (
-              <Card
-                key={item.id}
-                item={item}
-                type="anime"
-                onClick={() => handleNavigate(item)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      <MediaRow title="🎌 Requested Anime" items={initialAnime} type="anime" />
 
-      {/* Popular Anime */}
-      <div className="collapsible-section">
-        <h2 onClick={toggleAnime} className="collapsible-header">
-          🎌 Popular Anime (Last 90 Days) {showAnime ? "▲" : "▼"}
-        </h2>
-
-        {showAnime && (
-          <ListStatus
-            error={error}
-            empty={loaded && !error && anime.length === 0}
-            emptyText="No new anime in the last 90 days."
-            onRetry={() => setReloadKey((k) => k + 1)}
-          />
-        )}
-
-        {showAnime && anime.length > 0 && (
-          <div className="anime-container">
-            {anime.map((item) => (
-              <Card
-                key={item.id}
-                item={item}
-                type="anime"
-                onClick={() => handleNavigate(item)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      <MediaRow
+        title="🎌 Popular Anime (Last 90 Days)"
+        items={anime}
+        type="anime"
+        error={error}
+        empty={loaded && !error && anime.length === 0}
+        emptyText="No new anime in the last 90 days."
+        onRetry={() => setReloadKey((k) => k + 1)}
+      />
     </div>
   );
 }

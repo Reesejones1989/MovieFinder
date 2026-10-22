@@ -37,3 +37,19 @@
   font-size: 1.1rem;
 }
 
+
+/* Netflix-style layout: left-aligned page with full-width rows */
+.anime-page {
+  text-align: left;
+  background-color: transparent;
+}
+
+.anime-page > h2 {
+  margin: 0 0 18px;
+  padding: 0 4px;
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #fff;
+}
