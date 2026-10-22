@@ -17,14 +17,19 @@ export default function MediaRow({
   onRetry,
 }) {
   const trackRef = useRef(null);
-  const [canLeft, setCanLeft] = useState(false);
-  const [canRight, setCanRight] = useState(false);
+  // overflows: the row is wider than the screen, so arrows are needed.
+  // atStart / atEnd: used to wrap around when an arrow is pressed at an edge.
+  const [overflows, setOverflows] = useState(false);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
 
   const updateArrows = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
-    setCanLeft(el.scrollLeft > 4);
-    setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    const max = el.scrollWidth - el.clientWidth;
+    setOverflows(max > 4);
+    setAtStart(el.scrollLeft <= 4);
+    setAtEnd(el.scrollLeft >= max - 4);
   }, []);
 
   useEffect(() => {
@@ -33,10 +38,25 @@ export default function MediaRow({
     return () => window.removeEventListener("resize", updateArrows);
   }, [items, updateArrows]);
 
+  // Page through the row; at either end, wrap around to the other end.
   const scrollByPage = (dir) => {
     const el = trackRef.current;
     if (!el) return;
-    el.scrollBy({ left: dir * el.clientWidth * 0.9, behavior: "smooth" });
+    const max = el.scrollWidth - el.clientWidth;
+
+    if (dir > 0 && el.scrollLeft >= max - 4) {
+      el.scrollTo({ left: 0, behavior: "smooth" });
+    } else if (dir < 0 && el.scrollLeft <= 4) {
+      el.scrollTo({ left: max, behavior: "smooth" });
+    } else {
+      // Snap the last partial page straight to the edge so it never takes
+      // an extra click that barely moves the row.
+      let target = el.scrollLeft + dir * el.clientWidth * 0.9;
+      const slack = el.clientWidth * 0.3;
+      if (target >= max - slack) target = max;
+      if (target <= slack) target = 0;
+      el.scrollTo({ left: target, behavior: "smooth" });
+    }
   };
 
   return (
@@ -49,10 +69,11 @@ export default function MediaRow({
         <div className="media-row__viewport">
           <button
             type="button"
-            className={`media-row__arrow media-row__arrow--left ${canLeft ? "" : "is-hidden"}`}
+            className={`media-row__arrow media-row__arrow--left ${overflows ? "" : "is-hidden"}`}
             onClick={() => scrollByPage(-1)}
-            aria-label={`Scroll ${title} left`}
-            tabIndex={canLeft ? 0 : -1}
+            aria-label={atStart ? `Jump to end of ${title}` : `Scroll ${title} left`}
+            title={atStart ? "Jump to end" : undefined}
+            tabIndex={overflows ? 0 : -1}
           >
             <FaChevronLeft />
           </button>
@@ -65,10 +86,11 @@ export default function MediaRow({
 
           <button
             type="button"
-            className={`media-row__arrow media-row__arrow--right ${canRight ? "" : "is-hidden"}`}
+            className={`media-row__arrow media-row__arrow--right ${overflows ? "" : "is-hidden"}`}
             onClick={() => scrollByPage(1)}
-            aria-label={`Scroll ${title} right`}
-            tabIndex={canRight ? 0 : -1}
+            aria-label={atEnd ? `Back to start of ${title}` : `Scroll ${title} right`}
+            title={atEnd ? "Back to start" : undefined}
+            tabIndex={overflows ? 0 : -1}
           >
             <FaChevronRight />
           </button>

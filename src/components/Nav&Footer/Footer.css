@@ -3,6 +3,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
+  box-sizing: border-box; /* keep padding inside the width so the page doesn't scroll sideways */
   /*height: 12%; */
   transition: height 0.3s ease;
   /*background: rgba(255, 255, 255, 0.3); /* semi-transparent dark overlay */

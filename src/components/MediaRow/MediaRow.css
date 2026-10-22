@@ -167,3 +167,18 @@
 @media (max-width: 480px) {
   .media-row { --card-w: 31vw; --row-gap: 6px; }
 }
+
+/* Size rows (and the pages holding them) to the screen, not to their
+   contents. Without this the page grows to fit every card, so the row
+   never overflows and can't be scrolled. */
+.media-row {
+  min-width: 0;
+  contain: inline-size;
+}
+
+.movie-list,
+.tv-show-list,
+.anime-page {
+  width: 100%;
+  min-width: 0;
+}
