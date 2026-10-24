@@ -12,7 +12,7 @@ export default function SportsList() {
       <div className="sports-container">
 
         <a
-          href="https://www.streameast.ch/se-nfl-streams/"
+          href="https://www.streameasto.cx/se-nfl-streams/"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -24,7 +24,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameast.ch/se-nba-streams/"
+          href="https://www.streameasto.cx/se-nba-streams/"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -36,7 +36,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameast.ch/se-mlb-streams/"
+          href="https://www.streameasto.cx/mlb/"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -48,7 +48,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameast.ch/se-cfb-streams/"
+          href="https://www.streameasto.cx/cfb/"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -60,7 +60,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameast.ch/se-ncaab-streams/"
+          href="https://www.streameasto.cx/ncaab/"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -72,7 +72,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameast.ch/se-boxing-streams/"
+          href="https://www.streameasto.cx/boxing/"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -84,7 +84,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameast.ch/se-ufc-streams/"
+          href="https://www.streameasto.cx/ufc/"
           target="_blank"
           rel="noopener noreferrer"
         >
