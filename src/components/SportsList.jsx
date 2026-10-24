@@ -12,7 +12,7 @@ export default function SportsList() {
       <div className="sports-container">
 
         <a
-          href="https://www.streameasto.cx/se-nfl-streams/"
+          href="https://streameast.cool/nflstreams3"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -24,7 +24,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameasto.cx/se-nba-streams/"
+          href="https://streameast.cool/nbastreams3"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -36,7 +36,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameasto.cx/mlb/"
+          href="https://streameast.cool/mlbstreams3"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -48,7 +48,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameasto.cx/cfb/"
+          href="https://streameast.cool/cfbstreams3"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -60,7 +60,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameasto.cx/ncaab/"
+          href="https://streameast.cool/ncaabstreams3"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -72,7 +72,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameasto.cx/boxing/"
+          href="https://streameast.cool/boxingstreams3"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -84,7 +84,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://www.streameasto.cx/ufc/"
+          href="https://streameast.cool/mmastreams3"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -96,7 +96,7 @@ export default function SportsList() {
         </a>
 
         <a
-          href="https://the.streameast.app/ppv"
+          href="https://streameast.cool/"
           target="_blank"
           rel="noopener noreferrer"
         >
